@@ -1,4 +1,5 @@
 import os
+import json
 import pygame
 from core.settings import *
 
@@ -53,6 +54,11 @@ class MenuCursor(pygame.sprite.Sprite):
     def select(self,surface):
         logger.debug(str(self.selectedItem))
         logger.debug(self.items.items[self.selectedItem]["action"])
+        if self.items.items[self.selectedItem]["action"] == 'menu':
+            #reload menu with the new items
+            with open(os.path.join(os.getcwd(),"resources/menus/"+self.items.items[self.selectedItem]["external"]+".json")) as jsonMenu:
+                menu = json.load(jsonMenu)
+                self.items.items = menu
         pixelate(surface,False)
 
 

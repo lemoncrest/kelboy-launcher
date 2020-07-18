@@ -55,7 +55,7 @@ class Main():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 self.menu.cursor.up()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                self.menu.cursor.select()
+                self.menu.cursor.select(self.screen)
 
     def update(self):
         self.all_sprites.update()

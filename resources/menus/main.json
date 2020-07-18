@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Launch Emulationstation",
+    "action": "exit",
+    "external": "emulationstation"
+  },
+  {
+    "title": "Settings",
+    "action": "menu",
+    "menu": "settings"
+  },
+  {
+    "title": "Quit",
+    "action": "exit",
+    "external": "sudo reboot"
+  }
+]

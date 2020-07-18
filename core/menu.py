@@ -6,6 +6,8 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+from core.effect.pixelate import pixelate
+
 
 class MenuBoard(pygame.sprite.Sprite):
 
@@ -48,9 +50,10 @@ class MenuCursor(pygame.sprite.Sprite):
             self.rect.y -= self.rect.height
             self.selectedItem -= 1
 
-    def select(self):
+    def select(self,surface):
         logger.debug(str(self.selectedItem))
         logger.debug(self.items.items[self.selectedItem]["action"])
+        pixelate(surface,False)
 
 
 class MenuItems(pygame.sprite.Sprite):

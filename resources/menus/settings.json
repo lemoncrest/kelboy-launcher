@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Wifi",
+    "action": "command",
+    "external": ""
+  },
+  {
+    "title": "Back",
+    "action": "menu",
+    "external": "main"
+  }
+]

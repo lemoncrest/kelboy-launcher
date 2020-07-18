@@ -1,9 +1,16 @@
+import os
 import pygame
 from core.settings import *
 from core.menu import Menu
 from core.colorpalette import *
 
-class Main:
+import logging
+logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+from core.utils import Utils
+
+class Main():
 
     def __init__(self):
 
@@ -16,6 +23,9 @@ class Main:
         self.frameCounter = 0
         self.running = True
         self.loadAssets()
+        logger.debug("build joystics init...")
+        utils = Utils()
+        utils.initJoysticks()
 
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()

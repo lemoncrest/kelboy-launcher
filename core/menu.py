@@ -1,5 +1,10 @@
+import os
 import pygame
 from core.settings import *
+
+import logging
+logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class MenuBoard(pygame.sprite.Sprite):
@@ -44,8 +49,8 @@ class MenuCursor(pygame.sprite.Sprite):
             self.selectedItem -= 1
 
     def select(self):
-        print(str(self.selectedItem))
-        print(self.items.items[self.selectedItem]["action"])
+        logger.debug(str(self.selectedItem))
+        logger.debug(self.items.items[self.selectedItem]["action"])
 
 
 class MenuItems(pygame.sprite.Sprite):
@@ -60,7 +65,7 @@ class MenuItems(pygame.sprite.Sprite):
         self.font = pygame.font.SysFont('Consolas', 30)
         self.image = self.font.render('', False, (255,255,255))
         self.rect = self.image.get_rect()
-        self.menu_init_y = 10
+        self.menu_init_y = 40
         self.text_size_y = self.rect.height
 
     def draw(self):
@@ -71,10 +76,20 @@ class MenuItems(pygame.sprite.Sprite):
             text_item_rect = text_item.get_rect()
             self.game.screen.blit(text_item, (self.menu.cursor.rect.left * 1.2, self.menu_init_y + (text_item_rect.height * counter)))
 
+class MenuStatus(pygame.sprite.Sprite):
+
+    def __init__(self, game):
+        self.game = game
+
+    def draw(self):
+
+        pass
+
 
 class Menu(MenuBoard, MenuCursor, MenuItems):
 
     def __init__(self, game):
+        self.status = MenuStatus(game)
         self.board = MenuBoard(game)
         self.items = MenuItems(self, game)
         self.cursor = MenuCursor(self, game, self.items)

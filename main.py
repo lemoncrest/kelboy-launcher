@@ -24,7 +24,7 @@ class Main():
         self.frameCounter = 0
         self.running = True
         self.loadAssets()
-        logger.debug("build joystics init...")
+        logger.debug("launch joystics init...")
         utils = Utils()
         utils.initJoysticks()
 

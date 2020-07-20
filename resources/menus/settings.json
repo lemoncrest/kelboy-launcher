@@ -1,8 +1,8 @@
 [
   {
     "title": "Wifi",
-    "action": "command",
-    "external": ""
+    "action": "menu",
+    "external": "wifi"
   },
   {
     "title": "Back",

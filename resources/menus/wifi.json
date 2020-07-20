@@ -1,0 +1,29 @@
+[
+  {
+    "title": "Network name",
+    "action": "param",
+    "external": "text-config",
+    "name": "ssid",
+    "visible": "true",
+    "value" : ""
+  },{
+    "title": "Password",
+    "action": "param",
+    "external": "config",
+    "name": "pass",
+    "visible": "true",
+    "value" : ""
+  },{
+    "title": "Save",
+    "action": "save",
+    "external": "saveWifiConfig",
+    "params": [
+      "ssid",
+      "pass"
+    ]
+  },{
+    "title": "Back",
+    "action": "menu",
+    "external": "settings"
+  }
+]

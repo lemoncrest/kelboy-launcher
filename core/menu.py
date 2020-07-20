@@ -2,6 +2,7 @@ import os
 import json
 import pygame
 from core.settings import *
+from core.component.keyboard import Keyboard
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
@@ -58,7 +59,19 @@ class MenuCursor(pygame.sprite.Sprite):
             #reload menu with the new items
             with open(os.path.join(os.getcwd(),"resources/menus/"+self.items.items[self.selectedItem]["external"]+".json")) as jsonMenu:
                 menu = json.load(jsonMenu)
+                #for i in range(0,len(self.items.items)):
+                #    self.up()
                 self.items.items = menu
+                #reset trick avoid commented for loop
+                self.rect.y = self.menu.items.menu_init_y + self.rect.height
+                self.selectedItem = 0
+        elif self.items.items[self.selectedItem]["action"] == 'param':
+            #keyboard
+            keyboard = Keyboard(self.game)
+
+        elif self.items.items[self.selectedItem]["action"] == 'param':
+            #command
+            os.system(self.items.items[self.selectedItem]["external"])
         pixelate(surface,False)
 
 

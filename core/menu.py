@@ -41,16 +41,34 @@ class MenuCursor(pygame.sprite.Sprite):
         self.rect.y = self.menu.items.menu_init_y + self.rect.height
         self.rect.centerx = width / 2
         self.selectedItem = 0
+        self.selectedItemX = 0
+        self.selectedItemY = 0
+        self.keyboard = None
 
     def down(self):
-        if self.selectedItem < len(self.menu.items.items) - 1:
+        if self.keyboard == None and self.selectedItem < len(self.menu.items.items) - 1:
             self.rect.y += self.rect.height
             self.selectedItem += 1
+        else:
+            self.selectedItemY = 0 #TODO
 
     def up(self):
-        if self.selectedItem != 0:
+        if self.keyboard == None and self.selectedItem != 0:
             self.rect.y -= self.rect.height
             self.selectedItem -= 1
+        else:
+            self.selectedItemY = 0 #TODO
+
+    def left(self):
+        if self.keyboard != None and self.selectedItemX>0:  #TODO
+            self.rect.x -= 0
+            self.selectedItemX -= 0
+
+    def right(self):
+        if self.keyboard != None and self.selectedItemY < len(self.keyboard.keys[self.selectedItemX]): #TODO
+            self.rect.y -= 0
+            self.selectedItemX -= 0
+
 
     def select(self,surface):
         logger.debug(str(self.selectedItem))
@@ -67,7 +85,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.selectedItem = 0
         elif self.items.items[self.selectedItem]["action"] == 'param':
             #keyboard
-            keyboard = Keyboard(self.game)
+            self.keyboard = Keyboard(self.game)
 
         elif self.items.items[self.selectedItem]["action"] == 'param':
             #command

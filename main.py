@@ -39,12 +39,16 @@ class Main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
                 self.menu.cursor.down()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 self.menu.cursor.up()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 self.menu.cursor.select(self.screen)
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                self.menu.cursor.left()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                self.menu.cursor.right()
 
     def update(self):
         self.all_sprites.update()

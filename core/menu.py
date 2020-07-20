@@ -43,29 +43,29 @@ class MenuCursor(pygame.sprite.Sprite):
         self.selectedItem = 0
         self.selectedItemX = 0
         self.selectedItemY = 0
-        self.keyboard = None
+        self.menu.keyboard = None
 
     def down(self):
-        if self.keyboard == None and self.selectedItem < len(self.menu.items.items) - 1:
+        if self.menu.keyboard == None and self.selectedItem < len(self.menu.items.items) - 1:
             self.rect.y += self.rect.height
             self.selectedItem += 1
         else:
             self.selectedItemY = 0 #TODO
 
     def up(self):
-        if self.keyboard == None and self.selectedItem != 0:
+        if self.menu.keyboard == None and self.selectedItem != 0:
             self.rect.y -= self.rect.height
             self.selectedItem -= 1
         else:
             self.selectedItemY = 0 #TODO
 
     def left(self):
-        if self.keyboard != None and self.selectedItemX>0:  #TODO
+        if self.menu.keyboard != None and self.selectedItemX>0:  #TODO
             self.rect.x -= 0
             self.selectedItemX -= 0
 
     def right(self):
-        if self.keyboard != None and self.selectedItemY < len(self.keyboard.keys[self.selectedItemX]): #TODO
+        if self.menu.keyboard != None and self.selectedItemY < len(self.menu.keyboard.keys[self.selectedItemX]): #TODO
             self.rect.y -= 0
             self.selectedItemX -= 0
 
@@ -85,7 +85,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.selectedItem = 0
         elif self.items.items[self.selectedItem]["action"] == 'param':
             #keyboard
-            self.keyboard = Keyboard(self.game)
+            self.menu.keyboard = Keyboard(self.game)
 
         elif self.items.items[self.selectedItem]["action"] == 'param':
             #command
@@ -109,12 +109,13 @@ class MenuItems(pygame.sprite.Sprite):
         self.text_size_y = self.rect.height
 
     def draw(self):
-        counter = 0
-        for item in self.items:
-            counter += 1
-            text_item = self.font.render(item["title"], False, (255,255,255))
-            text_item_rect = text_item.get_rect()
-            self.game.screen.blit(text_item, (self.menu.cursor.rect.left * 1.2, self.menu_init_y + (text_item_rect.height * counter)))
+        if self.menu.keyboard == None:
+            counter = 0
+            for item in self.items:
+                counter += 1
+                text_item = self.font.render(item["title"], False, (255,255,255))
+                text_item_rect = text_item.get_rect()
+                self.game.screen.blit(text_item, (self.menu.cursor.rect.left * 1.2, self.menu_init_y + (text_item_rect.height * counter)))
 
 class MenuStatus(pygame.sprite.Sprite):
 

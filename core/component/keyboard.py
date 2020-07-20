@@ -35,12 +35,10 @@ class Keyboard(pygame.sprite.Sprite):
     def draw(self):
         counter = 0
         for x in range(0,len(self.keys)):
-            logger.debug("x")
+            logger.debug("X:")
             counter = 0
             for y in range(0,len(self.keys[0])):
-                logger.debug("y")
-                counter += 1
                 text_item = self.font.render(self.keys[x][y], True, (255,255,255))
                 text_item_rect = text_item.get_rect()
                 logger.debug(self.keys[x][y])
-                self.game.screen.blit(text_item, (self.game.menu.cursor.rect.left * 1.2, self.rect.y + (text_item_rect.height * counter)))
+                self.image.blit(text_item, (self.rect.x, self.rect.y + (text_item_rect.height * y)))

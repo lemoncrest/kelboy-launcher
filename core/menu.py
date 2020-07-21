@@ -112,11 +112,21 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.loadBackground()
                 effect = True
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
+            #save last param name
+            self.lastMenuParam = self.items.items[self.selectedItem]["name"]
+            logger.debug("storing %s param in memory" % self.lastMenuParam)
+            buffer = ""
+            with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                menu = json.load(jsonMenu)
+                for element in menu:
+                    if "name" in element and element["name"] == self.lastMenuParam:
+                        buffer = element["value"]
+
             #keyboard
-            self.menu.keyboard = Keyboard(self.game)
+            self.menu.keyboard = Keyboard(game=self.game,buffer=buffer)
             self.menu.keyboard.draw()
             self.menu.keyboardScreen = KeyboardScreen(self.game)
-            self.menu.keyboardScreen.draw("")
+            self.menu.keyboardScreen.draw(buffer)
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command':
             #command
@@ -138,21 +148,30 @@ class MenuCursor(pygame.sprite.Sprite):
                         self.menu.keyboard = None
                         #TODO exit with value
                         logger.debug("return and load last menu...")
+                        menu = None
                         with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                             menu = json.load(jsonMenu)
-                            #for i in range(0,len(self.items.items)):
-                            #    self.up()
-                            self.items.items = menu
-                            #reset trick avoid commented for loop
-                            self.rect.y = self.menu.items.menu_init_y + self.rect.height
+                            for element in menu:
+                                if "name" in element and element["name"] == self.lastMenuParam:
+                                    element["value"] = buffer
 
-                            self.selectedItem = 0
+                        with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json"),"w") as jsonMenu:
+                            json.dump(menu, jsonMenu, indent=4, sort_keys=True)
 
-                            self.all_sprites = pygame.sprite.LayeredUpdates()
-                            self.items.items = menu
 
-                            self.board.loadBackground()
-                            self.loadBackground()
+                        #for i in range(0,len(self.items.items)):
+                        #    self.up()
+                        self.items.items = menu
+                        #reset trick avoid commented for loop
+                        self.rect.y = self.menu.items.menu_init_y + self.rect.height
+
+                        self.selectedItem = 0
+
+                        self.all_sprites = pygame.sprite.LayeredUpdates()
+                        self.items.items = menu
+
+                        self.board.loadBackground()
+                        self.loadBackground()
 
                         effect = True
                     elif key == "SYMB":

@@ -1,29 +1,32 @@
 [
-  {
-    "title": "Network name",
-    "action": "param",
-    "external": "text-config",
-    "name": "ssid",
-    "visible": "true",
-    "value" : ""
-  },{
-    "title": "Password",
-    "action": "param",
-    "external": "config",
-    "name": "pass",
-    "visible": "true",
-    "value" : ""
-  },{
-    "title": "Save",
-    "action": "save",
-    "external": "saveWifiConfig",
-    "params": [
-      "ssid",
-      "pass"
-    ]
-  },{
-    "title": "Back",
-    "action": "menu",
-    "external": "settings"
-  }
+    {
+        "action": "param",
+        "external": "text-config",
+        "name": "ssid",
+        "title": "Network name",
+        "value": "",
+        "visible": "true"
+    },
+    {
+        "action": "param",
+        "external": "config",
+        "name": "pass",
+        "title": "Password",
+        "value": "",
+        "visible": "true"
+    },
+    {
+        "action": "save",
+        "external": "saveWifiConfig",
+        "params": [
+            "ssid",
+            "pass"
+        ],
+        "title": "Save"
+    },
+    {
+        "action": "menu",
+        "external": "settings",
+        "title": "Back"
+    }
 ]

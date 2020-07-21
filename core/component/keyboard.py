@@ -35,12 +35,12 @@ class KeyboardScreen(pygame.sprite.Sprite):
 
 class Keyboard(pygame.sprite.Sprite):
 
-    def __init__(self, game):
+    def __init__(self, game, buffer=""):
         self.show = True
         self.positionX = 0
         self.positionY = 0
 
-        self.buffer = ""
+        self.buffer = buffer
         self.symb = False
         self.shift = False
 

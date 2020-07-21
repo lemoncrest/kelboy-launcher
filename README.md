@@ -5,6 +5,7 @@ This is the official kelboy launcher for current board Kelboy 2.0 to be publishe
 If you have some throuble feel free to contact us in our channels:
 
 (Spanish) -> https://t.me/ProyectoCarcasa
+
 (English) -> https://t.me/LemoncrestEN
 
 It's developed in python with pygame

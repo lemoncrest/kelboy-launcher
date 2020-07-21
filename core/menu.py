@@ -53,25 +53,36 @@ class MenuCursor(pygame.sprite.Sprite):
         if self.menu.keyboard == None and self.selectedItem < len(self.menu.items.items) - 1:
             self.rect.y += self.rect.height
             self.selectedItem += 1
-        else:
-            self.selectedItemY = 0 #TODO
+        elif self.menu.keyboard.positionY < 3:
+            self.menu.keyboard.positionY += 1
+            self.menu.keyboard.draw()
+
 
     def up(self):
         if self.menu.keyboard == None and self.selectedItem != 0:
             self.rect.y -= self.rect.height
             self.selectedItem -= 1
-        else:
-            self.selectedItemY = 0 #TODO
+        elif self.menu.keyboard.positionY > 0:
+            self.menu.keyboard.positionY -= 1
+            self.menu.keyboard.draw()
 
     def left(self):
-        if self.menu.keyboard != None and self.selectedItemX>0:  #TODO
+        if self.menu.keyboard == None:  #TODO
             self.rect.x -= 0
             self.selectedItemX -= 0
+        elif self.menu.keyboard.positionX > 0:
+            self.menu.keyboard.positionX -= 1
+            self.menu.keyboard.draw()
+
 
     def right(self):
-        if self.menu.keyboard != None and self.selectedItemY < len(self.menu.keyboard.keys[self.selectedItemX]): #TODO
+        if self.menu.keyboard == None: #TODO
             self.rect.y -= 0
             self.selectedItemX -= 0
+        elif self.menu.keyboard.positionX < 9:
+            self.menu.keyboard.positionX += 1
+            self.menu.keyboard.draw()
+
 
 
     def select(self,surface):

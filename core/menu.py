@@ -132,10 +132,10 @@ class MenuCursor(pygame.sprite.Sprite):
                     if key == "ENTER":
                         buffer = self.menu.keyboard.buffer
                         logger.info("buffer: %s" % buffer)
+                        self.menu.keyboard.kill()
                         self.menu.keyboard = None
                         #TODO exit with value
                         logger.debug("return and load last menu...")
-                        self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
                         with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                             menu = json.load(jsonMenu)
                             #for i in range(0,len(self.items.items)):
@@ -143,9 +143,8 @@ class MenuCursor(pygame.sprite.Sprite):
                             self.items.items = menu
                             #reset trick avoid commented for loop
                             self.rect.y = self.menu.items.menu_init_y + self.rect.height
+
                             self.selectedItem = 0
-                            self.menu.keyboard.kill()
-                            self.menu.keyboard = None
 
                             self.all_sprites = pygame.sprite.LayeredUpdates()
                             self.items.items = menu
@@ -165,6 +164,9 @@ class MenuCursor(pygame.sprite.Sprite):
                         logger.debug("buffer with 'space' is: '%s'" % self.menu.keyboard.buffer)
                     elif key == "EXIT":
                         self.menu.keyboard.show = False
+                        self.menu.keyboard.kill()
+                        self.menu.keyboard = None
+                        
                         logger.debug("loading last menu...")
                         with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                             menu = json.load(jsonMenu)
@@ -174,8 +176,6 @@ class MenuCursor(pygame.sprite.Sprite):
                             #reset trick avoid commented for loop
                             self.rect.y = self.menu.items.menu_init_y + self.rect.height
                             self.selectedItem = 0
-                            self.menu.keyboard.kill()
-                            self.menu.keyboard = None
 
                         self.board.loadBackground()
                         self.loadBackground()

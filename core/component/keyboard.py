@@ -11,6 +11,27 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+class KeyboardScreen(pygame.sprite.Sprite):
+    def __init__(self, game):
+
+        all_sprites = pygame.sprite.LayeredUpdates()
+
+        pygame.sprite.Sprite.__init__(self, game.all_sprites)
+        self.image = pygame.Surface((width, 30))
+
+        self.image.fill(RGBColors().navy)
+        self.rect = self.image.get_rect()
+        self.rect.center = (width / 2,height/4)
+        self.font = pygame.font.SysFont('Consola', 30)
+
+    def draw(self,text):
+        self.image.fill(RGBColors().blue)
+
+        textsurface = self.font.render(text, True, RGBColors().white)
+        self.image.blit(textsurface, (2,2) )
+
+
+
 
 class Keyboard(pygame.sprite.Sprite):
 
@@ -63,7 +84,7 @@ class Keyboard(pygame.sprite.Sprite):
                 "name" : "ENTER"
             },{
                 "name" : "EXIT"
-            },
+            }
         ]
 
 
@@ -77,7 +98,7 @@ class Keyboard(pygame.sprite.Sprite):
         for x in range(0,len(self.keys)):
             counter = 0
             for y in range(0,len(self.keys[0])):
-                #logger.debug(self.keys[x][y]) #key drawn
+                #logger.debug(self.keys[x][y]) #key draw
                 if self.symb:
                     target = self.symbols[x][y]
                 else:

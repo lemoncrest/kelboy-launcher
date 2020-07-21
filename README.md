@@ -1,8 +1,12 @@
 # kelboy-launcher
 
-This is the official kelboy launcher for current board Kelboy 2.0 to be published by the community. 
+This is the official Kelboy Launcher for current board Kelboy 2.0 to be published by the community. 
 
-If you have some throuble feel free to contact us in our channels:
+All information related to this beautiful board is in https://shop.lemoncrest.com/index.php 
+
+![alt text](https://shop.lemoncrest.com/img/p/4/2/42-large_default.jpg)
+
+If you have some suggestion feel free to contact us in our channels:
 
 (Spanish) -> https://t.me/ProyectoCarcasa
 
@@ -12,9 +16,11 @@ It's developed in python with pygame
 
 His resolution is 320x240 and could be edited by anybody.
 
-There are no secrets.
+There are no secrets, we're opensource.
 
-Dev by: 
+Dev. by: 
 Lemoncrest SL
+
+https://lemoncrest.com
 
 Enjoy

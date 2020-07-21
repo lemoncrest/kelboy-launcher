@@ -88,10 +88,14 @@ class Keyboard(pygame.sprite.Sprite):
             rect = image.get_rect(x=10+(60*x), y=90)
             pygame.draw.rect(self.image, RGBColors().white, rect, width=1)
 
+            if self.positionY>=len(self.keys) and self.positionX > 4:
+                self.positionX = 4
+
             if x==self.positionX and 3 == self.positionY:
                 #draw selector
-                rect2 = image.get_rect(x=10+(60*y), y=30*x)
+                rect2 = image.get_rect(x=10+(30*x*2), y=30*3)
                 pygame.draw.rect(self.image, RGBColors().navy, rect2)
+
 
             textsurface = self.font.render(special["name"], True, RGBColors().white)
             self.image.blit(textsurface, (18+(60*x), 90+10) )

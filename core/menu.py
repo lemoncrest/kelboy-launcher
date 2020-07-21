@@ -2,7 +2,7 @@ import os
 import json
 import pygame
 from core.settings import *
-from core.component.keyboard import Keyboard
+from core.component.keyboard import Keyboard, KeyboardScreen
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
@@ -115,6 +115,8 @@ class MenuCursor(pygame.sprite.Sprite):
             #keyboard
             self.menu.keyboard = Keyboard(self.game)
             self.menu.keyboard.draw()
+            self.menu.keyboardScreen = KeyboardScreen(self.game)
+            self.menu.keyboardScreen.draw("")
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command':
             #command
@@ -166,7 +168,7 @@ class MenuCursor(pygame.sprite.Sprite):
                         self.menu.keyboard.show = False
                         self.menu.keyboard.kill()
                         self.menu.keyboard = None
-                        
+
                         logger.debug("loading last menu...")
                         with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                             menu = json.load(jsonMenu)
@@ -186,6 +188,7 @@ class MenuCursor(pygame.sprite.Sprite):
 
                 if self.menu.keyboard:
                     self.menu.keyboard.draw()
+                    self.menu.keyboardScreen.draw(self.menu.keyboard.buffer)
                 else:
                     logger.debug("TODO... or not TODO")
 

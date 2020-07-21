@@ -18,11 +18,15 @@ class MenuBoard(pygame.sprite.Sprite):
         self.groups = game.all_sprites
         self._layer = 1
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = pygame.Surface((width*0.9,height*0.9))
+        self.image = pygame.Surface((width,height))
         self.image.fill((0,255,255))
         self.rect = self.image.get_rect()
         self.rect.centery = height / 2
         self.rect.centerx = width / 2
+        filename = os.path.join(os.getcwd(), "resources/graphics", "background.png")
+        picture = pygame.image.load(filename)
+        pygame.transform.scale(picture, (width,height))
+        self.image.blit(picture, (0, 0))
 
 
 class MenuCursor(pygame.sprite.Sprite):

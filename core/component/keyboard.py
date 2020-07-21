@@ -15,8 +15,13 @@ logger = logging.getLogger(__name__)
 class Keyboard(pygame.sprite.Sprite):
 
     def __init__(self, game):
+        self.show = True
         self.positionX = 0
         self.positionY = 0
+
+        self.buffer = ""
+        self.symb = False
+        self.shift = False
 
         self.game = game
         self._layer = 6
@@ -34,8 +39,18 @@ class Keyboard(pygame.sprite.Sprite):
         self.rect.centerx = width / 2
         self.keys = [
             ["q","w","e","r","t","y","u","i","o","p"],
-            ["a","s","d","f","g","h","j","k","l","@"],
+            ["a","s","d","f","g","h","j","k","l","ñ"],
             ["z","x","c","v","b","n","m",",",".","-"]
+        ]
+        self.mayus = [
+            ["Q","W","E","R","T","Y","U","I","O","P"],
+            ["A","S","D","F","G","H","J","K","L","Ñ"],
+            ["Z","X","C","V","B","N","M",",",".","-"]
+        ]
+        self.symbols = [
+            ["!","\"","·","$","%","&","/","(",")","="],
+            ["[","]","\\","|","@","#","~","¬","?","¿"],
+            ["^","`","*","+","¨","´","{","}","<",">",""]
         ]
         self.specials = [
             {
@@ -55,7 +70,7 @@ class Keyboard(pygame.sprite.Sprite):
 
     def draw(self):
         #refresh
-        logger.debug("position: X %s Y %s" % (self.positionX,self.positionY))
+        logger.debug("position: X %s Y %s" % (self.positionX, self.positionY))
 
         self.image.fill(RGBColors().blue)
         counter = 0
@@ -63,8 +78,14 @@ class Keyboard(pygame.sprite.Sprite):
             counter = 0
             for y in range(0,len(self.keys[0])):
                 #logger.debug(self.keys[x][y]) #key drawn
-
-                textsurface = self.font.render(self.keys[x][y], True, RGBColors().white)
+                if self.symb:
+                    target = self.symbols[x][y]
+                else:
+                    if self.shift:
+                        target = self.mayus[x][y]
+                    else:
+                        target = self.keys[x][y]
+                textsurface = self.font.render(target, True, RGBColors().white)
 
                 image = pygame.Surface((30, 30))
 

@@ -31,9 +31,11 @@ class Main():
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.menu = Menu(self)
+        self.menu.lastMenu = "main"
         with open(os.path.join(os.getcwd(),"resources/menus/main.json")) as jsonMenu:
             menu = json.load(jsonMenu)
             self.menu.items.items = menu
+            self.menu.keyboard = None
 
     def events(self):
         for event in pygame.event.get():

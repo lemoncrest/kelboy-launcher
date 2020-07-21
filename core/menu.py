@@ -119,7 +119,7 @@ class MenuItems(pygame.sprite.Sprite):
                 counter += 1
                 text_item = self.font.render(item["title"], False, (255,255,255))
                 text_item_rect = text_item.get_rect()
-                self.game.screen.blit(text_item, (self.menu.cursor.rect.left + (10), self.menu_init_y + (text_item_rect.height * counter)))
+                self.game.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
 
 class MenuStatus(pygame.sprite.Sprite):
 

@@ -90,7 +90,7 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.items.items[self.selectedItem]["action"] == 'param':
             #keyboard
             self.menu.keyboard = Keyboard(self.game)
-
+            self.menu.keyboard.draw()
         elif self.items.items[self.selectedItem]["action"] == 'param':
             #command
             os.system(self.items.items[self.selectedItem]["external"])

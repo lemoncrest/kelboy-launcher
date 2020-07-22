@@ -3,6 +3,10 @@
     "title": "Wifi",
     "action": "menu",
     "external": "wifi"
+  },{
+    "title": "Brightness",
+    "action": "menu",
+    "external": "TODO"
   },
   {
     "title": "Back",

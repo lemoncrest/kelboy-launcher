@@ -3,12 +3,12 @@ import json
 import pygame
 from core.settings import *
 from core.component.keyboard import Keyboard, KeyboardScreen
-
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 from core.effect.pixelate import pixelate
+from core import menuaction
 
 
 class MenuBoard(pygame.sprite.Sprite):
@@ -111,6 +111,13 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.board.loadBackground()
                 self.loadBackground()
                 effect = True
+        elif self.items.items[self.selectedItem]["action"] == 'function':
+            params = []
+            funct = self.items.items[self.selectedItem]["external"]
+            logger.debug("function %s",funct)
+            #now call to function with params
+            dynamicMethod = getattr(menuaction, funct)
+            dynamicMethod()
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
             #save last param name
             self.lastMenuParam = self.items.items[self.selectedItem]["name"]

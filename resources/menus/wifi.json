@@ -16,7 +16,7 @@
         "visible": "true"
     },
     {
-        "action": "save",
+        "action": "function",
         "external": "saveWifiConfig",
         "params": [
             "ssid",

@@ -33,17 +33,21 @@ def saveWifiConfig(ssid='', pwd=''):
     output = process.stdout
     logger.debug(output)
     if 'network={' in output:
-        with open(WPA_SUPPLICANT, 'w') as (myfile):
+        with open("wpa_supplicant.conf", 'w') as (myfile):
             myfile.write(line_0_default + '\n')
             myfile.write(line_1_default + '\n')
             myfile.write(line_2_default + '\n')
             myfile.write(output)
     else:
-        with open(WPA_SUPPLICANT, 'w') as (myfile):
+        with open("wpa_supplicant.conf", 'w') as (myfile):
             myfile.write(line_0_default + '\n')
             myfile.write(line_1_default + '\n')
             myfile.write(line_2_default + '\n')
-    p = subprocess.Popen('wpa_cli -i wlan0 reconfigure', stdout=subprocess.PIPE, shell=True)
-    output, err = p.communicate()
-    p.wait()
+    process = subprocess.run('sudo mv wpa_supplicant.conf '+WPA_SUPPLICANT, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+    output = process.stdout
+    process = subprocess.run('wpa_cli -i wlan0 reconfigure', shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+    output = process.stdout
+    #p = subprocess.Popen('wpa_cli -i wlan0 reconfigure', stdout=subprocess.PIPE, shell=True)
+    #output, err = p.communicate()
+    #p.wait()
     self.is_connecting = True

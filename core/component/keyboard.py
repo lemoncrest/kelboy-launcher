@@ -69,9 +69,10 @@ class Keyboard(pygame.sprite.Sprite):
             ["Z","X","C","V","B","N","M",",",".","-"]
         ]
         self.symbols = [
+            ["0","1","2","3","4","5","6","7","8","9","+"],
             ["!","\"","·","$","%","&","/","(",")","="],
-            ["[","]","\\","|","@","#","~","¬","?","¿"],
-            ["^","`","*","+","¨","´","{","}","<",">",""]
+            ["[","]","\\","|","@","#","<",">","?","¿"]
+            #["^","`","*","+","¨","´","{","}","<",">",""] #TODO
         ]
         self.specials = [
             {
@@ -116,9 +117,8 @@ class Keyboard(pygame.sprite.Sprite):
                     #draw selector
                     rect2 = image.get_rect(x=10+(30*y), y=30*x)
                     pygame.draw.rect(self.image, RGBColors().navy, rect2)
-
-
-                pygame.draw.rect(self.image, RGBColors().white, rect, width=1)
+                else:
+                    pygame.draw.rect(self.image, RGBColors().blue, rect) #pygame 1.9.4 has not width=1 param
                 self.image.blit(textsurface, (21+(30*y) , 10+(30*x)))
 
 
@@ -128,7 +128,7 @@ class Keyboard(pygame.sprite.Sprite):
             special = self.specials[x]
             image = pygame.Surface((60, 30))
             rect = image.get_rect(x=10+(60*x), y=90)
-            pygame.draw.rect(self.image, RGBColors().white, rect, width=1)
+            pygame.draw.rect(self.image, RGBColors().blue, rect) #pygame 1.9.4 has not width=1 param
 
             if self.positionY>=len(self.keys) and self.positionX > 4:
                 self.positionX = 4

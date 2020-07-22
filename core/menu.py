@@ -142,7 +142,12 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.menu.keyboard != None:
             if self.menu.keyboard.show:
                 if self.menu.keyboard.positionY != 3:
-                    self.menu.keyboard.last = self.menu.keyboard.keys[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
+                    if self.menu.keyboard.shift:
+                        self.menu.keyboard.last = self.menu.keyboard.mayus[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
+                    elif self.menu.keyboard.symb:
+                        self.menu.keyboard.last = self.menu.keyboard.symbols[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
+                    else:
+                        self.menu.keyboard.last = self.menu.keyboard.keys[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
                     self.menu.keyboard.buffer += self.menu.keyboard.last
                     logger.debug("buffer is: '%s'" % self.menu.keyboard.buffer)
                 else:

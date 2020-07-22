@@ -8,8 +8,6 @@ from core.settings import *
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-WPA_SUPPLICANT = '/home/user/wpa_supplicant.conf'
-
 def saveWifiConfig(ssid='', pwd=''):
     with open(os.path.join(os.getcwd(),"resources/menus/wifi.json")) as jsonMenu:
         menu = json.load(jsonMenu)

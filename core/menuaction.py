@@ -29,9 +29,9 @@ def saveWifiConfig(ssid='', pwd=''):
     pwd_fix = pwd
     pwd_fix = pwd_fix.replace(' ', '\\ ')
     pwd_fix = pwd_fix.replace("'", '\'')
-    p = subprocess.Popen('wpa_passphrase ' + ssid_fix + ' ' + pwd_fix, stdout=subprocess.PIPE, shell=True)
-    output, err = p.communicate()
-    p.wait()
+    process = subprocess.run('wpa_passphrase ' + ssid_fix + ' ' + pwd_fix, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+    output = process.stdout
+    logger.debug(output)
     if 'network={' in output:
         with open(WPA_SUPPLICANT, 'w') as (myfile):
             myfile.write(line_0_default + '\n')

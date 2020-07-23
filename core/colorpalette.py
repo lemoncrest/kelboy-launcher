@@ -11,3 +11,4 @@ class RGBColors:
         self.blue = (0, 100, 255)
         self.navy = (0, 0, 128)
         self.gray = (128,128,128)
+        self.green = (0,255,0)

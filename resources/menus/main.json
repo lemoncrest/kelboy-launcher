@@ -11,7 +11,7 @@
   },
   {
     "title": "Update",
-    "action": "command",
+    "action": "command-exit",
     "external": "./updater.sh"
   },
   {

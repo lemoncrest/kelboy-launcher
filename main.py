@@ -21,6 +21,7 @@ class Main():
     def __init__(self):
 
         pygame.init()
+        pygame.mouse.set_visible(0) #hide mouse
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption('Menu')
         self.rgb = RGBColors()

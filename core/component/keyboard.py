@@ -35,6 +35,12 @@ class KeyboardScreen(pygame.sprite.Sprite):
 
 class Keyboard(pygame.sprite.Sprite):
 
+    MAYUS = "MAYUS"
+    SYMB = "SYMB"
+    SPACE = "SPACE"
+    ENTER = "ENTER"
+    EXIT = "EXIT"
+
     def __init__(self, game, buffer=""):
         self.show = True
         self.positionX = 0
@@ -76,15 +82,15 @@ class Keyboard(pygame.sprite.Sprite):
         ]
         self.specials = [
             {
-                "name" : "MAYUS"
+                "name" : Keyboard.MAYUS
             },{
-                "name" : "SYMB"
+                "name" : Keyboard.SYMB
             },{
-                "name" : "SPACE"
+                "name" : Keyboard.SPACE
             },{
-                "name" : "ENTER"
+                "name" : Keyboard.ENTER
             },{
-                "name" : "EXIT"
+                "name" : Keyboard.EXIT
             }
         ]
 

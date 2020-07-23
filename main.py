@@ -6,6 +6,7 @@ import pygame
 from core.settings import *
 from core.menu import Menu
 from core.effect.snow import SnowBall
+from core.effect.matrix import Matrix
 from core.colorpalette import *
 
 import logging
@@ -110,7 +111,8 @@ class Main():
             if self.last+screensaverTime < int(round(time.time())*1000):
                 self.screensaver = True
             if self.screensaver:
-                SnowBall().launchSnowBalls()
+                #SnowBall().launchSnowBalls()
+                Matrix(surface=pygame.display.set_mode((width,height)),clock=pygame.time.Clock()).run()
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
             self.frameCounter += 1

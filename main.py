@@ -1,8 +1,11 @@
 import os
 import json
+import time
 import pygame
+
 from core.settings import *
 from core.menu import Menu
+from core.effect.snow import SnowBall
 from core.colorpalette import *
 
 import logging
@@ -27,6 +30,8 @@ class Main():
         logger.debug("launch joystics init...")
         utils = Utils()
         utils.initJoysticks()
+        #disable mouse
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
 
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -41,16 +46,20 @@ class Main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                self.menu.cursor.down()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                self.menu.cursor.up()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                self.menu.cursor.select(self.screen)
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                self.menu.cursor.left()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                self.menu.cursor.right()
+            elif event.type == pygame.KEYDOWN:
+                #reset screensaver time to 0
+                self.last = int(round(time.time())*1000)
+                self.screensaver = False
+                if event.key == pygame.K_DOWN:
+                    self.menu.cursor.down()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    self.menu.cursor.up()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    self.menu.cursor.select(self.screen)
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                    self.menu.cursor.left()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                    self.menu.cursor.right()
 
     def update(self):
         self.all_sprites.update()
@@ -61,7 +70,15 @@ class Main():
         self.menu.items.draw()
 
     def run(self):
+        self.screensaver = False #TODO
+        self.last = int(round(time.time())*1000)
         while self.running:
+            if self.last+screensaverTime < int(round(time.time())*1000):
+                self.screensaver = True
+            if self.screensaver:
+                SnowBall().launchSnowBalls()
+                self.last = int(round(time.time())*1000)
+                self.screensaver = False
             self.frameCounter += 1
             self.clock.tick(self.frameRate)
             self.events()

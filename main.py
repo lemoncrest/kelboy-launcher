@@ -60,6 +60,28 @@ class Main():
                     self.menu.cursor.left()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                     self.menu.cursor.right()
+            elif event.type == pygame.JOYBUTTONDOWN:
+                #reset screensaver time to 0
+                self.last = int(round(time.time())*1000)
+                self.screensaver = False
+                if event.button == 1:  # button A - enter
+                    self.menu.cursor.select(self.screen)
+                elif event.button == 2:  # button B - back
+                    pass #TODO back
+            elif event.type == pygame.JOYAXISMOTION:
+                #reset screensaver time to 0
+                self.last = int(round(time.time())*1000)
+                self.screensaver = False
+                if event.axis == 1:  # up and down
+                    if event.value > 0:
+                        self.menu.cursor.up()
+                    elif event.value < 0:
+                        self.menu.cursor.down()
+                elif event.axis == 0:  # left and right
+                    if event.value > 0:
+                        self.menu.cursor.right()
+                    elif event.value < 0:
+                        self.menu.cursor.left()
 
     def update(self):
         self.all_sprites.update()

@@ -2,6 +2,7 @@ import os
 import json
 import time
 import pygame
+from random import randint
 
 from core.settings import *
 from core.menu import Menu
@@ -111,8 +112,11 @@ class Main():
             if self.last+screensaverTime < int(round(time.time())*1000):
                 self.screensaver = True
             if self.screensaver:
-                #SnowBall().launchSnowBalls()
-                Matrix(surface=pygame.display.set_mode((width,height)),clock=pygame.time.Clock()).run()
+                rand = randint(1, 2)
+                if(rand==1):
+                    SnowBall().launchSnowBalls()
+                else:
+                    Matrix(surface=pygame.display.set_mode((width,height)),clock=pygame.time.Clock()).run()
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
             self.frameCounter += 1

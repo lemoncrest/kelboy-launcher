@@ -33,7 +33,7 @@ class SnowBall():
         while not exit:
             self.screen.fill(RGBColors().black)
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION:
                     exit = True
 
             snowMatrix.append(SnowBall())

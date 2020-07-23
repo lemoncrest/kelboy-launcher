@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import pygame
 from core.settings import *
@@ -138,6 +139,11 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.items.items[self.selectedItem]["action"] == 'command':
             #command
             os.system(self.items.items[self.selectedItem]["external"])
+            effect = True
+        elif self.items.items[self.selectedItem]["action"] == 'command-exit':
+            #command
+            os.system(self.items.items[self.selectedItem]["external"])
+            sys.exit()
             effect = True
         elif self.menu.keyboard != None:
             if self.menu.keyboard.show:

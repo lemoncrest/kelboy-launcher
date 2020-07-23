@@ -17,10 +17,7 @@ class Updater():
         downloadfile(url=url,fileName=filename)
         logger.debug("extracting...")
         unzipper = Ziptools()
-        unzipper.extractReplacingMainFolder(filename,os.getcwd(),"") #github issues
+        unzipper.extract(filename,"") #github issues
         logger.debug("cleaning process...")
         os.remove(filename)
         logger.info("update DONE!")
-
-
-Updater().update()

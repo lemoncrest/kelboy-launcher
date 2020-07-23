@@ -61,16 +61,26 @@ class Main():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                     self.menu.cursor.right()
             elif event.type == pygame.JOYBUTTONDOWN:
-                logger.debug(str(event))
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
-                if event.button == 1:  # button A - enter
+                if event.button == 15:  # button A - enter
                     self.menu.cursor.select(self.screen)
-                elif event.button == 2:  # button B - back
-                    pass #TODO back
+                elif event.button == 14:  # button B - back
+                    pass #TODO
+                elif event.button == 7:  # start
+                    pass #TODO
+                elif event.button == 6:  # select
+                    pass #TODO
+                elif event.button == 11:  # up
+                    self.menu.cursor.up()
+                elif event.button == 10:  # down
+                    self.menu.cursor.down()
+                elif event.button == 9:  # left
+                    self.menu.cursor.left()
+                elif event.button == 8:  # right
+                    self.menu.cursor.right()
             elif event.type == pygame.JOYAXISMOTION:
-                logger.debug(str(event))
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False

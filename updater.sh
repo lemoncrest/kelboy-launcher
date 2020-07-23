@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python updater.py
+python3 updater.py
 cd ..
 echo "replacing..."
 rm -Rf kelboy-launcher
@@ -9,4 +9,4 @@ echo "done!"
 cd kelboy-launcher
 chmod +x updater.sh
 echo "launching new revision..."
-python main.py &
+python3 main.py &

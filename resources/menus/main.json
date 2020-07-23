@@ -10,6 +10,11 @@
     "external": "settings"
   },
   {
+    "title": "Update",
+    "action": "command",
+    "external": "./updater.sh"
+  },
+  {
     "title": "Quit",
     "action": "command",
     "external": "sudo reboot"

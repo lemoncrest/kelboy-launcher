@@ -61,6 +61,7 @@ class Main():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                     self.menu.cursor.right()
             elif event.type == pygame.JOYBUTTONDOWN:
+                logger.debug(str(event))
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
@@ -69,6 +70,7 @@ class Main():
                 elif event.button == 2:  # button B - back
                     pass #TODO back
             elif event.type == pygame.JOYAXISMOTION:
+                logger.debug(str(event))
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False

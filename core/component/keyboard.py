@@ -5,7 +5,7 @@ import pygame.gfxdraw
 from pygame.locals import * #Rect f.i.
 
 from core.settings import *
-from core.colorpalette import RGBColors
+from core.colors import *
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
@@ -19,15 +19,15 @@ class KeyboardScreen(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, game.all_sprites)
         self.image = pygame.Surface((width, 30))
 
-        self.image.fill(RGBColors().navy)
+        self.image.fill(NAVY)
         self.rect = self.image.get_rect()
         self.rect.center = (width / 2,height/4)
         self.font = pygame.font.SysFont('Consola', 30)
 
     def draw(self,text):
-        self.image.fill(RGBColors().blue)
+        self.image.fill(BLUE)
 
-        textsurface = self.font.render(text, True, RGBColors().white)
+        textsurface = self.font.render(text, True, WHITE)
         self.image.blit(textsurface, (2,2) )
 
 
@@ -59,7 +59,7 @@ class Keyboard(pygame.sprite.Sprite):
         self.font = pygame.font.SysFont('Arial', 20)
         #keyboard
         self.image = pygame.Surface((width,height*0.5))
-        self.image.fill(RGBColors().blue)
+        self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
         self.rect.centery = height - (height / 4)
@@ -100,7 +100,7 @@ class Keyboard(pygame.sprite.Sprite):
         #refresh
         logger.debug("position: X %s Y %s" % (self.positionX, self.positionY))
 
-        self.image.fill(RGBColors().blue)
+        self.image.fill(BLUE)
         counter = 0
         for x in range(0,len(self.keys)):
             counter = 0
@@ -113,7 +113,7 @@ class Keyboard(pygame.sprite.Sprite):
                         target = self.mayus[x][y]
                     else:
                         target = self.keys[x][y]
-                textsurface = self.font.render(target, True, RGBColors().white)
+                textsurface = self.font.render(target, True, WHITE)
 
                 image = pygame.Surface((30, 30))
 
@@ -122,9 +122,9 @@ class Keyboard(pygame.sprite.Sprite):
                 if y==self.positionX and x == self.positionY:
                     #draw selector
                     rect2 = image.get_rect(x=10+(30*y), y=30*x)
-                    pygame.draw.rect(self.image, RGBColors().navy, rect2)
+                    pygame.draw.rect(self.image, NAVY, rect2)
                 else:
-                    pygame.draw.rect(self.image, RGBColors().blue, rect) #pygame 1.9.4 has not width=1 param
+                    pygame.draw.rect(self.image, BLUE, rect) #pygame 1.9.4 has not width=1 param
                 self.image.blit(textsurface, (21+(30*y) , 10+(30*x)))
 
 
@@ -134,7 +134,7 @@ class Keyboard(pygame.sprite.Sprite):
             special = self.specials[x]
             image = pygame.Surface((60, 30))
             rect = image.get_rect(x=10+(60*x), y=90)
-            pygame.draw.rect(self.image, RGBColors().blue, rect) #pygame 1.9.4 has not width=1 param
+            pygame.draw.rect(self.image, BLUE, rect) #pygame 1.9.4 has not width=1 param
 
             if self.positionY>=len(self.keys) and self.positionX > 4:
                 self.positionX = 4
@@ -142,8 +142,8 @@ class Keyboard(pygame.sprite.Sprite):
             if x==self.positionX and 3 == self.positionY:
                 #draw selector
                 rect2 = image.get_rect(x=10+(30*x*2), y=30*3)
-                pygame.draw.rect(self.image, RGBColors().navy, rect2)
+                pygame.draw.rect(self.image, NAVY, rect2)
 
 
-            textsurface = self.font.render(special["name"], True, RGBColors().white)
+            textsurface = self.font.render(special["name"], True, WHITE)
             self.image.blit(textsurface, (18+(60*x), 90+10) )

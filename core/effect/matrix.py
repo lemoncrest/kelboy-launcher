@@ -1,6 +1,6 @@
 import pygame
 from core.settings import *
-from core.colorpalette import RGBColors
+from core.colors import *
 import string
 from random import choice, randint
 
@@ -67,7 +67,7 @@ class Matrix():
             if len(events) > 0:
                 exit = True
             self.clock.tick(frameRate)
-            self.surface.fill(RGBColors().black)
+            self.surface.fill(BLACK)
             self.water_fall()
             for x in range(0,int(width/self.fontSize)):
 
@@ -77,7 +77,7 @@ class Matrix():
                     self.sizes[x] += 1
                 for y in range(0,int(height/self.fontSize)):
                     if y >= self.fall[x] and size>0:
-                        txt = self.font.render(self.randomString[y], True,RGBColors().green)
+                        txt = self.font.render(self.randomString[y], True,GREEN)
                         self.surface.blit(txt, (x*self.fontSize, y*self.fontSize))
                         size-=1
 

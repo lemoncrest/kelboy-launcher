@@ -8,7 +8,7 @@ from core.settings import *
 from core.menu import Menu
 from core.effect.snow import SnowBall
 from core.effect.matrix import Matrix
-from core.colorpalette import *
+from core.colors import *
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
@@ -24,7 +24,6 @@ class Main():
         pygame.mouse.set_visible(0) #hide mouse
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption('Menu')
-        self.rgb = RGBColors()
         self.clock = pygame.time.Clock()
         self.frameRate = frameRate
         self.frameCounter = 0
@@ -102,9 +101,10 @@ class Main():
         self.all_sprites.update()
 
     def draw(self):
-        self.screen.fill(self.rgb.black)
+        self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         self.menu.items.draw()
+        self.menu.dialog.draw()
 
     def run(self):
         self.screensaver = False #TODO
@@ -128,6 +128,7 @@ class Main():
             pygame.display.flip()
             if self.frameCounter == self.frameRate:
                 self.frameCounter = 0
+
 
 main = Main()
 while main.running:

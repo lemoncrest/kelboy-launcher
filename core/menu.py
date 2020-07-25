@@ -4,6 +4,8 @@ import json
 import pygame
 from core.settings import *
 from core.component.keyboard import Keyboard, KeyboardScreen
+from core.component.dialog import Dialog
+
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -16,11 +18,12 @@ class MenuBoard(pygame.sprite.Sprite):
 
     def __init__(self, game):
         self.game = game
+        self._layer = 2
         self.loadBackground()
+
 
     def loadBackground(self):
         self.groups = self.game.all_sprites
-        self._layer = 1
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.Surface((width,height))
         #self.image.fill((0,255,255))
@@ -41,12 +44,12 @@ class MenuCursor(pygame.sprite.Sprite):
         self.items = items
         self.menu = menu
         self.game = game
+        self._layer = 3
         self.loadBackground()
 
     def loadBackground(self):
         logger.debug("loading CURSOR background...")
         self.groups = self.game.all_sprites
-        self._layer = 2
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.menu.items.rect.height))
         self.image.fill((0,0,255))
@@ -138,13 +141,13 @@ class MenuCursor(pygame.sprite.Sprite):
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command':
             #command
+            pixelate(surface,True)
             os.system(self.items.items[self.selectedItem]["external"])
             effect = True
-        elif self.items.items[self.selectedItem]["action"] == 'command-exit':
+        elif self.items.items[self.selectedItem]["action"] == 'exit':
             #command
-            os.system(self.items.items[self.selectedItem]["external"])
+            pixelate(surface,True)
             sys.exit()
-            effect = True
         elif self.menu.keyboard != None:
             if self.menu.keyboard.show:
                 if self.menu.keyboard.positionY != 3:
@@ -261,9 +264,15 @@ class MenuStatus(pygame.sprite.Sprite):
 
     def __init__(self, game):
         self.game = game
+        self._layer = 3
+        self.groups = game.all_sprites
+        self.font = pygame.font.SysFont('Consolas', 20)
+        self.image = self.font.render('', False, (255,255,255))
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.rect = self.image.get_rect()
 
     def draw(self):
-
+        
         pass
 
 
@@ -274,3 +283,9 @@ class Menu(MenuBoard, MenuCursor, MenuItems):
         self.board = MenuBoard(game)
         self.items = MenuItems(self, game)
         self.cursor = MenuCursor(self, game, self.items, self.board)
+        options = [
+            {
+                "title" : "Aceptar"
+            }
+        ]
+        self.dialog = Dialog(self,game=game,title="Tests",message="dev. rev.",options=options, dialogWidth=220,dialogHeight=160)

@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-from core.colorpalette import *
+from core.colors import *
 from core.settings import *
 
 
@@ -31,7 +31,7 @@ class SnowBall():
 
         exit = False
         while not exit:
-            self.screen.fill(RGBColors().black)
+            self.screen.fill(BLACK)
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION:
                     exit = True

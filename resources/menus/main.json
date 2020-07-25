@@ -16,6 +16,10 @@
   },
   {
     "title": "Quit",
+    "action": "exit"
+  },
+  {
+    "title": "Reboot",
     "action": "command",
     "external": "sudo reboot"
   }

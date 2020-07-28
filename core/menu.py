@@ -3,6 +3,7 @@ import sys
 import json
 import pygame
 from core.settings import *
+from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
 from core.component.dialog import Dialog
 
@@ -13,20 +14,17 @@ logger = logging.getLogger(__name__)
 from core.effect.pixelate import pixelate
 from core import menuaction
 
-
 class MenuBoard(pygame.sprite.Sprite):
 
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, main):
+        self.main = main
         self._layer = 2
         self.loadBackground()
 
-
     def loadBackground(self):
-        self.groups = self.game.all_sprites
+        self.groups = self.main.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.Surface((width,height))
-        #self.image.fill((0,255,255))
         self.rect = self.image.get_rect()
         self.rect.centery = height / 2
         self.rect.centerx = width / 2
@@ -36,26 +34,28 @@ class MenuBoard(pygame.sprite.Sprite):
         pygame.transform.scale(picture, (width,height))
         self.image.blit(picture, (0, 0))
 
-
 class MenuCursor(pygame.sprite.Sprite):
 
-    def __init__(self, menu, game, items, board):
+    def __init__(self, menu, main, items, board):
         self.board = board
         self.items = items
         self.menu = menu
-        self.game = game
-        self._layer = 3
+        self.main = main
+        self._layer = 2
         self.loadBackground()
 
     def loadBackground(self):
         logger.debug("loading CURSOR background...")
-        self.groups = self.game.all_sprites
+        self.groups = self.main.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.menu.items.rect.height))
-        self.image.fill((0,0,255))
+        self.image.fill(BLUE)
         self.rect = self.image.get_rect()
-        self.rect.y = self.menu.items.menu_init_y + self.rect.height
+
+        self.rect.y = height / 2 - ((len(self.items.items) / 2)*self.items.rect.height )
+
         self.rect.centerx = width / 2
+        logger.debug("x %s y %s" % (self.rect.x, self.rect.y))
         self.selectedItem = 0
         self.selectedItemX = 0
         self.selectedItemY = 0
@@ -79,7 +79,7 @@ class MenuCursor(pygame.sprite.Sprite):
             self.menu.keyboard.draw()
 
     def left(self):
-        if self.menu.keyboard == None:  #TODO
+        if self.menu.keyboard == None:
             self.rect.x -= 0
             self.selectedItemX -= 0
         elif self.menu.keyboard.positionX > 0:
@@ -88,13 +88,12 @@ class MenuCursor(pygame.sprite.Sprite):
 
 
     def right(self):
-        if self.menu.keyboard == None: #TODO
+        if self.menu.keyboard == None:
             self.rect.y -= 0
             self.selectedItemX -= 0
         elif self.menu.keyboard.positionX < 9:
             self.menu.keyboard.positionX += 1
             self.menu.keyboard.draw()
-
 
 
     def select(self,surface):
@@ -105,15 +104,13 @@ class MenuCursor(pygame.sprite.Sprite):
             self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
             with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                 menu = json.load(jsonMenu)
-                #for i in range(0,len(self.items.items)):
-                #    self.up()
-                self.items.items = menu
-                #reset trick avoid commented for loop
-                self.rect.y = self.menu.items.menu_init_y + self.rect.height
-                self.selectedItem = 0
-                self.menu.keyboard = None
-                self.board.loadBackground()
-                self.loadBackground()
+                #destroy sprites
+                self.board.kill()
+                self.items.kill()
+                self.kill()
+                #reload menu (rebuil sprites)
+                self.menu.load(menu)
+                #pixelate
                 effect = True
         elif self.items.items[self.selectedItem]["action"] == 'function':
             params = []
@@ -134,9 +131,9 @@ class MenuCursor(pygame.sprite.Sprite):
                         buffer = element["value"]
 
             #keyboard
-            self.menu.keyboard = Keyboard(game=self.game,buffer=buffer)
+            self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
             self.menu.keyboard.draw()
-            self.menu.keyboardScreen = KeyboardScreen(self.game)
+            self.menu.keyboardScreen = KeyboardScreen(self.main)
             self.menu.keyboardScreen.draw(buffer)
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command':
@@ -148,144 +145,159 @@ class MenuCursor(pygame.sprite.Sprite):
             #command
             pixelate(surface,True)
             sys.exit()
-        elif self.menu.keyboard != None:
-            if self.menu.keyboard.show:
-                if self.menu.keyboard.positionY != 3:
-                    if self.menu.keyboard.shift:
-                        self.menu.keyboard.last = self.menu.keyboard.mayus[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
-                    elif self.menu.keyboard.symb:
-                        self.menu.keyboard.last = self.menu.keyboard.symbols[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
-                    else:
-                        self.menu.keyboard.last = self.menu.keyboard.keys[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
-                    self.menu.keyboard.buffer += self.menu.keyboard.last
-                    logger.debug("buffer is: '%s'" % self.menu.keyboard.buffer)
-                else:
-                    logger.debug("special keys")
-                    key = self.menu.keyboard.specials[self.menu.keyboard.positionX]["name"]
-                    if key == "ENTER":
-                        buffer = self.menu.keyboard.buffer
-                        logger.info("buffer: %s" % buffer)
-                        self.menu.keyboard.kill()
-                        self.menu.keyboard = None
-                        #TODO exit with value
-                        logger.debug("return and load last menu...")
-                        menu = None
-                        with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
-                            menu = json.load(jsonMenu)
-                            for element in menu:
-                                if "name" in element and element["name"] == self.lastMenuParam:
-                                    element["value"] = buffer
-
-                        with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json"),"w") as jsonMenu:
-                            json.dump(menu, jsonMenu, indent=4, sort_keys=True)
-
-
-                        #for i in range(0,len(self.items.items)):
-                        #    self.up()
-                        self.items.items = menu
-                        #reset trick avoid commented for loop
-                        self.rect.y = self.menu.items.menu_init_y + self.rect.height
-
-                        self.selectedItem = 0
-
-                        self.all_sprites = pygame.sprite.LayeredUpdates()
-                        self.items.items = menu
-
-                        self.board.loadBackground()
-                        self.loadBackground()
-
-                        effect = True
-                    elif key == "SYMB":
-                        logger.debug("SYMB")
-                        self.menu.keyboard.symb = not self.menu.keyboard.symb
-                    elif key == "MAYUS":
-                        logger.debug("MAYUS")
-                        self.menu.keyboard.shift = not self.menu.keyboard.shift
-                    elif key == "SPACE":
-                        self.menu.keyboard.buffer += " "
-                        logger.debug("buffer with 'space' is: '%s'" % self.menu.keyboard.buffer)
-                    elif key == "EXIT":
-                        self.menu.keyboard.show = False
-                        self.menu.keyboard.kill()
-                        self.menu.keyboard = None
-
-                        logger.debug("loading last menu...")
-                        with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
-                            menu = json.load(jsonMenu)
-                            #for i in range(0,len(self.items.items)):
-                            #    self.up()
-                            self.items.items = menu
-                            #reset trick avoid commented for loop
-                            self.rect.y = self.menu.items.menu_init_y + self.rect.height
-                            self.selectedItem = 0
-
-                        self.board.loadBackground()
-                        self.loadBackground()
-
-                        effect = True
-                    else:
-                        logger.debug("WHO ARE YOU?")
-
-                if self.menu.keyboard:
-                    self.menu.keyboard.draw()
-                    self.menu.keyboardScreen.draw(self.menu.keyboard.buffer)
-                else:
-                    logger.debug("TODO... or not TODO")
+        elif self.menu.keyboard != None and self.menu.keyboard.show:
+            effect = self.manageKeyboard()
 
         if effect:
             pixelate(surface,False)
 
 
+    def manageKeyboard(self):
+        effect = False
+
+        if self.menu.keyboard.positionY != 3:
+            if self.menu.keyboard.shift:
+                self.menu.keyboard.last = self.menu.keyboard.mayus[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
+            elif self.menu.keyboard.symb:
+                self.menu.keyboard.last = self.menu.keyboard.symbols[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
+            else:
+                self.menu.keyboard.last = self.menu.keyboard.keys[self.menu.keyboard.positionY][self.menu.keyboard.positionX]
+            self.menu.keyboard.buffer += self.menu.keyboard.last
+            logger.debug("buffer is: '%s'" % self.menu.keyboard.buffer)
+        else:
+            logger.debug("special keys")
+            key = self.menu.keyboard.specials[self.menu.keyboard.positionX]["name"]
+            if key == "ENTER":
+                buffer = self.menu.keyboard.buffer
+                logger.info("buffer: %s" % buffer)
+                self.menu.keyboard.kill()
+                self.menu.keyboard = None
+                #TODO exit with value
+                logger.debug("return and load last menu...")
+                menu = None
+                with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                    menu = json.load(jsonMenu)
+                    for element in menu:
+                        if "name" in element and element["name"] == self.lastMenuParam:
+                            element["value"] = buffer
+
+                with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json"),"w") as jsonMenu:
+                    json.dump(menu, jsonMenu, indent=4, sort_keys=True)
+
+                #destroy sprites
+                self.board.kill()
+                self.items.kill()
+                self.kill()
+                #reload menu (rebuil sprites)
+                self.menu.load(menu)
+                #pixelate
+                effect = True
+
+                effect = True
+            elif key == Keyboard.SYMB:
+                logger.debug("SYMB")
+                self.menu.keyboard.symb = not self.menu.keyboard.symb
+            elif key == Keyboard.MAYUS:
+                logger.debug("MAYUS")
+                self.menu.keyboard.shift = not self.menu.keyboard.shift
+            elif key == Keyboard.SPACE:
+                self.menu.keyboard.buffer += " "
+                logger.debug("buffer with 'space' is: '%s'" % self.menu.keyboard.buffer)
+            elif key == Keyboard.EXIT:
+                self.menu.keyboard.show = False
+                self.menu.keyboard.kill()
+                self.menu.keyboard = None
+
+                logger.debug("loading last menu...")
+                with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                    menu = json.load(jsonMenu)
+                    #destroy sprites
+                    self.board.kill()
+                    self.items.kill()
+                    self.kill()
+                    #reload menu (rebuil sprites)
+                    self.menu.load(menu)
+
+                effect = True
+            else:
+                logger.debug("WHO ARE YOU?")
+
+        if self.menu.keyboard:
+            self.menu.keyboard.draw()
+            self.menu.keyboardScreen.draw(self.menu.keyboard.buffer)
+        else:
+            logger.debug("TODO... or not TODO")
+
+        return effect
+
+
+
 class MenuItems(pygame.sprite.Sprite):
 
-    def __init__(self, menu, game):
+    def __init__(self, menu, main, items):
         self.menu = menu
-        self.game = game
-        self.groups = game.all_sprites
+        self.main = main
+        self.groups = main.all_sprites
         self._layer = 3
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.items = []
+        self.items = items
         self.font = pygame.font.SysFont('Consolas', 30)
-        self.image = self.font.render('', False, (255,255,255))
+        self.image = self.font.render(' ', False, WHITE)
+
+        self.height = self.font.render('X', False, WHITE).get_rect().height
+
         self.rect = self.image.get_rect()
-        self.menu_init_y = 40
+        #self.menu_init_y = 40
         self.text_size_y = self.rect.height
 
+        self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.height * len(self.items)), pygame.SRCALPHA)
+
     def draw(self):
-        if self.menu.keyboard == None:
+        #self.image.set_alpha(0)
+        self.rect = self.image.get_rect()
+        self.rect.centery = height / 2
+        self.rect.centerx = width / 2
+
+        x = 0
+        y = 0
+        logger.debug(str(self.image))
+        if self.menu.keyboard == None and self.menu.dialog == None:
             counter = 0
             for item in self.items:
-                counter += 1
-                text_item = self.font.render(item["title"], False, (255,255,255))
+                text_item = self.font.render(item["title"], False, WHITE)
                 text_item_rect = text_item.get_rect()
-                self.game.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
+                #self.image.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
+                #self.main.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), 0 + (text_item_rect.height * counter)) )
+                self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
+                counter += 1
 
 class MenuStatus(pygame.sprite.Sprite):
 
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, main):
+        self.main = main
         self._layer = 3
-        self.groups = game.all_sprites
+        self.groups = main.all_sprites
         self.font = pygame.font.SysFont('Consolas', 20)
         self.image = self.font.render('', False, (255,255,255))
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.rect = self.image.get_rect()
 
     def draw(self):
-        
+
         pass
 
 
 class Menu(MenuBoard, MenuCursor, MenuItems):
 
-    def __init__(self, game):
-        self.status = MenuStatus(game)
-        self.board = MenuBoard(game)
-        self.items = MenuItems(self, game)
-        self.cursor = MenuCursor(self, game, self.items, self.board)
-        options = [
-            {
-                "title" : "Aceptar"
-            }
-        ]
-        self.dialog = Dialog(self,game=game,title="Tests",message="dev. rev.",options=options, dialogWidth=220,dialogHeight=160)
+    def __init__(self, main, items):
+        self.main = main
+        self.load(items)
+
+    def load(self,items):
+        self.status = MenuStatus(self.main)
+        self.board = MenuBoard(self.main)
+        self.items = MenuItems(self, self.main, items)
+        self.cursor = MenuCursor(self, self.main, self.items, self.board)
+        options = [{"title" : "Aceptar"}]
+        self.dialog = None #Dialog(self,main=main,title="Tests",message="dev. rev.",options=options, dialogWidth=220,dialogHeight=160)
+        self.keyboard = None

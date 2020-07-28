@@ -12,11 +12,11 @@ logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEB
 logger = logging.getLogger(__name__)
 
 class KeyboardScreen(pygame.sprite.Sprite):
-    def __init__(self, game):
+    def __init__(self, main):
 
         all_sprites = pygame.sprite.LayeredUpdates()
 
-        pygame.sprite.Sprite.__init__(self, game.all_sprites)
+        pygame.sprite.Sprite.__init__(self, main.all_sprites)
         self.image = pygame.Surface((width, 30))
 
         self.image.fill(NAVY)
@@ -41,7 +41,7 @@ class Keyboard(pygame.sprite.Sprite):
     ENTER = "ENTER"
     EXIT = "EXIT"
 
-    def __init__(self, game, buffer=""):
+    def __init__(self, main, buffer=""):
         self.show = True
         self.positionX = 0
         self.positionY = 0
@@ -50,11 +50,11 @@ class Keyboard(pygame.sprite.Sprite):
         self.symb = False
         self.shift = False
 
-        self.game = game
+        self.main = main
         self._layer = 6
 
-        game.all_sprites = pygame.sprite.LayeredUpdates()
-        pygame.sprite.Sprite.__init__(self, game.all_sprites)
+        main.all_sprites = pygame.sprite.LayeredUpdates()
+        pygame.sprite.Sprite.__init__(self, main.all_sprites)
         #font
         self.font = pygame.font.SysFont('Arial', 20)
         #keyboard

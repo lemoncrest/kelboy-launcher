@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 class Dialog(pygame.sprite.Sprite):
 
-    def __init__(self,menu,game,dialogWidth=0,dialogHeight=0,title="Dialog title",message="Dialog message",options=[],fontSize = 30):
+    def __init__(self,menu,main,dialogWidth=0,dialogHeight=0,title="Dialog title",message="Dialog message",options=[],fontSize = 30):
 
-        self.game = game
+        self.main = main
         self.width = dialogWidth
         self.height = dialogWidth
 
@@ -23,7 +23,7 @@ class Dialog(pygame.sprite.Sprite):
 
         self._layer = 11
 
-        self.groups = self.game.all_sprites
+        self.groups = self.main.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
 
         self.image = pygame.Surface((self.width, self.height))

@@ -143,23 +143,14 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.items.items[self.selectedItem]["action"] == 'command':
             #command
             pixelate(surface,True)
-            os.environ["SDL_VIDEODRIVER"] = "dummy"
             os.system(self.items.items[self.selectedItem]["external"])
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command-exit':
             #command and exit
             pixelate(surface,True)
-            def programCheck():
-                os.system(self.items.items[self.selectedItem]["external"])
-                while True:
-                    if not running:
-                        sys.exit(0)
-            global running
-            running = True
-            t = threading.Thread(target=programCheck)
-            t.start()
-
+            pygame.display.quit()
             pygame.quit()
+            sys.exit(0)
 
         elif self.items.items[self.selectedItem]["action"] == 'exit':
             pixelate(surface,True)

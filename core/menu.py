@@ -308,5 +308,5 @@ class Menu(MenuBoard, MenuCursor, MenuItems):
         self.items = MenuItems(self, self.main, items)
         self.cursor = MenuCursor(self, self.main, self.items, self.board)
         options = [{"title" : "Aceptar"}]
-        self.dialog = Dialog(self,main=self.main,title="Tests",message="dev. rev.",options=options, dialogWidth=220,dialogHeight=160)
+        self.dialog = Dialog(self,main=self.main,title="Tests",message="dev. rev.", dialogWidth=220,dialogHeight=160)
         self.keyboard = None

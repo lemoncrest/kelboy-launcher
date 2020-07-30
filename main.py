@@ -31,7 +31,7 @@ class Main():
         drivers = ['fbcon', 'directfb', 'svgalib']
         found = False
         pygame.init()
-
+        '''
         for driver in drivers:
             # Make sure that SDL_VIDEODRIVER is set
             if not os.getenv('SDL_VIDEODRIVER'):
@@ -43,7 +43,7 @@ class Main():
                 continue
             found = True
             break
-
+        '''
         pygame.font.init()
         pygame.mouse.set_visible(0) #hide mouse
         self.screen = pygame.display.set_mode((width, height))

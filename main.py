@@ -4,6 +4,8 @@ import time
 import pygame
 from random import randint
 
+from core.component.dialog import Dialog
+
 from core.settings import *
 from core.menu import Menu
 from core.effect.snow import SnowBall
@@ -40,6 +42,7 @@ class Main():
         with open(os.path.join("resources/menus","main.json")) as jsonMenu:
             menu = json.load(jsonMenu)
             self.menu = Menu(self, menu)
+            self.menu.dialog = Dialog(self,main=self,title="Tests",message="dev. rev.", dialogWidth=220,dialogHeight=160)
             self.menu.keyboard = None
             self.menu.lastMenu = "main"
 
@@ -103,8 +106,10 @@ class Main():
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         self.menu.items.draw()
+        self.menu.status.draw()
         if self.menu and self.menu.dialog:
             self.menu.dialog.draw()
+
 
     def run(self):
         self.screensaver = False #TODO

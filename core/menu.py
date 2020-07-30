@@ -5,7 +5,6 @@ import pygame
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
-from core.component.dialog import Dialog
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
@@ -260,6 +259,7 @@ class MenuItems(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.height * len(self.items)), pygame.SRCALPHA)
 
     def draw(self):
+        #it's need to be recalculated each time, so not put it in builder
         #self.image.set_alpha(0)
         self.rect = self.image.get_rect()
         self.rect.centery = height / 2
@@ -282,7 +282,7 @@ class MenuStatus(pygame.sprite.Sprite):
 
     def __init__(self, main):
         self.main = main
-        self._layer = 3
+        self._layer = 4
         self.groups = main.all_sprites
         self.font = pygame.font.SysFont('Consolas', 20)
         self.image = self.font.render('', False, WHITE)
@@ -307,6 +307,5 @@ class Menu(MenuBoard, MenuCursor, MenuItems):
         self.board = MenuBoard(self.main)
         self.items = MenuItems(self, self.main, items)
         self.cursor = MenuCursor(self, self.main, self.items, self.board)
-        options = [{"title" : "Aceptar"}]
-        self.dialog = Dialog(self,main=self.main,title="Tests",message="dev. rev.", dialogWidth=220,dialogHeight=160)
+        self.dialog = None
         self.keyboard = None

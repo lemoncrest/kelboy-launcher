@@ -310,10 +310,10 @@ class MenuStatus(pygame.sprite.Sprite):
             pass
         if not charging:
             if(battery>50):
-                level = "50"
-                if(battery>75):
-                    level = "75"
-                elif(battery==100):
+                level = "75"
+                if(battery<75):
+                    level = "50"
+                elif(battery>=95):
                     level = "100"
             elif battery>0:
                 level = "25"

@@ -9,7 +9,7 @@ logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEB
 logger = logging.getLogger(__name__)
 
 def saveWifiConfig(ssid='', pwd=''):
-    with open(os.path.join(os.getcwd(),"resources/menus/wifi.json")) as jsonMenu:
+    with open(os.path.join("resources/menus","wifi.json")) as jsonMenu:
         menu = json.load(jsonMenu)
         for element in menu:
             if "name" in element:

@@ -5,7 +5,6 @@ import pygame
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
-from core.component.dialog import Dialog
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
@@ -29,7 +28,7 @@ class MenuBoard(pygame.sprite.Sprite):
         self.rect.centery = height / 2
         self.rect.centerx = width / 2
         logger.debug("loading background...")
-        filename = os.path.join(os.getcwd(), "resources/graphics", "background.png")
+        filename = os.path.join("resources/graphics", "background.png")
         picture = pygame.image.load(filename)
         pygame.transform.scale(picture, (width,height))
         self.image.blit(picture, (0, 0))
@@ -99,10 +98,13 @@ class MenuCursor(pygame.sprite.Sprite):
     def select(self,surface):
         effect = False
         logger.debug(self.items.items[self.selectedItem]["action"])
-        if self.items.items[self.selectedItem]["action"] == 'menu' and self.menu.keyboard == None:
+        if self.menu.dialog != None:
+            self.menu.dialog.kill()
+            self.menu.dialos = None
+        elif self.items.items[self.selectedItem]["action"] == 'menu' and self.menu.keyboard == None:
             #reload menu with the new items
             self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
-            with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+            with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                 menu = json.load(jsonMenu)
                 #destroy sprites
                 self.board.kill()
@@ -124,7 +126,7 @@ class MenuCursor(pygame.sprite.Sprite):
             self.lastMenuParam = self.items.items[self.selectedItem]["name"]
             logger.debug("storing %s param in memory" % self.lastMenuParam)
             buffer = ""
-            with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+            with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                 menu = json.load(jsonMenu)
                 for element in menu:
                     if "name" in element and element["name"] == self.lastMenuParam:
@@ -175,7 +177,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 #TODO exit with value
                 logger.debug("return and load last menu...")
                 menu = None
-                with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                     menu = json.load(jsonMenu)
                     for element in menu:
                         if "name" in element and element["name"] == self.lastMenuParam:
@@ -209,7 +211,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.menu.keyboard = None
 
                 logger.debug("loading last menu...")
-                with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                     menu = json.load(jsonMenu)
                     #destroy sprites
                     self.board.kill()
@@ -278,9 +280,11 @@ class MenuStatus(pygame.sprite.Sprite):
         self._layer = 3
         self.groups = main.all_sprites
         self.font = pygame.font.SysFont('Consolas', 20)
-        self.image = self.font.render('', False, (255,255,255))
+        self.image = self.font.render('', False, WHITE)
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 0
 
     def draw(self):
 
@@ -299,5 +303,5 @@ class Menu(MenuBoard, MenuCursor, MenuItems):
         self.items = MenuItems(self, self.main, items)
         self.cursor = MenuCursor(self, self.main, self.items, self.board)
         options = [{"title" : "Aceptar"}]
-        self.dialog = None #Dialog(self,main=main,title="Tests",message="dev. rev.",options=options, dialogWidth=220,dialogHeight=160)
+        self.dialog = None
         self.keyboard = None

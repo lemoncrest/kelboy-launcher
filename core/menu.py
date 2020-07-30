@@ -247,7 +247,7 @@ class MenuItems(pygame.sprite.Sprite):
         self._layer = 3
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.items = items
-        self.font = pygame.font.SysFont('Consolas', 30)
+        self.font = pygame.font.SysFont('comicsansms', 30)
         self.image = self.font.render(' ', False, WHITE)
 
         self.height = self.font.render('X', False, WHITE).get_rect().height
@@ -284,7 +284,7 @@ class MenuStatus(pygame.sprite.Sprite):
         self.main = main
         self._layer = 3
         self.groups = main.all_sprites
-        self.font = pygame.font.SysFont('Consolas', 40)
+        self.font = pygame.font.SysFont('comicsansms', 40)
         self.image = pygame.Surface((width, 25))
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image.fill(BLACK)

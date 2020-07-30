@@ -299,7 +299,10 @@ class MenuStatus(pygame.sprite.Sprite):
         #draw battery
         battery = 0 #TODO extract from driver
         charging = False
-        level = "0" #"lightning-empty-help"
+        command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
+        process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+        level = int(process.stdout)
+        #level = "0" #"lightning-empty-help"
         if not charging:
             if(battery>50):
                 level = "50"

@@ -22,7 +22,28 @@ class Main():
 
     def __init__(self):
 
-        pygame.init()
+        disp_no = os.getenv("DISPLAY")
+        if disp_no:
+            print("I'm running under X display = {0}".format(disp_no))
+
+        # Check which frame buffer drivers are available
+        # Start with fbcon since directfb hangs with composite output
+        drivers = ['fbcon', 'directfb', 'svgalib']
+        found = False
+        for driver in drivers:
+            # Make sure that SDL_VIDEODRIVER is set
+            if not os.getenv('SDL_VIDEODRIVER'):
+                os.putenv('SDL_VIDEODRIVER', driver)
+            try:
+                pygame.display.init()
+            except pygame.error:
+                print('Driver: {0} failed.'.format(driver))
+                continue
+            found = True
+            break
+
+
+        #pygame.init()
         pygame.mouse.set_visible(0) #hide mouse
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption('Menu')

@@ -4,7 +4,7 @@ from core.downloadtools import downloadfile
 from core.ziptools import Ziptools
 
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 class Updater():
@@ -12,7 +12,7 @@ class Updater():
     def __init__(self):
         pass
 
-    def update(self,url='https://github.com/lemoncrest/kelboy-launcher/archive/master.zip',filename='update.zip'):
+    def update(self,url=UPLOAD_SITE,filename='update.zip'):
         logger.debug("launching update process...")
         downloadfile(url=url,fileName=filename)
         logger.debug("extracting...")

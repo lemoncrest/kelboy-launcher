@@ -7,7 +7,7 @@ from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
 
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 from core.effect.pixelate import pixelate
@@ -262,7 +262,7 @@ class MenuItems(pygame.sprite.Sprite):
 
         x = 0
         y = 0
-        logger.debug(str(self.image))
+        
         if self.menu.keyboard == None and self.menu.dialog == None:
             counter = 0
             for item in self.items:

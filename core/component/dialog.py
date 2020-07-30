@@ -21,7 +21,7 @@ class Dialog(pygame.sprite.Sprite):
         self.title = title
         self.message = message
 
-        self._layer = 11
+        self._layer = 3
 
         self.groups = self.main.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
@@ -88,9 +88,7 @@ class Dialog(pygame.sprite.Sprite):
 
         else: #draw an ok
             self.options = []
-            self.options[0] = {
-                "title" : "ok"
-            }
+            self.options.append({"title" : "ok"})
             rectangle = self.drawButton(message=self.options[0]["title"])
             self.options[0]["rectangle"] = rectangle
 

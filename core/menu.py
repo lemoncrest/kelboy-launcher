@@ -143,7 +143,7 @@ class MenuCursor(pygame.sprite.Sprite):
             pixelate(surface,True)
             os.system(self.items.items[self.selectedItem]["external"])
             effect = True
-        elif self.items.items[self.selectedItem]["action"] == 'command':
+        elif self.items.items[self.selectedItem]["action"] == 'command-exit':
             #command and exit
             pixelate(surface,True)
             os.system(self.items.items[self.selectedItem]["external"])

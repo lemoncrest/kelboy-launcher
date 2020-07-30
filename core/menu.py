@@ -316,7 +316,7 @@ class MenuStatus(pygame.sprite.Sprite):
                     level = "100"
             elif battery>0:
                 level = "25"
-        image = pygame.image.load(os.path.join("resources/graphics", "battery-"+level+".png"))
+        image = pygame.image.load(os.path.join("resources/graphics", "battery-"+str(level)+".png"))
         self.image.blit(image, (width-(image.get_rect().width*1.5),(image.get_rect().width/2)))
 
         #internet

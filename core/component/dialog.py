@@ -58,6 +58,7 @@ class Dialog(pygame.sprite.Sprite):
 
 
     def draw(self,focus=0):
+        logger.debug("draw...")
 
         self.active = True
 

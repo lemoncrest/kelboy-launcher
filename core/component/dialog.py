@@ -17,7 +17,7 @@ class Dialog(pygame.sprite.Sprite):
         self.height = dialogWidth
 
         self.padding = 10
-        self.margin = 50
+        self.margin = 25
         self.title = title
         self.message = message
 

@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class Dialog(pygame.sprite.Sprite):
 
-    def __init__(self,menu,main,dialogWidth=0,dialogHeight=0,title="Dialog title",message="Dialog message",options=[],fontSize = 30):
+    def __init__(self,menu,main,dialogWidth=0,dialogHeight=0,title="Dialog title",message="Dialog message",options=[],fontSize = 15):
 
         self.main = main
         self.width = dialogWidth

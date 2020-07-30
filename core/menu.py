@@ -282,18 +282,40 @@ class MenuStatus(pygame.sprite.Sprite):
 
     def __init__(self, main):
         self.main = main
-        self._layer = 4
+        self._layer = 3
         self.groups = main.all_sprites
-        self.font = pygame.font.SysFont('Consolas', 20)
-        self.image = self.font.render('', False, WHITE)
+        self.font = pygame.font.SysFont('Consolas', 40)
+        self.image = pygame.Surface((width, 25))
         pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image.fill(BLACK)
+        self.image.set_alpha(150)
         self.rect = self.image.get_rect()
+        self.rect.centery = self.image.get_rect().height/2
+        self.rect.centerx = width / 2
         self.rect.x = 0
         self.rect.y = 0
 
     def draw(self):
+        #draw battery
+        battery = 0 #TODO extract from driver
+        charging = False
+        level = "0" #"lightning-empty-help"
+        if not charging:
+            if(battery>50):
+                level = "50"
+                if(battery>75):
+                    level = "75"
+                elif(battery==100):
+                    level = "100"
+            elif battery>0:
+                level = "25"
+        image = pygame.image.load(os.path.join("resources/graphics", "battery-"+level+".png"))
+        self.image.blit(image, (width-(image.get_rect().width*1.5),(image.get_rect().width/2)))
 
-        pass
+        #internet
+
+        #bluetooth
+
 
 
 class Menu(MenuBoard, MenuCursor, MenuItems):

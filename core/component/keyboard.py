@@ -8,7 +8,7 @@ from core.settings import *
 from core.colors import *
 
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 class KeyboardScreen(pygame.sprite.Sprite):

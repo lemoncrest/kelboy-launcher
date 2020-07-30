@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import subprocess
 import pygame
 from core.settings import *
 from core.colors import *
@@ -247,7 +248,7 @@ class MenuItems(pygame.sprite.Sprite):
         self._layer = 3
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.items = items
-        self.font = pygame.font.Font('resources/fonts/times.ttf', 30)
+        self.font = pygame.font.Font('resources/fonts/times.ttf', FONT_SIZE)
         self.image = self.font.render(' ', False, WHITE)
 
         self.height = self.font.render('X', False, WHITE).get_rect().height
@@ -284,7 +285,7 @@ class MenuStatus(pygame.sprite.Sprite):
         self.main = main
         self._layer = 3
         self.groups = main.all_sprites
-        self.font = pygame.font.Font('resources/fonts/times.ttf', 40)
+        self.font = pygame.font.Font('resources/fonts/times.ttf', FONT_SIZE)
         self.image = pygame.Surface((width, 25))
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image.fill(BLACK)
@@ -300,9 +301,12 @@ class MenuStatus(pygame.sprite.Sprite):
         battery = 0 #TODO extract from driver
         charging = False
         command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
-        process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-        level = int(process.stdout)
-        #level = "0" #"lightning-empty-help"
+        try:
+            process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            level = int(process.stdout)
+        except:
+            level = "0" #"lightning-empty-help"
+            pass
         if not charging:
             if(battery>50):
                 level = "50"

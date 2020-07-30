@@ -5,6 +5,7 @@ import pygame
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
+from core.component.dialog import Dialog
 
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
@@ -61,7 +62,7 @@ class MenuCursor(pygame.sprite.Sprite):
         self.menu.keyboard = None
 
     def down(self):
-        if self.menu.keyboard == None and self.selectedItem < len(self.menu.items.items) - 1:
+        if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem < len(self.menu.items.items) - 1:
             self.rect.y += self.rect.height
             self.selectedItem += 1
         elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
@@ -70,7 +71,7 @@ class MenuCursor(pygame.sprite.Sprite):
 
 
     def up(self):
-        if self.menu.keyboard == None and self.selectedItem != 0:
+        if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem != 0:
             self.rect.y -= self.rect.height
             self.selectedItem -= 1
         elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
@@ -100,7 +101,7 @@ class MenuCursor(pygame.sprite.Sprite):
         logger.debug(self.items.items[self.selectedItem]["action"])
         if self.menu.dialog != None:
             self.menu.dialog.kill()
-            self.menu.dialos = None
+            self.menu.dialog = None
         elif self.items.items[self.selectedItem]["action"] == 'menu' and self.menu.keyboard == None:
             #reload menu with the new items
             self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
@@ -267,7 +268,7 @@ class MenuItems(pygame.sprite.Sprite):
         x = 0
         y = 0
 
-        if self.menu.keyboard == None and self.menu.dialog == None:
+        if self.menu.keyboard == None:
             counter = 0
             for item in self.items:
                 text_item = self.font.render(item["title"], False, WHITE)
@@ -307,5 +308,5 @@ class Menu(MenuBoard, MenuCursor, MenuItems):
         self.items = MenuItems(self, self.main, items)
         self.cursor = MenuCursor(self, self.main, self.items, self.board)
         options = [{"title" : "Aceptar"}]
-        self.dialog = None
+        self.dialog = Dialog(self,main=self.main,title="Tests",message="dev. rev.",options=options, dialogWidth=220,dialogHeight=160)
         self.keyboard = None

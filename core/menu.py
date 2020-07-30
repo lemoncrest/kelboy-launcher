@@ -303,9 +303,9 @@ class MenuStatus(pygame.sprite.Sprite):
         command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
         try:
             process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            level = int(process.stdout)
+            battery = int(process.stdout)
         except:
-            level = "0" #"lightning-empty-help"
+            battery = "0" #"lightning-empty-help"
             pass
         if not charging:
             if(battery>50):

@@ -7,7 +7,7 @@ frameRate = 60
 margin = 10
 
 screensaverTime = 60000 #milliseconds
-
+FONT_SIZE = 20
 LOG_PATH = "/tmp/"
 LOG_FILE = "log.txt"
 WPA_SUPPLICANT = '/etc/wpa_supplicant/wpa_supplicant.conf'

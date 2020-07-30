@@ -28,7 +28,7 @@ class Dialog(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(NAVY)
-        self.font = pygame.font.SysFont('Arial', fontSize)
+        self.font = pygame.font.Font('resources/fonts/times.ttf', fontSize)
 
         self.rect = self.image.get_rect()
         self.rect.centery = height / 2

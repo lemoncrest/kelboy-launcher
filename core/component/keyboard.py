@@ -22,7 +22,7 @@ class KeyboardScreen(pygame.sprite.Sprite):
         self.image.fill(NAVY)
         self.rect = self.image.get_rect()
         self.rect.center = (width / 2,height/4)
-        self.font = pygame.font.SysFont('Consola', 30)
+        self.font = pygame.font.Font('resources/fonts/times.ttf', 30)
 
     def draw(self,text):
         self.image.fill(BLUE)

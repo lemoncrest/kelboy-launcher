@@ -21,10 +21,10 @@ class Bluetooth():
         self.child.send(command + "\n")
         logger.debug("command sent")
         time.sleep(pause)
-        start_failed = self.child.expect(["bluetooth", pexpect.EOF])
+        start_failed = self.child.expect("[bluetooth]#")
         logger.debug(str(start_failed))
         if start_failed:
-            logger.error("ERROR in command %s" % command)
+            logger.debug("ERROR in command %s" % command)
             raise Exception("Bluetoothctl failed after running " + command)
 
         return self.child.before.split("\r\n")

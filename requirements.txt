@@ -1,3 +1,4 @@
 pygame==1.9.4
 #numpy
-pybluez
+#pybluez #python3-bluez
+pexpect #python3-pexpect

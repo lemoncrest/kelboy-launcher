@@ -51,3 +51,6 @@ def saveWifiConfig(ssid='', pwd=''):
     #output, err = p.communicate()
     #p.wait()
     self.is_connecting = True
+
+def connectToBluetooth():
+    pass

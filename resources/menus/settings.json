@@ -4,9 +4,13 @@
     "action": "menu",
     "external": "wifi"
   },{
+    "title": "Bluetooth",
+    "action": "menu",
+    "external": "bluetooth"
+  },{
     "title": "Brightness",
     "action": "menu",
-    "external": "TODO"
+    "external": "main"
   },
   {
     "title": "Back",

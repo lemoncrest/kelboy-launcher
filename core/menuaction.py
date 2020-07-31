@@ -60,7 +60,7 @@ def connectToBluetooth():
     logger.debug("Scanning for 10 seconds...")
     devices = bl.scan_devices()
     target = None #"34:DF:2A:66:66:22"
-    for deviceName,deviceValue as devices:
+    for deviceName,deviceValue in devices:
         if deviceName == 'AKG N700NCM2': #AKG N700NCM2
             target = deviceValue
     #pair

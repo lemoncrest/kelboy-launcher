@@ -17,14 +17,17 @@ class Bluetooth():
 
     def get_output(self, command, pause = 0):
         """Run a command in bluetoothctl prompt, return output as a list of lines."""
+        logger.debug(command)
         self.child.send(command + "\n")
+        logger.debug("command sent")
         time.sleep(pause)
         start_failed = self.child.expect(["bluetooth", pexpect.EOF])
-
+        logger.debug(str(start_failed))
         if start_failed:
+            logger.error("ERROR in command %s" % command)
             raise Exception("Bluetoothctl failed after running " + command)
 
-        return str(self.child.before).split("\r\n")
+        return self.child.before.split("\r\n")
 
     def start_scan(self):
         """Start bluetooth scanning process."""

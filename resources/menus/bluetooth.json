@@ -1,0 +1,13 @@
+[
+  {
+      "action": "function",
+      "external": "connectToBluetooth",
+      "params": [ ],
+      "title": "Connect to..."
+  },
+  {
+    "title": "Back",
+    "action": "menu",
+    "external": "settings"
+  }
+]

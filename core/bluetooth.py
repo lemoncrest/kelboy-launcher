@@ -38,13 +38,10 @@ class Bluetooth():
 
                 logger.debug("using line %s " % line)
 
-                name = line[line.find("[")+1:]
-                name = name[:name.find("]")]
+                name = line.split('Device ')[1].split(' ')[1]
+                address = line.split('m[')[1].split(']')[0]
 
-                address = line[line.find("Device ")+len("Device "):]
-                address = address[:address.find(" ")]
-
-                logger.debug("adding to list: %s %s" % (name,address))
+                logger.debug("name: %s address: %s" % (name,address))
 
                 device = {}
                 device["name"] = name

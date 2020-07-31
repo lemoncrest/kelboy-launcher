@@ -65,7 +65,7 @@ def connectToBluetooth():
             target = deviceValue
             logger.debug("found target %s %s " % (target,deviceName))
         else:
-            loger.debug("discarting  %s %s " % (deviceValue,deviceName))
+            logger.debug("discarting  %s %s " % (deviceValue,deviceName))
 
     if target != None:
         logger.debug("pairing...")

@@ -8,157 +8,59 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-"""A wrapper for bluetoothctl utility."""
+"""
+A wrapper for bluetoothctl utility.
+
+In raspberry pi needs package:
+
+sudo apt install pulseaudio-module-bluetooth
+
+"""
 class Bluetooth():
 
     def __init__(self):
         out = subprocess.check_output("rfkill unblock bluetooth", shell = True)
-        self.child = pexpect.spawn("bluetoothctl", echo = False)
+        self.launch()
 
-    def get_output(self, command, pause = 3):
-        """Run a command in bluetoothctl prompt, return output as a list of lines."""
-        logger.debug(command)
-        self.child.send(command + "\n")
-        logger.debug("command sent")
-        time.sleep(pause)
-        start_failed = self.child.expect(["bluetooth", pexpect.EOF])
-        logger.debug(str(start_failed))
-        if start_failed:
-            logger.error("ERROR in command %s")
-            raise Exception("Bluetoothctl failed after running " + command)
+    def launch(self):
+        self.child = pexpect.spawn("bluetoothctl")
 
-        return self.child.before.split("\r\n")
+    def scan_devices(self,wait=10):
+        devices = []
+        self.child.sendline('scan on')
+        time.sleep(wait)
+        self.child.sendline('scan off')
+        line = self.child.readline()
+        while b'scan off' not in line:
+            if b'Device' in line:
+                line = str(line.replace(b"\r\n", b'')).strip("b'").strip("'")
+                address, name = line.split('Device ')[1].split(' ', 1)
+                device["name"] = name
+                device["address"] = address
+                devices.append(device)
+            line = self.child.readline()
+        return devices
 
-    def start_scan(self):
-        """Start bluetooth scanning process."""
-        try:
-            out = self.get_output("scan on")
-        except Exception as e:
-            logger.debug(e)
-            return None
+    def trust_device(self,address):
+        self.child.sendline('agent off')
+        time.sleep(0.2)
+        self.child.sendline('pairable on')
+        time.sleep(0.2)
+        self.child.sendline('agent NoInputNoOutput')
+        time.sleep(0.2)
+        self.child.sendline('default-agent')
+        time.sleep(0.2)
+        self.connect(address)
+        time.sleep(0.2)
+        self.pair(address)
+        time.sleep(0.5)
+        self.child.sendline('trust %s' % address)
 
-    def make_discoverable(self):
-        """Make device discoverable."""
-        try:
-            out = self.get_output("discoverable on")
-        except Exception as e:
-            logger.debug(e)
-            return None
+    def pair(self,address):
+        self.child.sendline('pair %s' % address)
 
-    def parse_device_info(self, info_string):
-        """Parse a string corresponding to a device."""
-        device = {}
-        block_list = ["[\x1b[0;", "removed"]
-        string_valid = not any(keyword in info_string for keyword in block_list)
+    def connect(self,address):
+        self.child.sendline('connect %s' % address)
 
-        if string_valid:
-            try:
-                device_position = info_string.index("Device")
-            except ValueError:
-                pass
-            else:
-                if device_position > -1:
-                    attribute_list = info_string[device_position:].split(" ", 2)
-                    device = {
-                        "mac_address": attribute_list[1],
-                        "name": attribute_list[2]
-                    }
-
-        return device
-
-    def get_available_devices(self):
-        """Return a list of tuples of paired and discoverable devices."""
-        try:
-            out = self.get_output("devices")
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            available_devices = []
-            for line in out:
-                device = self.parse_device_info(line)
-                if device:
-                    available_devices.append(device)
-
-            return available_devices
-
-    def get_paired_devices(self):
-        """Return a list of tuples of paired devices."""
-        try:
-            out = self.get_output("paired-devices")
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            paired_devices = []
-            for line in out:
-                device = self.parse_device_info(line)
-                if device:
-                    paired_devices.append(device)
-
-            return paired_devices
-
-    def get_discoverable_devices(self):
-        """Filter paired devices out of available."""
-        available = self.get_available_devices()
-        paired = self.get_paired_devices()
-
-        return [d for d in available if d not in paired]
-
-    def get_device_info(self, mac_address):
-        """Get device info by mac address."""
-        try:
-            out = self.get_output("info " + mac_address)
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            return out
-
-    def pair(self, mac_address):
-        """Try to pair with a device by mac address."""
-        try:
-            out = self.get_output("pair " + mac_address, 4)
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            res = self.child.expect(["Failed to pair", "Pairing successful", pexpect.EOF])
-            success = True if res == 1 else False
-            return success
-
-    def remove(self, mac_address):
-        """Remove paired device by mac address, return success of the operation."""
-        try:
-            out = self.get_output("remove " + mac_address, 3)
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            res = self.child.expect(["not available", "Device has been removed", pexpect.EOF])
-            success = True if res == 1 else False
-            return success
-
-    def connect(self, mac_address):
-        """Try to connect to a device by mac address."""
-        try:
-            out = self.get_output("connect " + mac_address, 2)
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            res = self.child.expect(["Failed to connect", "Connection successful", pexpect.EOF])
-            success = True if res == 1 else False
-            return success
-
-    def disconnect(self, mac_address):
-        """Try to disconnect to a device by mac address."""
-        try:
-            out = self.get_output("disconnect " + mac_address, 2)
-        except Exception as e:
-            logger.debug(e)
-            return None
-        else:
-            res = self.child.expect(["Failed to disconnect", "Successful disconnected", pexpect.EOF])
-            success = True if res == 1 else False
-            return success
+    def exit(self):
+        self.child.sendline('exit')

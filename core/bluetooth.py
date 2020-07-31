@@ -35,6 +35,7 @@ class Bluetooth():
             if b'Device' in line:
                 line = str(line.replace(b"\r\n", b'')).strip("b'").strip("'")
                 address, name = line.split('Device ')[1].split(' ', 1)
+                device = {}
                 device["name"] = name
                 device["address"] = address
                 devices.append(device)

@@ -27,4 +27,4 @@ chmod +x bin/*.sh
 #Bender kills all humans
 pkill -9 -x python
 #run launcher
-python3 main.py
+python3 main.py &

@@ -57,15 +57,13 @@ def saveWifiConfig(ssid='', pwd=''):
 def connectToBluetooth():
     logger.debug("Init bluetooth...")
     bl = Bluetooth()
-    logger.debug("Ready!")
-    bl.start_scan()
     logger.debug("Scanning for 10 seconds...")
-    for i in range(0, 10):
-        logger.debug(i)
-        time.sleep(1)
-
-    logger.debug(bl.get_discoverable_devices())
+    devices = bl.scan_devices()
+    target = None #"34:DF:2A:66:66:22"
+    for deviceName,deviceValue as devices:
+        if deviceName == 'AKG N700NCM2': #AKG N700NCM2
+            target = deviceValue
     #pair
-    pair("34:DF:2A:66:66:22") #AKG N700NCM2
+    bl.pair(target)
     #connect
-    connect("34:DF:2A:66:66:22")
+    bl.connect(target)

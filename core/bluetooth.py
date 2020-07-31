@@ -30,7 +30,7 @@ class Bluetooth():
         """Start bluetooth scanning process."""
         try:
             out = self.get_output("scan on")
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
 
@@ -38,7 +38,7 @@ class Bluetooth():
         """Make device discoverable."""
         try:
             out = self.get_output("discoverable on")
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
 
@@ -67,7 +67,7 @@ class Bluetooth():
         """Return a list of tuples of paired and discoverable devices."""
         try:
             out = self.get_output("devices")
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:
@@ -83,7 +83,7 @@ class Bluetooth():
         """Return a list of tuples of paired devices."""
         try:
             out = self.get_output("paired-devices")
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:
@@ -106,7 +106,7 @@ class Bluetooth():
         """Get device info by mac address."""
         try:
             out = self.get_output("info " + mac_address)
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:
@@ -116,7 +116,7 @@ class Bluetooth():
         """Try to pair with a device by mac address."""
         try:
             out = self.get_output("pair " + mac_address, 4)
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:
@@ -128,7 +128,7 @@ class Bluetooth():
         """Remove paired device by mac address, return success of the operation."""
         try:
             out = self.get_output("remove " + mac_address, 3)
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:
@@ -140,7 +140,7 @@ class Bluetooth():
         """Try to connect to a device by mac address."""
         try:
             out = self.get_output("connect " + mac_address, 2)
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:
@@ -152,7 +152,7 @@ class Bluetooth():
         """Try to disconnect to a device by mac address."""
         try:
             out = self.get_output("disconnect " + mac_address, 2)
-        except e:
+        except Exception as e:
             logger.debug(e)
             return None
         else:

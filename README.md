@@ -1,8 +1,10 @@
 # kelboy-launcher
 
-This is the official Kelboy Launcher for current board Kelboy 2.0 to be published by the community. 
+This is the official Kelboy Launcher for current board Kelboy 2.0 to be published by the community.
 
-All information related to this beautiful board is in https://shop.lemoncrest.com/index.php 
+It's licensed by GPLv3, so feel free to learn and use it not only in his target software (Kelboy 2.0).
+
+All information related to this beautiful board is in https://shop.lemoncrest.com/index.php
 
 ![alt text](https://shop.lemoncrest.com/img/p/4/2/42-large_default.jpg)
 
@@ -18,7 +20,7 @@ His resolution is 320x240 and could be edited by anybody.
 
 There are no secrets, we're opensource.
 
-Dev. by: 
+Dev. by:
 Lemoncrest SL
 
 https://lemoncrest.com

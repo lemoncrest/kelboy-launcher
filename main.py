@@ -24,7 +24,7 @@ class Main():
 
         disp_no = os.getenv("DISPLAY")
         if disp_no:
-            print("I'm running under X display = {0}".format(disp_no))
+            logger.debug("I'm running under X display = {0}".format(disp_no))
 
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
@@ -39,14 +39,15 @@ class Main():
             try:
                 pygame.display.init()
             except pygame.error:
-                print('Driver: {0} failed.'.format(driver))
+                logger.debug('Driver: {0} failed.'.format(driver))
                 continue
             found = True
             break
         '''
         pygame.font.init()
         pygame.mouse.set_visible(0) #hide mouse
-        self.screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((width, height))
+        #self.screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
         pygame.display.set_caption('Menu')
         self.clock = pygame.time.Clock()
         self.frameRate = frameRate

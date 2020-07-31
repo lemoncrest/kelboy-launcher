@@ -11,9 +11,20 @@
 #echo "launching new revision..."
 #python3 main.py &
 
+#!/bin/bash
+pid=$(ps -aux | grep -i main.py | grep python | awk '{print $2}')
+
+kill -9 $pid
+
+#previews path, should be /home/pi/
 cd ..
+#remove old code
 rm -Rf kelboy-launcher
+#clone new one
 git clone https://github.com/lemoncrest/kelboy-launcher
 cd kelboy-launcher
-chmod +x updater.sh
+chmod +x bin/*.sh
+#Bender kills all humans
+pkill -9 -x python
+#run launcher
 python3 main.py

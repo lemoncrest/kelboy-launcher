@@ -2,7 +2,7 @@
   {
     "title": "Launch Emulationstation",
     "action": "command",
-    "external": "./bin/emulationstation.sh"
+    "external": "./bin/emulationstation.sh &"
   },
   {
     "title": "Settings",
@@ -12,7 +12,7 @@
   {
     "title": "Update",
     "action": "command-exit",
-    "external": "./bin/updater.sh"
+    "external": "./bin/updater.sh &"
   },
   {
     "title": "Quit",

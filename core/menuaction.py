@@ -63,7 +63,16 @@ def connectToBluetooth():
     for deviceName,deviceValue in devices:
         if deviceName == 'AKG N700NCM2': #AKG N700NCM2
             target = deviceValue
-    #pair
-    bl.pair(target)
-    #connect
-    bl.connect(target)
+            logger.debug("found target %s %s " % (target,deviceName))
+        else:
+            loger.debug("discarting  %s %s " % (deviceValue,deviceName))
+
+    if target != None:
+        logger.debug("pairing...")
+        #pair
+        bl.pair(target)
+        logger.debug("connecting...")
+        #connect
+        bl.connect(target)
+    else:
+        logger.debug("not found, not connected")

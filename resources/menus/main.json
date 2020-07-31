@@ -1,7 +1,7 @@
 [
   {
     "title": "Launch Emulationstation",
-    "action": "command",
+    "action": "command-exit",
     "external": "./bin/emulationstation.sh &"
   },
   {

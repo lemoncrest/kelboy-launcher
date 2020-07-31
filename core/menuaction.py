@@ -4,7 +4,7 @@ import json
 import logging
 import subprocess
 
-import bluetooth
+from core.bluetooth import Bluetooth
 
 from core.settings import *
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
@@ -55,7 +55,17 @@ def saveWifiConfig(ssid='', pwd=''):
     self.is_connecting = True
 
 def connectToBluetooth():
-    nearby_devices = bluetooth.discover_devices(lookup_names=True)
-    logger.debug("Found {} devices.".format(len(nearby_devices)))
-    for addr, name in nearby_devices:
-        logger.debug("  {} - {}".format(addr, name))
+    logger.debug("Init bluetooth...")
+    bl = Bluetooth()
+    logger.debug("Ready!")
+    bl.start_scan()
+    logger.debug("Scanning for 10 seconds...")
+    for i in range(0, 10):
+        logger.debug(i)
+        time.sleep(1)
+
+    logger.debug(bl.get_discoverable_devices())
+    #pair
+    pair("34:DF:2A:66:66:22") #AKG N700NCM2
+    #connect
+    connect("34:DF:2A:66:66:22")

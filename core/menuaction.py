@@ -4,6 +4,9 @@ import json
 import logging
 import subprocess
 
+from bluetool import Bluetooth
+
+
 from core.settings import *
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -53,4 +56,8 @@ def saveWifiConfig(ssid='', pwd=''):
     self.is_connecting = True
 
 def connectToBluetooth():
-    pass
+    bluetooth = Bluetooth()
+    bluetooth.scan()
+    devices = bluetooth.get_available_devices()
+    #TODO now put it in a menu
+    logger.debug(str(devices))

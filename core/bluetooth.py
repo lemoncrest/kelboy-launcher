@@ -24,7 +24,7 @@ class Bluetooth():
         if start_failed:
             raise Exception("Bluetoothctl failed after running " + command)
 
-        return self.child.before.split("\r\n")
+        return str(self.child.before).split("\r\n")
 
     def start_scan(self):
         """Start bluetooth scanning process."""

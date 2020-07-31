@@ -15,16 +15,16 @@ class Bluetooth():
         out = subprocess.check_output("rfkill unblock bluetooth", shell = True)
         self.child = pexpect.spawn("bluetoothctl", echo = False)
 
-    def get_output(self, command, pause = 0):
+    def get_output(self, command, pause = 3):
         """Run a command in bluetoothctl prompt, return output as a list of lines."""
         logger.debug(command)
         self.child.send(command + "\n")
         logger.debug("command sent")
         time.sleep(pause)
-        start_failed = self.child.expect("[bluetooth]#")
+        start_failed = self.child.expect(["bluetooth", pexpect.EOF])
         logger.debug(str(start_failed))
         if start_failed:
-            logger.debug("ERROR in command %s" % command)
+            logger.error("ERROR in command %s")
             raise Exception("Bluetoothctl failed after running " + command)
 
         return self.child.before.split("\r\n")

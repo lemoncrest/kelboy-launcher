@@ -71,6 +71,7 @@ def scanBluetoothDevices():
         element["action"] = 'connectBluetooth'
         menu.append(element)
     #back
+    element = {}
     element["title"] = "Back"
     element["action"] = 'menu'
     element["external"] = 'settings'

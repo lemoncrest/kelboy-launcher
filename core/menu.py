@@ -117,12 +117,24 @@ class MenuCursor(pygame.sprite.Sprite):
                 #pixelate
                 effect = True
         elif self.items.items[self.selectedItem]["action"] == 'function':
+            #loading effect...
+            pixelate(self.main.screen,True)
             params = []
             funct = self.items.items[self.selectedItem]["external"]
             logger.debug("function %s",funct)
             #now call to function with params
             dynamicMethod = getattr(menuaction, funct)
-            dynamicMethod()
+            menu = dynamicMethod()
+            if menu:
+                #destroy sprites
+                self.board.kill()
+                self.items.kill()
+                self.kill()
+                #reload menu (rebuil sprites)
+                self.menu.load(menu)
+                #pixelate
+                effect = True
+
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
             #save last param name
             self.lastMenuParam = self.items.items[self.selectedItem]["name"]

@@ -54,6 +54,27 @@ def saveWifiConfig(ssid='', pwd=''):
     #p.wait()
     self.is_connecting = True
 
+def scanBluetoothDevices():
+    logger.debug("Init bluetooth...")
+    bl = Bluetooth()
+    logger.debug("Scanning for 10 seconds...")
+    devices = bl.scan_devices()
+    menu = []
+    #now put in a list...
+    for device in devices:
+        deviceName = device["name"]
+        deviceValue = device["address"]
+        element = {}
+        element["title"] = deviceValue
+        element["action"] = 'connectBluetooth'
+        menu.append(element)
+    #back
+    element["title"] = "Back"
+    element["action"] = 'menu'
+    element["external"] = 'settings'
+    menu.append(element)
+    return menu
+
 def connectToBluetooth():
     logger.debug("Init bluetooth...")
     bl = Bluetooth()

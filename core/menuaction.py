@@ -58,8 +58,9 @@ def scanBluetoothDevices():
     logger.debug("Init bluetooth...")
     bl = Bluetooth()
     logger.debug("Scanning for 10 seconds...")
-    devices = bl.scan_devices()
-    bl.exit()
+    devices = bl.get_devices()
+    #devices = bl.scan_devices()
+    #bl.exit()
     menu = []
     #now put in a list...
     for device in devices:

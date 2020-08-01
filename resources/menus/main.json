@@ -22,5 +22,10 @@
     "title": "Reboot",
     "action": "command",
     "external": "sudo reboot"
+  },
+  {
+    "title": "Shutdown",
+    "action": "command",
+    "external": "sudo shutdown -h now"
   }
 ]

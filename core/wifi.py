@@ -21,7 +21,7 @@ class Wifi():
         output = process.stdout
         networks = []
         for line in output.split("/n"):
-            if '""' not in line:
+            if '""' not in line and '"' in line:
                 logger.debug("using line %s " % line)
                 name = line.split('"')[1].split('"')[0]
                 network = {}

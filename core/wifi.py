@@ -19,6 +19,7 @@ class Wifi():
         process = subprocess.run(self.command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
         time.sleep(wait)
         output = process.stdout
+        logger.debug("output is: %s" % output)
         networks = []
         for line in output.split("/n"):
             if '""' not in line and '"' in line:

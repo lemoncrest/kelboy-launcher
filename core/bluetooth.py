@@ -31,7 +31,7 @@ class Bluetooth():
             logger.debug("  {} - {}".format(addr, name))
             device = {}
             device["name"] = name
-            device["address"] = address
+            device["address"] = addr
             devices.append(device)
         return devices
 

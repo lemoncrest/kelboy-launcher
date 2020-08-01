@@ -27,6 +27,8 @@ class Wifi():
                 network = {}
                 network["name"] = name
                 networks.append(network)
+            else:
+                logger.debug("discarting line: %s" % (line))
         return networks
 
     def buildWpaSupplicantAndConnect(self,ssid,pwd):

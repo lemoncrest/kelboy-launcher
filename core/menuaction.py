@@ -78,7 +78,7 @@ def scanBluetoothDevices():
     menu.append(element)
     return menu
 
-def connectToBluetooth():
+def connectBluetooth():
     logger.debug("Init bluetooth...")
     bl = Bluetooth()
     logger.debug("Scanning for 10 seconds...")

@@ -42,7 +42,7 @@ def scanWifi(params=[]):
     for network in networks:
         networkName = network["name"]
         element = {}
-        element["title"] = "%s" % (deviceName)
+        element["title"] = "%s" % (networkName)
         element["action"] = 'saveWifiConfig'
         element["params"] = [{
             'ssid': element["title"]

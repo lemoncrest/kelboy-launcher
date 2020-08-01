@@ -30,7 +30,7 @@ class MenuBoard(pygame.sprite.Sprite):
         self.rect.centery = height / 2
         self.rect.centerx = width / 2
         logger.debug("loading background...")
-        filename = os.path.join("resources/graphics", "background.png")
+        filename = os.path.join("resources/graphics", BACKGROUND_PICTURE)
         picture = pygame.image.load(filename)
         pygame.transform.scale(picture, (width,height))
         self.image.blit(picture, (0, 0))
@@ -53,7 +53,11 @@ class MenuCursor(pygame.sprite.Sprite):
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
 
-        self.rect.y = height / 2 - ((len(self.items.items) / 2)*self.items.rect.height )
+        lenItems = len(self.items.items)
+        if lenItems> MAX_MENU_ITEMS:
+            lenItems = MAX_MENU_ITEMS
+
+        self.rect.y = height / 2 - ((lenItems / 2)*self.items.rect.height )
 
         self.rect.centerx = width / 2
         logger.debug("x %s y %s" % (self.rect.x, self.rect.y))
@@ -64,7 +68,8 @@ class MenuCursor(pygame.sprite.Sprite):
 
     def down(self):
         if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem < len(self.menu.items.items) - 1:
-            self.rect.y += self.rect.height
+            if self.selectedItem<MAX_MENU_ITEMS-2:
+                self.rect.y += self.rect.height
             self.selectedItem += 1
         elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
             self.menu.keyboard.positionY += 1
@@ -73,7 +78,8 @@ class MenuCursor(pygame.sprite.Sprite):
 
     def up(self):
         if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem != 0:
-            self.rect.y -= self.rect.height
+            if self.selectedItem<MAX_MENU_ITEMS:
+                self.rect.y -= self.rect.height
             self.selectedItem -= 1
         elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
             self.menu.keyboard.positionY -= 1
@@ -274,12 +280,15 @@ class MenuItems(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         #self.menu_init_y = 40
         self.text_size_y = self.rect.height
-
-        self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.height * len(self.items)), pygame.SRCALPHA)
+        lenItems = len(self.items)
+        #too much items in a list, needs to be recalculated
+        if lenItems>MAX_MENU_ITEMS:
+            lenItems = MAX_MENU_ITEMS
+        self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.height * lenItems), pygame.SRCALPHA)
 
     def draw(self):
         #it's need to be recalculated each time, so not put it in builder
-        #self.image.set_alpha(0)
+        self.image.fill((255, 255, 255, 0), None) #clean menu
         self.rect = self.image.get_rect()
         self.rect.centery = height / 2
         self.rect.centerx = width / 2
@@ -289,13 +298,29 @@ class MenuItems(pygame.sprite.Sprite):
 
         if self.menu.keyboard == None:
             counter = 0
+            counterNew = 0
             for item in self.items:
+
                 text_item = self.font.render(item["title"], False, WHITE)
                 text_item_rect = text_item.get_rect()
                 #self.image.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
                 #self.main.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), 0 + (text_item_rect.height * counter)) )
-                self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
+                index = self.menu.cursor.selectedItem
+                if len(self.items)<MAX_MENU_ITEMS:
+                    self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
+                else:
+                    if index<MAX_MENU_ITEMS-1:
+                        self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
+                    else:
+                        if index-MAX_MENU_ITEMS<counter-1 and counterNew<MAX_MENU_ITEMS:
+                            self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counterNew*self.height ))
+                            counterNew+=1
+                            logger.debug("writting %s with %s and %s with %s" % (item["title"],str(counter),str(counterNew),str(index)))
+                        else:
+                            logger.debug("discarting %s" % str(counter))
+
                 counter += 1
+
 
 class MenuStatus(pygame.sprite.Sprite):
 

@@ -198,7 +198,7 @@ class MenuCursor(pygame.sprite.Sprite):
         else:
             logger.debug("special keys")
             key = self.menu.keyboard.specials[self.menu.keyboard.positionX]["name"]
-            if key == "ENTER":
+            if key == Keyboard.ENTER:
                 buffer = self.menu.keyboard.buffer
                 logger.info("buffer: %s" % buffer)
                 self.menu.keyboard.kill()
@@ -234,6 +234,9 @@ class MenuCursor(pygame.sprite.Sprite):
             elif key == Keyboard.SPACE:
                 self.menu.keyboard.buffer += " "
                 logger.debug("buffer with 'space' is: '%s'" % self.menu.keyboard.buffer)
+            elif key == Keyboard.BACK:
+                self.menu.keyboard.buffer = self.menu.keyboard.buffer[:len(self.menu.keyboard.buffer)-1]
+                logger.debug("buffer BACKED is: '%s'" % self.menu.keyboard.buffer)
             elif key == Keyboard.EXIT:
                 self.menu.keyboard.show = False
                 self.menu.keyboard.kill()

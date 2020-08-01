@@ -22,7 +22,7 @@ class KeyboardScreen(pygame.sprite.Sprite):
         self.image.fill(NAVY)
         self.rect = self.image.get_rect()
         self.rect.center = (width / 2,height/4)
-        self.font = pygame.font.Font('resources/fonts/times.ttf', FONT_SIZE)
+        self.font = pygame.font.Font(FONT_TYPE, FONT_SIZE)
 
     def draw(self,text):
         self.image.fill(BLUE)
@@ -35,11 +35,12 @@ class KeyboardScreen(pygame.sprite.Sprite):
 
 class Keyboard(pygame.sprite.Sprite):
 
-    MAYUS = "MAYUS"
-    SYMB = "SYMB"
-    SPACE = "SPACE"
-    ENTER = "ENTER"
-    EXIT = "EXIT"
+    MAYUS = "MAY"
+    SYMB = "SYM"
+    SPACE = "SPA"
+    ENTER = "ENT"
+    BACK = "BCK"
+    EXIT = "EXT"
 
     def __init__(self, main, buffer=""):
         self.show = True
@@ -56,7 +57,7 @@ class Keyboard(pygame.sprite.Sprite):
         main.all_sprites = pygame.sprite.LayeredUpdates()
         pygame.sprite.Sprite.__init__(self, main.all_sprites)
         #font
-        self.font = pygame.font.SysFont('Arial', 20)
+        self.font = pygame.font.Font(FONT_TYPE_KEYBOARD, FONT_SIZE)
         #keyboard
         self.image = pygame.Surface((width,height*0.5))
         self.image.fill(BLUE)
@@ -78,7 +79,6 @@ class Keyboard(pygame.sprite.Sprite):
             ["0","1","2","3","4","5","6","7","8","9","+"],
             ["!","\"","·","$","%","&","/","(",")","="],
             ["[","]","\\","|","@","#","<",">","?","¿"]
-            #["^","`","*","+","¨","´","{","}","<",">",""] #TODO
         ]
         self.specials = [
             {
@@ -89,6 +89,8 @@ class Keyboard(pygame.sprite.Sprite):
                 "name" : Keyboard.SPACE
             },{
                 "name" : Keyboard.ENTER
+            },{
+                "name" : Keyboard.BACK
             },{
                 "name" : Keyboard.EXIT
             }
@@ -132,18 +134,18 @@ class Keyboard(pygame.sprite.Sprite):
         for x in range(0,len(self.specials)):
 
             special = self.specials[x]
-            image = pygame.Surface((60, 30))
-            rect = image.get_rect(x=10+(60*x), y=90)
+            image = pygame.Surface((width/len(self.specials), 30))
+            rect = image.get_rect(x=(width/len(self.specials)*x), y=90)
             pygame.draw.rect(self.image, BLUE, rect) #pygame 1.9.4 has not width=1 param
 
-            if self.positionY>=len(self.keys) and self.positionX > 4:
-                self.positionX = 4
+            if self.positionY>=len(self.keys) and self.positionX > len(self.specials)-1:
+                self.positionX = len(self.specials)-1
 
             if x==self.positionX and 3 == self.positionY:
                 #draw selector
-                rect2 = image.get_rect(x=10+(30*x*2), y=30*3)
+                rect2 = image.get_rect(x=(width/len(self.specials)*x), y=30*3)
                 pygame.draw.rect(self.image, NAVY, rect2)
 
 
             textsurface = self.font.render(special["name"], True, WHITE)
-            self.image.blit(textsurface, (18+(60*x), 90+10) )
+            self.image.blit(textsurface, ((width/len(self.specials)*x), 90+10) )

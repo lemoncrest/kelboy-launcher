@@ -1,3 +1,4 @@
+import bluetooth
 import time
 import pexpect
 import subprocess
@@ -9,7 +10,7 @@ logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBU
 logger = logging.getLogger(__name__)
 
 """
-A wrapper for bluetoothctl utility.
+A wrapper for bluetoothctl utility and pybluez library.
 
 In raspberry pi needs package:
 
@@ -21,6 +22,18 @@ class Bluetooth():
     def __init__(self):
         out = subprocess.check_output("rfkill unblock bluetooth", shell = True)
         self.launch()
+
+    def get_devices(self):
+        nearby_devices = bluetooth.discover_devices(lookup_names=True)
+        logger.debug("Found {} devices.".format(len(nearby_devices)))
+        devices = []
+        for addr, name in nearby_devices:
+            logger.debug("  {} - {}".format(addr, name))
+            device = {}
+            device["name"] = name
+            device["address"] = address
+            devices.append(device)
+        return devices
 
     def launch(self):
         self.child = pexpect.spawn("bluetoothctl")

@@ -59,6 +59,7 @@ def scanBluetoothDevices():
     bl = Bluetooth()
     logger.debug("Scanning for 10 seconds...")
     devices = bl.scan_devices()
+    bl.exit()
     menu = []
     #now put in a list...
     for device in devices:
@@ -79,17 +80,7 @@ def connectToBluetooth():
     logger.debug("Init bluetooth...")
     bl = Bluetooth()
     logger.debug("Scanning for 10 seconds...")
-    devices = bl.scan_devices()
-    target = None #"34:DF:2A:66:66:22"
-    for device in devices:
-        deviceName = device["name"]
-        deviceValue = device["address"]
-        if deviceValue == '34:DF:2A:66:66:22': #AKG N700NCM2
-            target = deviceValue
-            logger.debug("found target %s %s " % (target,deviceName))
-        else:
-            logger.debug("discarting  %s %s " % (deviceValue,deviceName))
-
+    target = "34:DF:2A:66:66:22"
     if target != None:
         logger.debug("pairing...")
         #pair
@@ -99,3 +90,5 @@ def connectToBluetooth():
         bl.connect(target)
     else:
         logger.debug("not found, not connected")
+
+    bl.exit()

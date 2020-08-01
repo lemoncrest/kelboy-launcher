@@ -13,22 +13,20 @@ A wrapper for wifi.
 class Wifi():
 
     def __init__(self):
-        self.command = "iwlist wlan0 scan | awk -F ':' '/ESSID:/ {print $2;}'"
+        self.command = "sudo wlan0 wlp5s0 scan | awk -F ':' '/ESSID:/ {print $2;}'"
 
     def scan_networks(self,wait=6):
-        self.child = pexpect.spawn(self.command) #f.i.
+        process = subprocess.run(self.command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
         time.sleep(wait)
+        output = process.stdout
         networks = []
-        line = self.child.readline()
-        while b'$' not in line:
-            if b'""' not in line:
+        for line in output.split("/n"):
+            if '""' not in line:
                 logger.debug("using line %s " % line)
-                line = str(line.replace(b"\r\n", b'')).strip("b'").strip("'")
                 name = line.split('"')[1].split('"')[0]
                 network = {}
                 network["name"] = name
                 networks.append(network)
-            line = self.child.readline()
         return networks
 
     def buildWpaSupplicantAndConnect(self,ssid,pwd):

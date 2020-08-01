@@ -124,7 +124,10 @@ class MenuCursor(pygame.sprite.Sprite):
             logger.debug("function %s",funct)
             #now call to function with params
             dynamicMethod = getattr(menuaction, funct)
-            menu = dynamicMethod()
+            params = []
+            if "params" in self.items.items[self.selectedItem]:
+                params = self.items.items[self.selectedItem]["params"]
+            menu = dynamicMethod(params=params)
             if menu:
                 #destroy sprites
                 self.board.kill()

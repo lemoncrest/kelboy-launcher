@@ -11,6 +11,7 @@ logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBU
 logger = logging.getLogger(__name__)
 
 def saveWifiConfig(params=[]):
+    logger.debug("starting save wifi config...")
     ssid=''
     pwd=''
     if len(params) > 0:
@@ -43,7 +44,8 @@ def scanWifi(params=[]):
         networkName = network["name"]
         element = {}
         element["title"] = "%s" % (networkName)
-        element["action"] = 'saveWifiConfig'
+        element["action"] = "function"
+        element["external"] = 'saveWifiConfig'
         element["params"] = [{
             'ssid': element["title"]
         }]

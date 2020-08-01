@@ -1,5 +1,11 @@
 [
     {
+        "action": "function",
+        "external": "scanWifi",
+        "params": [ ],
+        "title": "Scan wifi..."
+    },
+    {
         "action": "param",
         "external": "text-config",
         "name": "ssid",

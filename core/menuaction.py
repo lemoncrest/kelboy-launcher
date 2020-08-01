@@ -5,56 +5,58 @@ import logging
 import subprocess
 
 from core.bluetooth import Bluetooth
-
+from core.wifi import Wifi
 from core.settings import *
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def saveWifiConfig(ssid='', pwd=''):
+def saveWifiConfig(params=[]):
+    ssid=''
+    pwd=''
+    if len(params) > 0:
+        element = params[0]
+        if "ssid" in element:
+            ssid = element["ssid"]
+            logger.debug("target ssid %s" % (ssid))
+
+    #read params
     with open(os.path.join("resources/menus","wifi.json")) as jsonMenu:
         menu = json.load(jsonMenu)
         for element in menu:
             if "name" in element:
-                if element["name"] == "ssid":
+                if element["name"] == "ssid" and ssid == '':
                     ssid = element["value"]
-                elif element["name"] == "pass":
+                elif element["name"] == "pass" and pwd == '':
                     pwd = element["value"]
 
     logger.debug("ssid %s and pass %s" % (ssid,pwd))
+    wifi = Wifi()
+    wifi.buildWpaSupplicantAndConnect()
 
-    line_0_default = 'country=ES'
-    line_1_default = 'ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev'
-    line_2_default = 'update_config=1'
-    ssid_fix = ssid
-    ssid_fix = ssid_fix.replace(' ', '\\ ')
-    ssid_fix = ssid_fix.replace("'", '\'')
-    pwd_fix = pwd
-    pwd_fix = pwd_fix.replace(' ', '\\ ')
-    pwd_fix = pwd_fix.replace("'", '\'')
-    process = subprocess.run('wpa_passphrase ' + ssid_fix + ' ' + pwd_fix, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-    output = process.stdout
-    logger.debug(output)
-    if 'network={' in output:
-        with open("wpa_supplicant.conf", 'w') as (myfile):
-            myfile.write(line_0_default + '\n')
-            myfile.write(line_1_default + '\n')
-            myfile.write(line_2_default + '\n')
-            myfile.write(output)
-    else:
-        with open("wpa_supplicant.conf", 'w') as (myfile):
-            myfile.write(line_0_default + '\n')
-            myfile.write(line_1_default + '\n')
-            myfile.write(line_2_default + '\n')
-    process = subprocess.run('sudo mv wpa_supplicant.conf '+WPA_SUPPLICANT, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-    output = process.stdout
-    process = subprocess.run('wpa_cli -i wlan0 reconfigure', shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-    output = process.stdout
-    #p = subprocess.Popen('wpa_cli -i wlan0 reconfigure', stdout=subprocess.PIPE, shell=True)
-    #output, err = p.communicate()
-    #p.wait()
-    self.is_connecting = True
+def scanWifi(params=[]):
+    wifi = Wifi()
+    networks = wifi.scan_networks()
+    logger.debug("found %s networks" % str(len(networks)))
+    menu = []
+    #now put in a list...
+    for network in networks:
+        networkName = network["name"]
+        element = {}
+        element["title"] = "%s" % (deviceName)
+        element["action"] = 'saveWifiConfig'
+        element["params"] = [{
+            'ssid': element["title"]
+        }]
+        menu.append(element)
+    #back
+    element = {}
+    element["title"] = "Back"
+    element["action"] = 'menu'
+    element["external"] = 'settings'
+    menu.append(element)
+    return menu
 
-def scanBluetoothDevices():
+def scanBluetoothDevices(params=[]):
     logger.debug("Init bluetooth...")
     bl = Bluetooth()
     logger.debug("Scanning for 10 seconds...")
@@ -67,8 +69,12 @@ def scanBluetoothDevices():
         deviceName = device["name"]
         deviceValue = device["address"]
         element = {}
-        element["title"] = deviceValue
+        element["title"] = "%s - %s" % (deviceValue, deviceName)
         element["action"] = 'connectBluetooth'
+        element["params"] = [{
+            'target' : device["address"],
+            'name' : device["name"]
+        }]
         menu.append(element)
     #back
     element = {}
@@ -78,16 +84,31 @@ def scanBluetoothDevices():
     menu.append(element)
     return menu
 
-def connectBluetooth():
+def connectBluetooth(params=[]):
     logger.debug("Init bluetooth...")
     bl = Bluetooth()
-    logger.debug("Scanning for 10 seconds...")
-    target = "34:DF:2A:66:66:22"
+    logger.debug("connecting...")
+    target = None
+    name = None
+    if "address" in params:
+        target = params["address"]
+    else: #search stored address
+        with open(os.path.join("resources/menus","bluetooth.json")) as jsonMenu:
+            menu = json.load(jsonMenu)
+            for element in menu:
+                if "external" in element:
+                    if element["external"] == "connectBluetooth":
+                        params = element["params"]
+                        if "target" in params:
+                            target = params["target"]
+                        if "name" in params: #TODO
+                            name = params["name"]
+
     if target != None:
-        logger.debug("pairing...")
+        logger.debug("pairing %s..." % target)
         #pair
         bl.pair(target)
-        logger.debug("connecting...")
+        logger.debug("connecting %s..." % target)
         #connect
         bl.connect(target)
     else:

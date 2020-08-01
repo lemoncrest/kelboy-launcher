@@ -1,4 +1,11 @@
 [
+
+  {
+      "action": "function",
+      "external": "scanBluetoothDevices",
+      "params": [ ],
+      "title": "Scan devices..."
+  },
   {
       "action": "function",
       "external": "connectToBluetooth",

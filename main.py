@@ -31,6 +31,7 @@ class Main():
         drivers = ['fbcon', 'directfb', 'svgalib']
         found = False
         pygame.init()
+        pygame.display.init()
         '''
         for driver in drivers:
             # Make sure that SDL_VIDEODRIVER is set

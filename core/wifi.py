@@ -13,7 +13,7 @@ A wrapper for wifi.
 class Wifi():
 
     def __init__(self):
-        self.command = "sudo wlan0 wlp5s0 scan | awk -F ':' '/ESSID:/ {print $2;}'"
+        self.command = "sudo iwlist wlan0 scan | awk -F ':' '/ESSID:/ {print $2;}'"
 
     def scan_networks(self,wait=6):
         process = subprocess.run(self.command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)

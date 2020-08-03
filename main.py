@@ -1,6 +1,9 @@
 import os
 import json
 import time
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
 import pygame
 from random import randint
 

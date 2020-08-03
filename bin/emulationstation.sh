@@ -5,4 +5,4 @@ kill -9 $pid
 
 emulationstation
 
-python3 main.py &
+python3 main.py 2>&1 &

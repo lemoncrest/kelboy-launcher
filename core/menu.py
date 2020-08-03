@@ -172,8 +172,11 @@ class MenuCursor(pygame.sprite.Sprite):
             pixelate(surface,True)
             pygame.display.quit()
             pygame.quit()
-            os.system(self.items.items[self.selectedItem]["external"])
-            sys.exit(0)
+            #os.system(self.items.items[self.selectedItem]["external"])
+            text_file = open("command", "w")
+            text_file.write(self.items.items[self.selectedItem]["external"])
+            text_file.close()
+            sys.exit(10)
         elif self.items.items[self.selectedItem]["action"] == 'exit':
             pixelate(surface,True)
             sys.exit(0)

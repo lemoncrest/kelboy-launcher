@@ -1,0 +1,12 @@
+[{
+	"title": "RomsMode",
+	"action": "function",
+	"external": "internetBrowser",
+	"params": [{
+		"webpage": "https://romsmode.com/"
+	}]
+}, {
+	"title": "Back",
+	"action": "menu",
+	"external": "roms"
+}]

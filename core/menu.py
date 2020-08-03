@@ -79,7 +79,7 @@ class MenuCursor(pygame.sprite.Sprite):
 
     def up(self):
         if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem != 0:
-            if self.selectedItem<MAX_MENU_ITEMS:
+            if self.selectedItem<MAX_MENU_ITEMS-1:
                 self.rect.y -= self.rect.height
             self.selectedItem -= 1
         elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:

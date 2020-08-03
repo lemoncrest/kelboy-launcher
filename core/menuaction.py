@@ -150,44 +150,99 @@ def loadRoms(params=[]):
 def internetBrowser(params=[]):
     menu = []
     url = ""
+    final = False
     if len(params)>0:
         for key in params:
             logger.debug("str %s" % str(key))
             if 'webpage' in key:
                 url = key["webpage"]
+            if 'final' in key:
+                final = key["final"]
     logger.debug("using url: '%s' " % url)
     if len(url)>0:
         http = urllib3.PoolManager()
+        if final:
+            logger.debug("transforming link %s to final link..." % (url))
+            url = url.replace('/roms/','/download/roms/')
         r = http.request('GET', url, preload_content=False)
         exit = False
         html = r.data.decode()
-        logger.debug(html)
         r.release_conn()
-
         if len(html)>0:
-            container = html[html.find('consoles__wrap">')+len('consoles__wrap">'):]
-            container = container[:container.find('<div class="popular-game">')]
-            i = 0
-            for line in container.split('<a href="'):
-                if i > 0:
-                    link = url+line[:line.find('"')]
-                    img = line[line.find('src="')+len('src="'):]
-                    img = img[:img.find('"')]
-                    name = line[line.find('console__name">')+len('console__name">'):]
-                    name = name[:name.find('<')]
-                    element = {}
-                    element["title"] = name
-                    element["action"] = 'menu'
-                    element["external"] = [{'webpage':link}]
-                    if len(name)>0:
-                        menu.append(element)
-                        logger.debug("%s, %s, %s" % (name,img,link) )
-                i+=1
-            element = {}
-            element["title"] = "Back"
-            element["action"] = 'menu'
-            element["external"] = 'rompages'
-            menu.append(element)
+            if not final:
+                if 'consoles__wrap' in html:
+                    logger.debug("consoles wrap")
+                    container = html[html.find('consoles__wrap">')+len('consoles__wrap">'):]
+                    container = container[:container.find('<div class="popular-game">')]
+                    i = 0
+                    for line in container.split('<a href="'):
+                        if i > 0:
+                            link = url+line[:line.find('"')]
+                            img = line[line.find('src="')+len('src="'):]
+                            img = img[:img.find('"')]
+                            name = line[line.find('console__name">')+len('console__name">'):]
+                            name = name[:name.find('<')]
+                            element = {}
+                            element["title"] = name
+                            element["action"] = 'function'
+                            element["external"] = 'internetBrowser'
+                            element["params"] = [{'webpage':link, 'final': False}]
+                            if len(name)>0:
+                                menu.append(element)
+                                logger.debug("%s, %s, %s" % (name,img,link) )
+                        i+=1
+                elif 'roms-results' in html:
+                    logger.debug("roms-results")
+                    container = html[html.find('<div id="roms-results">')+len('<div id="roms-results">'):]
+                    container = container[:container.find('</table>')]
+                    i = 0
+                    for line in container.split('<a class="link"'):
+                        if i > 0:
+                            logger.debug("inside...")
+                            link = line[line.find(' href="')+len(' href="'):]
+                            logger.debug("inside2...")
+                            link = link[:link.find('"')]
+                            logger.debug("inside3...")
+                            name = line[line.find('">')+len('">'):]
+                            logger.debug("inside4...")
+                            name = name[:name.find('<')]
+                            logger.debug("extracted info...")
+                            element = {}
+                            element["title"] = name
+                            element["action"] = 'function'
+                            element["external"] = 'internetBrowser'
+                            element["params"] = [{'webpage':link, 'final': True}]
+                            logger.debug("appending...")
+                            if len(name)>0:
+                                menu.append(element)
+                                logger.debug("%s, %s" % (link,name) )
+                            else:
+                                logger.debug("discarting one...")
+                        i+=1
+                        logger.debug(i)
+                else:
+                    logger.debug("ELSE result...")
+
+                element = {}
+                element["title"] = "Back"
+                element["action"] = 'menu'
+                element["external"] = 'rompages'
+                menu.append(element)
+            else:
+                logger.debug("final link...")
+                link = html[html.find('<a class="wait__link" href="')+len('<a class="wait__link" href="'):]
+                link = link[:link.find('"')]
+                logger.debug("final url is: %s" % (link) )
+                if 'gameboy-advance' in url: #TODO
+                    subtype = 'gba'
+
+                out = ROMS_PATH+"/"+subtype+"/"
+                element = {}
+                element["title"] = "Back"
+                element["action"] = 'command-exit'
+                element["external"] = 'wget %s -P %s' %(link,out)
+                return element
         else:
             logger.debug("empty html")
+    logger.debug("returning menu...")
     return menu

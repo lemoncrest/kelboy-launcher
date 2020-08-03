@@ -135,15 +135,28 @@ class MenuCursor(pygame.sprite.Sprite):
             if "params" in self.items.items[self.selectedItem]:
                 params = self.items.items[self.selectedItem]["params"]
             menu = dynamicMethod(params=params)
+            logger.debug(str(menu))
             if menu:
-                #destroy sprites
-                self.board.kill()
-                self.items.kill()
-                self.kill()
-                #reload menu (rebuil sprites)
-                self.menu.load(menu)
-                #pixelate
-                effect = True
+                if type(menu) is list:
+                    logger.debug('list!!')
+                    #destroy sprites
+                    self.board.kill()
+                    self.items.kill()
+                    self.kill()
+                    #reload menu (rebuil sprites)
+                    self.menu.load(menu)
+                    #pixelate
+                elif type(menu) is dict:
+                    logger.debug('dict!!')
+                    #command and exit
+                    pixelate(surface,True)
+                    pygame.display.quit()
+                    pygame.quit()
+                    #os.system(self.items.items[self.selectedItem]["external"])
+                    text_file = open("command", "w")
+                    text_file.write(menu['external'])
+                    text_file.close()
+                    sys.exit(10)
 
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
             #save last param name

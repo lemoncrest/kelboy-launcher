@@ -17,11 +17,12 @@ pid=$(ps -aux | grep -i main.py | grep python | awk '{print $2}')
 kill -9 $pid
 
 #previews path, should be /home/pi/
-cd ..
+#cd ..
 #remove old code
-rm -Rf kelboy-launcher
+#rm -Rf kelboy-launcher
 #clone new one
-git clone https://github.com/lemoncrest/kelboy-launcher
-cd kelboy-launcher
+#git clone https://github.com/lemoncrest/kelboy-launcher
+#cd kelboy-launcher
+git pull
 chmod +x bin/*.sh
 chmod +x *.sh

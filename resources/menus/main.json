@@ -1,8 +1,8 @@
 [
   {
     "title": "Roms",
-    "action": "function",
-    "external": "loadRoms"
+    "action": "menu",
+    "external": "roms"
   },{
     "title": "Programs",
     "action": "menu",

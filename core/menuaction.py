@@ -3,6 +3,7 @@ import os
 import json
 import logging
 import subprocess
+import urllib3
 
 from core.bluetooth import Bluetooth
 from core.wifi import Wifi
@@ -143,4 +144,50 @@ def loadRoms(params=[]):
     else:
         type = params["type"]
         logger.debug("selected directory is %s " % type)
+    return menu
+
+
+def internetBrowser(params=[]):
+    menu = []
+    url = ""
+    if len(params)>0:
+        for key in params:
+            logger.debug("str %s" % str(key))
+            if 'webpage' in key:
+                url = key["webpage"]
+    logger.debug("using url: '%s' " % url)
+    if len(url)>0:
+        http = urllib3.PoolManager()
+        r = http.request('GET', url, preload_content=False)
+        exit = False
+        html = r.data.decode()
+        logger.debug(html)
+        r.release_conn()
+
+        if len(html)>0:
+            container = html[html.find('consoles__wrap">')+len('consoles__wrap">'):]
+            container = container[:container.find('<div class="popular-game">')]
+            i = 0
+            for line in container.split('<a href="'):
+                if i > 0:
+                    link = url+line[:line.find('"')]
+                    img = line[line.find('src="')+len('src="'):]
+                    img = img[:img.find('"')]
+                    name = line[line.find('console__name">')+len('console__name">'):]
+                    name = name[:name.find('<')]
+                    element = {}
+                    element["title"] = name
+                    element["action"] = 'menu'
+                    element["external"] = [{'webpage':link}]
+                    if len(name)>0:
+                        menu.append(element)
+                        logger.debug("%s, %s, %s" % (name,img,link) )
+                i+=1
+            element = {}
+            element["title"] = "Back"
+            element["action"] = 'menu'
+            element["external"] = 'rompages'
+            menu.append(element)
+        else:
+            logger.debug("empty html")
     return menu

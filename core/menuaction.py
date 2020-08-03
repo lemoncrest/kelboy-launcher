@@ -233,8 +233,46 @@ def internetBrowser(params=[]):
                 link = html[html.find('<a class="wait__link" href="')+len('<a class="wait__link" href="'):]
                 link = link[:link.find('"')]
                 logger.debug("final url is: %s" % (link) )
-                if 'gameboy-advance' in url: #TODO
+                if 'gameboy-advance' in url:
                     subtype = 'gba'
+                elif 'super-nintendo' in url:
+                    subtype = 'snes'
+                elif 'nintendo-ds' in url:
+                    subtype = 'nds'
+                elif 'gameboy-color' in url:
+                    subtype = 'gbc'
+                elif 'gameboy' in url:
+                    subtype = 'gb'
+                elif 'nintendo-64' in url:
+                    subtype = 'n64'
+                elif 'nintendo' in url:
+                    subtype = 'nes'
+                elif 'playstation-portable' in url:
+                    subtype = 'psp'
+                elif 'playstation-2' in url:
+                    subtype = 'psx2'
+                elif 'playstation' in url:
+                    subtype = 'psx'
+                elif 'gamecube' in url:
+                    subtype = 'gc'
+                elif 'nintendo-wii' in url:
+                    subtype = 'wii'
+                elif 'mame' in url:
+                    subtype = 'mame'
+                elif 'dreamcast' in url:
+                    subtype = 'dreamcast'
+                elif 'sega-genesis' in url:
+                    subtype = 'genesis'
+                elif 'atari-2600' in url:
+                    subtype = 'atari2600'
+                elif 'atari-5200' in url:
+                    subtype = 'atari5200'
+                elif 'atari-7800' in url:
+                    subtype = 'atari7800'
+                elif 'neo-geo' in url:
+                    subtype = 'neogeo'
+                elif 'microsoft-xbox' in url:
+                    subtype = 'xbox'
 
                 out = ROMS_PATH+"/"+subtype+"/"
                 element = {}

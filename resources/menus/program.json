@@ -2,7 +2,7 @@
   {
     "title": "Launch Emulationstation",
     "action": "command-exit",
-    "external": "bin/emulationstation.sh &"
+    "external": "sh bin/emulationstation.sh &"
   },{
     "title": "Back",
     "action": "menu",

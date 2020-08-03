@@ -1,31 +1,19 @@
 [
   {
-    "title": "Launch Emulationstation",
-    "action": "command-exit",
-    "external": "./bin/emulationstation.sh &"
-  },
-  {
+    "title": "Roms",
+    "action": "function",
+    "external": "loadRoms"
+  },{
+    "title": "Programs",
+    "action": "menu",
+    "external": "program"
+  },{
     "title": "Settings",
     "action": "menu",
     "external": "settings"
-  },
-  {
-    "title": "Update",
-    "action": "command-exit",
-    "external": "./bin/updater.sh &"
-  },
-  {
+  },{
     "title": "Quit",
-    "action": "exit"
-  },
-  {
-    "title": "Reboot",
-    "action": "command",
-    "external": "sudo reboot"
-  },
-  {
-    "title": "Shutdown",
-    "action": "command",
-    "external": "sudo shutdown -h now"
+    "action": "menu",
+    "external": "quit"
   }
 ]

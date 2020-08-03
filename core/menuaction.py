@@ -117,3 +117,30 @@ def connectBluetooth(params=[]):
         logger.debug("not found, not connected")
 
     bl.exit()
+
+def loadRoms(params=[]):
+    menu = []
+    if "type" not in params:
+        dir= os.listdir(ROMS_PATH)
+        for directory in dir:
+            if len(os.listdir(os.path.join(ROMS_PATH,directory))) == 0:
+                logger.debug("Empty directory %s " % directory)
+            else:
+                logger.debug("Not empty directory %s, appending to list" % directory)
+                element = {}
+                element["title"] = "%s" % directory
+                element["action"] = 'loadRoms'
+                element["params"] = [{
+                    'type' : directory
+                }]
+                menu.append(element)
+        element = {}
+        element["title"] = "Back"
+        element["action"] = 'menu'
+        element["external"] = 'main'
+        menu.append(element)
+
+    else:
+        type = params["type"]
+        logger.debug("selected directory is %s " % type)
+    return menu

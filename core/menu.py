@@ -13,6 +13,7 @@ logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBU
 logger = logging.getLogger(__name__)
 
 from core.effect.pixelate import pixelate
+from core.effect.fade import fade
 from core import menuaction
 
 class MenuBoard(pygame.sprite.Sprite):
@@ -164,14 +165,14 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.items.items[self.selectedItem]["action"] == 'command':
             #command
             pixelate(self.main.screen,True)
-            os.system(self.items.items[self.selectedItem]["external"])
+            subprocess.call(self.items.items[self.selectedItem]["external"])
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command-exit':
             #command and exit
             pixelate(surface,True)
             pygame.display.quit()
             pygame.quit()
-            os.system(self.items.items[self.selectedItem]["external"])
+            subprocess.call(self.items.items[self.selectedItem]["external"])
             sys.exit(0)
         elif self.items.items[self.selectedItem]["action"] == 'exit':
             pixelate(surface,True)

@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Exit",
+    "action": "exit"
+  },
+  {
+    "title": "Reboot",
+    "action": "command",
+    "external": "sudo reboot"
+  },
+  {
+    "title": "Shutdown",
+    "action": "command",
+    "external": "sudo shutdown -h now"
+  },
+  {
+    "title": "Back",
+    "action": "menu",
+    "external": "main"
+  }
+]

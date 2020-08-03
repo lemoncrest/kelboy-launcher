@@ -1,0 +1,11 @@
+[
+  {
+    "title": "Launch Emulationstation",
+    "action": "command-exit",
+    "external": "./bin/emulationstation.sh &"
+  },{
+    "title": "Back",
+    "action": "menu",
+    "external": "main"
+  }
+]

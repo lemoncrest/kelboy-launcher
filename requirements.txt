@@ -1,4 +1,5 @@
-pygame==1.9.4
-#numpy
+pygame==1.9.4 #python3-pygame
+numpy #python3-numpy
 pybluez #python3-bluez
 pexpect #python3-pexpect
+Pillow #python3-pil

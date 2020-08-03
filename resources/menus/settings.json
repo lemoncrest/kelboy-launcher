@@ -12,10 +12,6 @@
     "action": "menu",
     "external": "main"
   },{
-    "title": "Update launcher",
-    "action": "command-exit",
-    "external": "./bin/updater.sh &"
-  },{
     "title": "Back",
     "action": "menu",
     "external": "main"

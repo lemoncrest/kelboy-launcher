@@ -4,6 +4,10 @@
     "action": "command-exit",
     "external": "emulationstation"
   },{
+    "title": "Update launcher",
+    "action": "command-exit",
+    "external": "bin/updater.sh"
+  },{
     "title": "Back",
     "action": "menu",
     "external": "main"

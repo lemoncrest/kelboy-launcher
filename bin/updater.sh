@@ -24,7 +24,4 @@ rm -Rf kelboy-launcher
 git clone https://github.com/lemoncrest/kelboy-launcher
 cd kelboy-launcher
 chmod +x bin/*.sh
-#Bender kills all humans
-pkill -9 -x python
-#run launcher
-python3 main.py &
+chmod +x *.sh

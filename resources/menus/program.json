@@ -6,7 +6,7 @@
   },{
     "title": "Update launcher",
     "action": "command-exit",
-    "external": "bin/updater.sh"
+    "external": "git pull"
   },{
     "title": "Back",
     "action": "menu",

@@ -15,7 +15,7 @@ LOG_FILE = "log.txt"
 WPA_SUPPLICANT = '/etc/wpa_supplicant/wpa_supplicant.conf'
 UPLOAD_SITE = 'https://github.com/lemoncrest/kelboy-launcher/archive/master.zip'
 MAX_MENU_ITEMS = 10
-BACKGROUND_PICTURE = "background.png"
+BACKGROUND_PICTURE = "background1920.png"
 
 ROMS_PATH = '/home/pi/RetroPie/roms'
 

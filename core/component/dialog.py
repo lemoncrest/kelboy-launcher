@@ -16,8 +16,8 @@ class Dialog(pygame.sprite.Sprite):
         self.width = dialogWidth
         self.height = dialogWidth
 
-        self.padding = 10
-        self.margin = 25
+        self.padding = 5
+        self.margin = 15
         self.title = title
         self.message = message
 
@@ -28,7 +28,7 @@ class Dialog(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((self.width, self.height))
         self.image.fill(NAVY)
-        self.font = pygame.font.Font('resources/fonts/times.ttf', fontSize)
+        self.font = pygame.font.Font(FONT_TYPE, fontSize)
 
         self.rect = self.image.get_rect()
         self.rect.centery = height / 2
@@ -54,25 +54,25 @@ class Dialog(pygame.sprite.Sprite):
         #calculate centered rectangle
         self.y = (height - self.height) / 2
 
-        self.focus_margin = 3  # TODO calculate
+        self.focus_margin = 5
 
 
     def draw(self,focus=0):
         self.active = True
 
         #now title part
-        title_height = (self.font.size(self.title)[1])+(self.padding*2)
+        title_height = (self.font.size(self.title)[1])
 
-        dialog_rect = pygame.Rect(self.padding, self.padding, self.width-(self.padding*2), title_height)
+        dialog_rect = pygame.Rect(0, 0, self.width, self.font.size(self.title)[1]*2)
         pygame.draw.rect(self.image, GRAY, dialog_rect, 0)
 
         xT = (self.width/2) - ((self.font.size(self.title)[0]) / 2)
-        yT = self.y + (title_height/2)
+        yT = title_height/2
 
         txt = self.font.render(self.title, True, BLACK)
         self.image.blit(txt, (xT, yT) )
 
-        yT2 = self.y + (self.height*2/5)
+        yT2 = (self.height*2/5)
         xT2 = (self.width/2) - ((self.font.size(self.message)[0]) / 2) #TODO, break lines
 
         txt2 = self.font.render(self.message, True, BLACK)
@@ -97,17 +97,18 @@ class Dialog(pygame.sprite.Sprite):
 
         button_width = self.font.size(message)[1] + (self.margin * 2)
 
-        xT3 = ((((self.width/2) / max)) * figure * 2) - (button_width/2) - ((((self.width/2) / max)) )
+        #xT3 = ((((self.width/2) / max)) * figure * 2) - (button_width/2) - ((((self.width/2) / max)) )
+        xT3 = self.width/2 - self.margin - (self.font.size(message)[1] / 2)
 
-        yT3 = self.y + self.height - self.button_part
-        button_rect = pygame.Rect(xT3, yT3, button_width, self.button_height)
+        yT3 = self.height - self.button_part
+        button_rect = pygame.Rect(xT3-self.padding, yT3-self.padding, button_width + self.padding*2, self.font.size(message)[1] + self.padding*2)
         pygame.draw.rect(self.image, BLACK, button_rect, 0)
 
         if focus:
-            focus_rect = pygame.Rect(xT3+self.focus_margin, yT3+self.focus_margin, button_width-(self.focus_margin*2), self.button_height-(self.focus_margin*2))
+            focus_rect = pygame.Rect(xT3-self.padding+self.focus_margin, yT3-self.padding+self.focus_margin, button_width + self.padding*2 - (self.focus_margin*2), self.font.size(message)[1] + self.padding*2 - (self.focus_margin*2))
             pygame.draw.rect(self.image, DARK_GRAY, focus_rect, 0)
 
         txtMessage = self.font.render(message, True, WHITE)
-        self.image.blit(txtMessage, (xT3-(self.font.size(message)[0]/2) + (button_width/2) , yT3-(self.font.size(message)[1]/2) + self.button_height/2) )
+        self.image.blit(txtMessage, (xT3-(self.font.size(message)[0]/2) + (button_width/2) , yT3) )
 
         return button_rect

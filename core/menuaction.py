@@ -150,6 +150,7 @@ def loadRoms(params=[]):
 def internetBrowser(params=[]):
     menu = []
     url = ""
+    text = ""
     final = False
     if len(params)>0:
         for key in params:
@@ -158,12 +159,18 @@ def internetBrowser(params=[]):
                 url = key["webpage"]
             if 'final' in key:
                 final = key["final"]
+            if 'text' in key:
+                text = key["text"]
     logger.debug("using url: '%s' " % url)
     if len(url)>0:
         http = urllib3.PoolManager()
         if final:
             logger.debug("transforming link %s to final link..." % (url))
             url = url.replace('/roms/','/download/roms/')
+        elif len(text)>0 and '%' in url:
+            logger.debug("search detected")
+            url = url % text
+            logger.debug("new url is: %s" % url)
         r = http.request('GET', url, preload_content=False)
         exit = False
         html = r.data.decode()
@@ -190,13 +197,27 @@ def internetBrowser(params=[]):
                             if len(name)>0:
                                 menu.append(element)
                                 logger.debug("%s, %s, %s" % (name,img,link) )
+                        else:
+                            #first search
+                            element = {}
+                            link = url+'search?name=%s'
+                            element["title"] = "Search"
+                            element["action"] = 'function-text'
+                            element["external"] = 'internetBrowser'
+                            element["params"] = [{'webpage':link, 'final': False}]
+                            menu.append(element)
                         i+=1
-                elif 'roms-results' in html:
-                    logger.debug("roms-results")
-                    container = html[html.find('<div id="roms-results">')+len('<div id="roms-results">'):]
+                elif 'roms-results' in html or '<h1 class="content__title">SEARCH RESULT FOR' in html:
+                    if '<h1 class="content__title">SEARCH RESULT FOR' in html:
+                        container = html[html.find('<table class="table is-large">')+len('<table class="table is-large">'):]
+                    else:
+                        logger.debug("roms-results")
+                        container = html[html.find('<div id="roms-results">')+len('<div id="roms-results">'):]
+
                     container = container[:container.find('</table>')]
+                    splitter = '<a class="link"'
                     i = 0
-                    for line in container.split('<a class="link"'):
+                    for line in container.split(splitter):
                         if i > 0:
                             logger.debug("inside...")
                             link = line[line.find(' href="')+len(' href="'):]
@@ -208,7 +229,7 @@ def internetBrowser(params=[]):
                             name = name[:name.find('<')]
                             logger.debug("extracted info...")
                             element = {}
-                            element["title"] = name
+                            element["title"] = name.replace('&#039;',"'")
                             element["action"] = 'function'
                             element["external"] = 'internetBrowser'
                             element["params"] = [{'webpage':link, 'final': True}]
@@ -233,45 +254,47 @@ def internetBrowser(params=[]):
                 link = html[html.find('<a class="wait__link" href="')+len('<a class="wait__link" href="'):]
                 link = link[:link.find('"')]
                 logger.debug("final url is: %s" % (link) )
-                if 'gameboy-advance' in url:
+                url2 = url.lower()
+                if 'gameboy-advance' in url2:
                     subtype = 'gba'
-                elif 'super-nintendo' in url:
+                elif 'super-nintendo' in url2:
                     subtype = 'snes'
-                elif 'nintendo-ds' in url:
+                elif 'nintendo-ds' in url2:
                     subtype = 'nds'
-                elif 'gameboy-color' in url:
+                elif 'gameboy-color' in url2:
                     subtype = 'gbc'
-                elif 'gameboy' in url:
+                elif 'gameboy' in url2:
                     subtype = 'gb'
-                elif 'nintendo-64' in url:
+                elif 'nintendo-64' in url2:
                     subtype = 'n64'
-                elif 'nintendo' in url:
+                elif 'nintendo' in url2:
                     subtype = 'nes'
-                elif 'playstation-portable' in url:
+                elif 'playstation-portable' in url2:
                     subtype = 'psp'
-                elif 'playstation-2' in url:
+                elif 'playstation-2' in url2:
                     subtype = 'psx2'
-                elif 'playstation' in url:
+                elif 'playstation' in url2:
                     subtype = 'psx'
-                elif 'gamecube' in url:
+                elif 'gamecube' in url2:
                     subtype = 'gc'
-                elif 'nintendo-wii' in url:
+                elif 'nintendo-wii' in url2:
                     subtype = 'wii'
-                elif 'mame' in url:
-                    subtype = 'mame'
-                elif 'dreamcast' in url:
+                elif 'mame' in url2:
+                    subtype = 'arcade/mame2003'
+                    #subtype = 'mame-libretro/mame2003'
+                elif 'dreamcast' in url2:
                     subtype = 'dreamcast'
-                elif 'sega-genesis' in url:
+                elif 'sega-genesis' in url2:
                     subtype = 'genesis'
-                elif 'atari-2600' in url:
+                elif 'atari-2600' in url2:
                     subtype = 'atari2600'
-                elif 'atari-5200' in url:
+                elif 'atari-5200' in url2:
                     subtype = 'atari5200'
-                elif 'atari-7800' in url:
+                elif 'atari-7800' in url2:
                     subtype = 'atari7800'
-                elif 'neo-geo' in url:
+                elif 'neo-geo' in url2:
                     subtype = 'neogeo'
-                elif 'microsoft-xbox' in url:
+                elif 'microsoft-xbox' in url2:
                     subtype = 'xbox'
 
                 out = ROMS_PATH+"/"+subtype+"/"

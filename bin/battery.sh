@@ -15,7 +15,7 @@ then
         level="75"
         if [ $status > 95 ]
         then
-          level="95"
+          level="100"
         fi
       fi
     fi

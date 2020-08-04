@@ -10,15 +10,20 @@ while true; do
   PID=$(ps -e | grep jstest | cut -c 1-5) >/dev/null 2>&1
   sudo kill -9 $PID 1>/dev/null
   MATCH=$(grep -w "${GRAB}" joystick.log | cut -c 32-) >/dev/null 2>&1
+  up="0"
+  down="0"
+  left="0"
+  right="0"
   case $MATCH in
-    "number 11, value 1" ) echo "UP" ;;
-    "number 11, value 0" ) echo "UP released" ;;
-    "number 10, value 1" ) echo "DOWN" ;;
-    "number 10, value 0" ) echo "DOWN released" ;;
-    "number 9, value 1" ) echo "LEFT" ;;
-    "number 9, value 0" ) echo "LEFT released" ;;
-    "number 8, value 1" ) echo "RIGHT" ;;
-    "number 8, value 0" ) echo "RIGHT released" ;;
+    "number 11, value 1" ) up="1" ;;
+    "number 11, value 0" ) up="0" ;;
+    "number 10, value 1" ) down="1" ;;
+    "number 10, value 0" ) down="0" ;;
+    "number 9, value 1" ) left="1" ;;
+    "number 9, value 0" ) left="0" ;;
+    "number 8, value 1" ) right="1" ;;
+    "number 8, value 0" ) right="0" ;;
   esac
+  echo -n "$up $down $left $right"
 done
 rm joystick.log

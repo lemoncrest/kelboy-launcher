@@ -22,7 +22,7 @@ then
   fi
 fi
 
-command="./pngview '/home/pi/kelboy-launcher/resources/graphics/battery-$level.png' -b 0 -l 300003 -x 300 -y 5"
+command="./pngview /home/pi/kelboy-launcher/resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5"
 echo "executting: $command"
-error=$($command)
+$command
 echo "done!"

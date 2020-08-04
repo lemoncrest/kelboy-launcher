@@ -24,6 +24,6 @@ else
   level="0"
 fi
 
-'./bin/pngview resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5'
+'./pngview ../resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5'
 
 echo "done!"

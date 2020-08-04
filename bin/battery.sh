@@ -1,6 +1,4 @@
 #!/bin/bash
-sleep 1
-killall -9 pngview
 
 status=$(cat /sys/class/power_supply/max1726x_battery/capacity)
 level="0"
@@ -23,14 +21,21 @@ then
     fi
   fi
 fi
+cat
 command="./pngview /home/pi/kelboy-launcher/resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5 &"
-echo "executting: $command"
-$command
-#now wait for refresh
-#pid=$(ps -aux | grep -i pngview | awk '{print $2}')
-#command2="kill -9 $pid"
+old=$(cat battery.old)
+if [ "$status" != "$old" ]
+then
+  echo "refreshing battery status: $command"
+  killall -9 pngview
+  $command
+  #now wait for refresh
+  #pid=$(ps -aux | grep -i pngview | awk '{print $2}')
+  #command2="kill -9 $pid"
+fi
+echo "$status" > battery.old
+rm 0
 sleep 9
 ./battery.sh &
 
 $command
-echo "done!"

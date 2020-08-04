@@ -1,4 +1,3 @@
-# Released by rdb under the Unlicense (unlicense.org)
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 

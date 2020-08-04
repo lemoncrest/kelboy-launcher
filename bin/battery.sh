@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 1
 
 status=$(cat /sys/class/power_supply/max1726x_battery/capacity)
 level="0"
@@ -21,8 +22,15 @@ then
     fi
   fi
 fi
-
-command="./pngview /home/pi/kelboy-launcher/resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5"
+command="./pngview /home/pi/kelboy-launcher/resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5 &"
 echo "executting: $command"
+$command
+#now wait for refresh
+pid=$(ps -aux | grep -i main.py | grep pngview | awk '{print $2}')
+command2="kill -9 $pid"
+
+sleep 9
+./battery.sh &
+
 $command
 echo "done!"

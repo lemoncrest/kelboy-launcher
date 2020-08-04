@@ -1,12 +1,6 @@
 #!/bin/bash
 echo "welcome to kelboy-launcher"
-pid=$(ps -aux | grep -i pngview | awk '{print $2}')
-if [$pid > 0]
-then
-  echo "killing old battery process"
-  command2="kill -9 $pid"
-  $command2
-fi
+killall pngview
 
 cd bin
 ./battery.sh &

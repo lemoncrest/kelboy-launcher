@@ -123,6 +123,20 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.menu.load(menu)
                 #pixelate
                 effect = True
+        elif self.items.items[self.selectedItem]["action"] == 'function-text':
+            if self.menu.keyboard == None:
+                fade(self.main.screen)
+                self.menu.keyboard = Keyboard(main=self.main,buffer='')
+                self.menu.keyboard.draw()
+                self.menu.keyboardScreen = KeyboardScreen(self.main)
+                self.menu.keyboardScreen.draw('')
+                self.menu.keyboard.loadMenu = False
+                effect = True
+            elif self.menu.keyboard.show:
+                logger.debug("continue with show")
+                effect = self.manageKeyboard()
+            else:
+                logger.debug("show exits!")
         elif self.items.items[self.selectedItem]["action"] == 'function':
             #loading effect...
             pixelate(self.main.screen,True)
@@ -157,6 +171,8 @@ class MenuCursor(pygame.sprite.Sprite):
                     text_file.write(menu['external'])
                     text_file.close()
                     sys.exit(10)
+                else:
+                    logger.debug(str(type(menu)))
 
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
             #save last param name
@@ -217,20 +233,34 @@ class MenuCursor(pygame.sprite.Sprite):
             key = self.menu.keyboard.specials[self.menu.keyboard.positionX]["name"]
             if key == Keyboard.ENTER:
                 buffer = self.menu.keyboard.buffer
+                loadMenu = self.menu.keyboard.loadMenu
                 logger.info("buffer: %s" % buffer)
                 self.menu.keyboard.kill()
                 self.menu.keyboard = None
                 #TODO exit with value
-                logger.debug("return and load last menu...")
-                menu = None
-                with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
-                    menu = json.load(jsonMenu)
-                    for element in menu:
-                        if "name" in element and element["name"] == self.lastMenuParam:
-                            element["value"] = buffer
+                if loadMenu:
+                    logger.debug("return and load last menu...")
+                    menu = None
+                    with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                        menu = json.load(jsonMenu)
+                        for element in menu:
+                            if "name" in element and element["name"] == self.lastMenuParam:
+                                element["value"] = buffer
 
-                with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json"),"w") as jsonMenu:
-                    json.dump(menu, jsonMenu, indent=4, sort_keys=True)
+                    with open(os.path.join(os.getcwd(),"resources/menus/"+self.menu.lastMenu+".json"),"w") as jsonMenu:
+                        json.dump(menu, jsonMenu, indent=4, sort_keys=True)
+                else: #dynamicMethod
+                    funct = self.items.items[self.selectedItem]["external"]
+                    logger.debug("dynamic function %s",funct)
+                    #now call to function with params
+                    dynamicMethod = getattr(menuaction, funct)
+                    logger.debug(str(self.items.items[self.selectedItem]))
+                    params = []
+                    if "params" in self.items.items[self.selectedItem]:
+                        params = self.items.items[self.selectedItem]["params"]
+                    params.append({'text':buffer})
+                    menu = dynamicMethod(params=params)
+                    logger.debug("returning menu: %s " % str(menu))
 
                 #destroy sprites
                 self.board.kill()
@@ -239,8 +269,6 @@ class MenuCursor(pygame.sprite.Sprite):
                 #reload menu (rebuil sprites)
                 self.menu.load(menu)
                 #pixelate
-                effect = True
-
                 effect = True
             elif key == Keyboard.SYMB:
                 logger.debug("SYMB")
@@ -277,6 +305,8 @@ class MenuCursor(pygame.sprite.Sprite):
             self.menu.keyboard.draw()
             self.menu.keyboardScreen.draw(self.menu.keyboard.buffer)
         else:
+            if self.menu.keyboard:
+                self.menu.keyboard.show = False
             logger.debug("TODO... or not TODO")
 
         return effect

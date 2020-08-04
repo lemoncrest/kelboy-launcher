@@ -42,8 +42,9 @@ class Keyboard(pygame.sprite.Sprite):
     BACK = "BCK"
     EXIT = "EXT"
 
-    def __init__(self, main, buffer=""):
+    def __init__(self, main, buffer="",loadMenu=True):
         self.show = True
+        self.loadMenu = loadMenu
         self.positionX = 0
         self.positionY = 0
 

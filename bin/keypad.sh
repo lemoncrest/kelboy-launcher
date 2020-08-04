@@ -1,11 +1,11 @@
 #!/bin/bash
 
 function joy(){
-  jstest --event /dev/input/js0
+  jstest --event /dev/input/js0 1> joystick.log
 }
 
 while true; do
-	joy 1>joystick.log
+  joy
   sleep 0.05
   PID=$(ps -e | grep jstest | cut -c 1-5) >/dev/null 2>&1
   sudo kill -9 $PID 1>/dev/null

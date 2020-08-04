@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "welcome to kelboy-launcher"
 killall -9 pngview
+rm bin/battery.old
 
 cd bin
 ./battery.sh &

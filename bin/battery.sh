@@ -1,5 +1,5 @@
 #!/bin/bash
-killall pngview
+killall -9 pngview
 
 status=$(cat /sys/class/power_supply/max1726x_battery/capacity)
 level="0"

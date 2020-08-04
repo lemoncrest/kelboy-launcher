@@ -27,7 +27,7 @@ old=$(cat battery.old)
 if [ "$status" != "$old" ]
 then
   echo "refreshing battery status: $command"
-  killall -9 pngview
+  sudo killall -9 pngview
   $command
   #now wait for refresh
   #pid=$(ps -aux | grep -i pngview | awk '{print $2}')

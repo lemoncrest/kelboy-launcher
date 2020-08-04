@@ -1,7 +1,7 @@
 #!/bin/bash
 
 status=$(cat /sys/class/power_supply/max1726x_battery/capacity)
-level = "0"
+level="0"
 if [ $status>0 ]
 then
   if [ $status > 25 ]
@@ -22,6 +22,7 @@ then
   fi
 fi
 
-exitCode=$("./pngview '/home/pi/kelboy-launcher/resources/graphics/battery-$level.png' -b 0 -l 300003 -x 300 -y 5")
-
+command="./pngview '/home/pi/kelboy-launcher/resources/graphics/battery-$level.png' -b 0 -l 300003 -x 300 -y 5"
+echo "executting: $command"
+error=$($command)
 echo "done!"

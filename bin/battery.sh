@@ -1,5 +1,5 @@
 #!/bin/bash
-sleep 1
+killall pngview
 
 status=$(cat /sys/class/power_supply/max1726x_battery/capacity)
 level="0"
@@ -28,9 +28,7 @@ $command
 #now wait for refresh
 #pid=$(ps -aux | grep -i pngview | awk '{print $2}')
 #command2="kill -9 $pid"
-killall pngview
-
-sleep 9
+sleep 10
 ./battery.sh &
 
 $command

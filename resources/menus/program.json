@@ -6,7 +6,7 @@
   },{
     "title": "Update launcher",
     "action": "command-exit",
-    "external": "git pull"
+    "external": "killall -9 pngview && git pull"
   },{
     "title": "Back",
     "action": "menu",

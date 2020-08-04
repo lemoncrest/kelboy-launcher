@@ -18,7 +18,6 @@ then
           level="95"
         fi
       fi
-    else
     fi
   fi
 else

@@ -156,3 +156,12 @@ while True:
                 fvalue = value / 32767.0
                 axis_states[axis] = fvalue
                 print(("%s: %.3f" % (axis, fvalue)))
+
+        if button_states["START"] and button_states["UP"]:
+            print("bundle up detected")
+        if button_states["START"] and button_states["DOWN"]:
+            print("bundle down detected")
+        if button_states["SELECT"] and button_states["UP"]:
+            print("bundle2 up detected")
+        if button_states["SELECT"] and button_states["DOWN"]:
+            print("bundle2 down detected")

@@ -1,5 +1,7 @@
 #!/bin/bash
-
+cd bin
+./battery.sh &
+cd ..
 #exitCode=$(python3 main.py)
 exitCode=$(python3 main.py 2>&1 )
 status=$?

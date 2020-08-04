@@ -1,4 +1,9 @@
 #!/bin/bash
+echo "welcome to kelboy-launcher"
+pid=$(ps -aux | grep -i pngview | awk '{print $2}')
+command2="kill -9 $pid"
+$command2
+
 cd bin
 ./battery.sh &
 cd ..

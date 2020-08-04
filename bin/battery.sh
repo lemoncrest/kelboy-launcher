@@ -1,6 +1,6 @@
 #!/bin/bash
 
-status='cat /sys/class/power_supply/max1726x_battery/capacity'
+exitCode=$(cat /sys/class/power_supply/max1726x_battery/capacity)
 
 if [ $status>0 ]
 then
@@ -24,6 +24,6 @@ else
   level="0"
 fi
 
-'./pngview ../resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5'
+exitCode=$("./pngview ../resources/graphics/battery-$level.png -b 0 -l 300003 -x 300 -y 5")
 
 echo "done!"

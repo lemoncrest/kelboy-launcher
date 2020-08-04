@@ -26,7 +26,7 @@ command="./pngview /home/pi/kelboy-launcher/resources/graphics/battery-$level.pn
 echo "executting: $command"
 $command
 #now wait for refresh
-pid=$(ps -aux | grep -i main.py | grep pngview | awk '{print $2}')
+pid=$(ps -aux | grep -i pngview | awk '{print $2}')
 command2="kill -9 $pid"
 
 sleep 9

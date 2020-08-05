@@ -12,12 +12,13 @@
 #python3 main.py &
 
 #!/bin/bash
-pid=$(ps -aux | grep -i main.py | grep python | awk '{print $2}')
-
-kill -9 $pid
+#pid=$(ps -aux | grep -i main.py | grep python | awk '{print $2}')
+#kill -9 $pid
+killall -9 battery.sh
+killall -9 pngview
 
 #previews path, should be /home/pi/
-cd ..
+#cd ..
 #remove old code
 #rm -Rf kelboy-launcher
 #clone new one
@@ -26,3 +27,6 @@ cd ..
 git pull
 chmod +x bin/*.sh
 chmod +x *.sh
+
+#restart launcher
+./launcher.sh

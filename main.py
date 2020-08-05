@@ -51,8 +51,8 @@ class Main():
         '''
         pygame.font.init()
         pygame.mouse.set_visible(0) #hide mouse
-        self.screen = pygame.display.set_mode((width, height))
-        #self.screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        #self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
         pygame.display.set_caption('Menu')
         self.clock = pygame.time.Clock()
         self.frameRate = frameRate
@@ -152,7 +152,7 @@ class Main():
                 elif (rand == 2):
                     RotatingCube().run()
                 else:
-                    Matrix(surface=pygame.display.set_mode((width,height)),clock=pygame.time.Clock()).run()
+                    Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
             self.frameCounter += 1

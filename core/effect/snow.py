@@ -9,10 +9,10 @@ class SnowBall():
     def __init__(self):
         pygame.init()
 
-        self.screen = pygame.display.set_mode((width, height))
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
         self.yPos = 0
-        self.xPos = random.randint(5, width-5)
+        self.xPos = random.randint(5, WIDTH-5)
 
         self.fpsClock = pygame.time.Clock()
 
@@ -40,7 +40,7 @@ class SnowBall():
             for snow in snowMatrix:
                 snow.fall()
                 snow.draw()
-                if snow.yPos > height:
+                if snow.yPos > HEIGHT:
                     snowMatrix.remove(snow)
 
             pygame.display.update()  # update the display

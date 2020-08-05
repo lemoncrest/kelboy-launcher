@@ -17,11 +17,11 @@ class KeyboardScreen(pygame.sprite.Sprite):
         all_sprites = pygame.sprite.LayeredUpdates()
 
         pygame.sprite.Sprite.__init__(self, main.all_sprites)
-        self.image = pygame.Surface((width, 30))
+        self.image = pygame.Surface((WIDTH, 30))
 
         self.image.fill(NAVY)
         self.rect = self.image.get_rect()
-        self.rect.center = (width / 2,height/4)
+        self.rect.center = (WIDTH / 2,HEIGHT/4)
         self.font = pygame.font.Font(FONT_TYPE, FONT_SIZE)
 
     def draw(self,text):
@@ -60,12 +60,12 @@ class Keyboard(pygame.sprite.Sprite):
         #font
         self.font = pygame.font.Font(FONT_TYPE_KEYBOARD, FONT_SIZE)
         #keyboard
-        self.image = pygame.Surface((width,height*0.5))
+        self.image = pygame.Surface((WIDTH,HEIGHT*0.5))
         self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
-        self.rect.centery = height - (height / 4)
-        self.rect.centerx = width / 2
+        self.rect.centery = HEIGHT - (HEIGHT / 4)
+        self.rect.centerx = WIDTH / 2
         self.keys = [
             ["q","w","e","r","t","y","u","i","o","p"],
             ["a","s","d","f","g","h","j","k","l","ñ"],
@@ -135,8 +135,8 @@ class Keyboard(pygame.sprite.Sprite):
         for x in range(0,len(self.specials)):
 
             special = self.specials[x]
-            image = pygame.Surface((width/len(self.specials), 30))
-            rect = image.get_rect(x=(width/len(self.specials)*x), y=90)
+            image = pygame.Surface((WIDTH/len(self.specials), 30))
+            rect = image.get_rect(x=(WIDTH/len(self.specials)*x), y=90)
             pygame.draw.rect(self.image, BLUE, rect) #pygame 1.9.4 has not width=1 param
 
             if self.positionY>=len(self.keys) and self.positionX > len(self.specials)-1:
@@ -144,9 +144,9 @@ class Keyboard(pygame.sprite.Sprite):
 
             if x==self.positionX and 3 == self.positionY:
                 #draw selector
-                rect2 = image.get_rect(x=(width/len(self.specials)*x), y=30*3)
+                rect2 = image.get_rect(x=(WIDTH/len(self.specials)*x), y=30*3)
                 pygame.draw.rect(self.image, NAVY, rect2)
 
 
             textsurface = self.font.render(special["name"], True, WHITE)
-            self.image.blit(textsurface, ((width/len(self.specials)*x), 90+10) )
+            self.image.blit(textsurface, ((WIDTH/len(self.specials)*x), 90+10) )

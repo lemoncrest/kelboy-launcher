@@ -31,8 +31,8 @@ class Dialog(pygame.sprite.Sprite):
         self.font = pygame.font.Font(FONT_TYPE, fontSize)
 
         self.rect = self.image.get_rect()
-        self.rect.centery = height / 2
-        self.rect.centerx = width / 2
+        self.rect.centery = HEIGHT / 2
+        self.rect.centerx = WIDTH / 2
 
         #fix for big title
         if (self.font.size(self.title)[0]) > self.width:
@@ -52,7 +52,7 @@ class Dialog(pygame.sprite.Sprite):
         self.button_height = self.button_part-(self.padding*2)
 
         #calculate centered rectangle
-        self.y = (height - self.height) / 2
+        self.y = (HEIGHT - self.height) / 2
 
         self.focus_margin = 5
 

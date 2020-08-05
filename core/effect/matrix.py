@@ -13,8 +13,8 @@ class Matrix():
         self.fontSize = 8
         self.font = pygame.font.Font(None, self.fontSize)
 
-        self.width = width
-        self.height = height
+        self.width = WIDTH
+        self.height = HEIGHT
 
         self.surface = surface
         self.clock = clock
@@ -22,10 +22,10 @@ class Matrix():
         self.fall = []
         self.sizes = []
         self.waits = []
-        for x in range(int(width/self.fontSize)):
+        for x in range(int(WIDTH/self.fontSize)):
 
             size = randint(1, 30)
-            fall = randint(0, int(height/self.fontSize)*2) - int(height/self.fontSize)
+            fall = randint(0, int(HEIGHT/self.fontSize)*2) - int(HEIGHT/self.fontSize)
             wait = randint(0, self.fontSize)
             self.fall.append(fall)
             self.sizes.append(size)
@@ -35,20 +35,20 @@ class Matrix():
     def matrix(self):
         self.printable = string.ascii_letters + string.digits + string.punctuation
         self.randomString = ''
-        for i in range(int(width/self.fontSize)):
+        for i in range(int(WIDTH/self.fontSize)):
             self.randomString += choice(self.printable)
 
     def water_fall(self):
 
-        for x in range(int(width/self.fontSize)):
+        for x in range(int(WIDTH/self.fontSize)):
             y = self.fall[x]
             size = self.sizes[x]
             if self.waits[x] > 0:
                 self.waits[x]-=1
                 self.sizes[x] += 1
-            elif y < (width/self.fontSize):
+            elif y < (WIDTH/self.fontSize):
                 y += 1
-            elif y >= (width/self.fontSize):
+            elif y >= (WIDTH/self.fontSize):
                 size = randint(1, 50)
                 fall = 0 - size #randint(0, int(WINDOW_SIZE[1] / self.fontSize))  # - int(WINDOW_SIZE[1] / self.fontSize)
                 wait = randint(0, self.fontSize)
@@ -69,13 +69,13 @@ class Matrix():
             self.clock.tick(frameRate)
             self.surface.fill(BLACK)
             self.water_fall()
-            for x in range(0,int(width/self.fontSize)):
+            for x in range(0,int(WIDTH/self.fontSize)):
 
                 size = self.sizes[x]
                 self.matrix()
                 if self.waits[x] > 0:
                     self.sizes[x] += 1
-                for y in range(0,int(height/self.fontSize)):
+                for y in range(0,int(HEIGHT/self.fontSize)):
                     if y >= self.fall[x] and size>0:
                         txt = self.font.render(self.randomString[y], True,GREEN)
                         self.surface.blit(txt, (x*self.fontSize, y*self.fontSize))

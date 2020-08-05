@@ -1,7 +1,7 @@
 #Constants
 
-width = 320
-height = 240
+WIDTH = 320
+HEIGHT = 240
 
 frameRate = 60
 margin = 10
@@ -21,3 +21,5 @@ ROMS_PATH = '/home/pi/RetroPie/roms'
 
 FRAMES_IN = 16
 FRAMES_OUT = 16
+
+BARSIZE = 25

@@ -3,3 +3,5 @@ __pycache__
 .vscode
 log.txt
 bin/battery.old
+command
+0

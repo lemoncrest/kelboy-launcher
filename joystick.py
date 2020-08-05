@@ -168,7 +168,7 @@ while True:
             os.system('amixer set PCM 0')
         if button_states["START"] and button_states["RIGHT"]:
             print("bundle down detected")
-            os.system('amixer set PCM 50')
+            os.system('amixer set PCM 50%')
         if button_states["SELECT"] and button_states["UP"]:
             print("bundle2 up detected")
         if button_states["SELECT"] and button_states["DOWN"]:

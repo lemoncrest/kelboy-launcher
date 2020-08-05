@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "welcome to kelboy-launcher"
 sudo killall -9 pngview
+sudo killall python3
 rm bin/battery.old
 
 cd bin

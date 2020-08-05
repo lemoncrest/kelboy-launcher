@@ -13,6 +13,7 @@ from core.settings import *
 from core.menu import Menu
 from core.effect.snow import SnowBall
 from core.effect.matrix import Matrix
+from core.effect.cube import RotatingCube
 from core.colors import *
 
 import logging
@@ -145,9 +146,11 @@ class Main():
             if self.last+screensaverTime < int(round(time.time())*1000):
                 self.screensaver = True
             if self.screensaver:
-                rand = randint(1, 2)
+                rand = randint(1, 3)
                 if(rand==1):
                     SnowBall().launchSnowBalls()
+                elif (rand == 2):
+                    RotatingCube().run()
                 else:
                     Matrix(surface=pygame.display.set_mode((width,height)),clock=pygame.time.Clock()).run()
                 self.last = int(round(time.time())*1000)

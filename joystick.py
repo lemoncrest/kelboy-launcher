@@ -159,8 +159,16 @@ while True:
 
         if button_states["START"] and button_states["UP"]:
             print("bundle up detected")
+            os.system('amixer -D pulse sset Master 10%+')
         if button_states["START"] and button_states["DOWN"]:
             print("bundle down detected")
+            os.system('amixer -D pulse sset Master 10%-')
+        if button_states["START"] and button_states["LEFT"]:
+            print("bundle down detected")
+            os.system('amixer -D pulse sset Master mute')
+        if button_states["START"] and button_states["RIGHT"]:
+            print("bundle down detected")
+            os.system('amixer -D pulse sset Master unmute')
         if button_states["SELECT"] and button_states["UP"]:
             print("bundle2 up detected")
         if button_states["SELECT"] and button_states["DOWN"]:

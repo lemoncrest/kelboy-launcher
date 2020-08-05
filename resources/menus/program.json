@@ -6,7 +6,7 @@
   },{
     "title": "Update launcher",
     "action": "command-exit",
-    "external": "sudo killall -9 pngview && sudo killall -9 battery.sh && git pull"
+    "external": "git pull"
   },{
     "title": "Back",
     "action": "menu",

@@ -2,7 +2,7 @@ import pygame, pygame.image, numpy
 from pygame.surfarray import *
 from pygame.locals import *
 from core.settings import *
-RES = (width,height)
+RES = (WIDTH,HEIGHT)
 FRAMES = int(frameRate/4) #15 times
 
 def take_screenshot(screen):

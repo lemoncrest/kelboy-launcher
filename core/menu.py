@@ -26,14 +26,14 @@ class MenuBoard(pygame.sprite.Sprite):
     def loadBackground(self):
         self.groups = self.main.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
-        self.image = pygame.Surface((width,height))
+        self.image = pygame.Surface((WIDTH,HEIGHT))
         self.rect = self.image.get_rect()
-        self.rect.centery = height / 2
-        self.rect.centerx = width / 2
+        self.rect.centery = HEIGHT / 2
+        self.rect.centerx = WIDTH / 2
         logger.debug("loading background...")
         filename = os.path.join("resources/graphics", BACKGROUND_PICTURE)
         picture = pygame.image.load(filename)
-        pygame.transform.scale(picture, (width,height))
+        pygame.transform.scale(picture, (WIDTH,HEIGHT))
         self.image.blit(picture, (0, 0))
 
 class MenuCursor(pygame.sprite.Sprite):
@@ -58,9 +58,9 @@ class MenuCursor(pygame.sprite.Sprite):
         if lenItems> MAX_MENU_ITEMS:
             lenItems = MAX_MENU_ITEMS
 
-        self.rect.y = height / 2 - ((lenItems / 2)*self.items.rect.height )
+        self.rect.y = HEIGHT / 2 - ((lenItems / 2)*self.items.rect.height )
 
-        self.rect.centerx = width / 2
+        self.rect.centerx = WIDTH / 2
         logger.debug("x %s y %s" % (self.rect.x, self.rect.y))
         self.selectedItem = 0
         self.selectedItemX = 0
@@ -340,8 +340,8 @@ class MenuItems(pygame.sprite.Sprite):
         #it's need to be recalculated each time, so not put it in builder
         self.image.fill((255, 255, 255, 0), None) #clean menu
         self.rect = self.image.get_rect()
-        self.rect.centery = height / 2
-        self.rect.centerx = width / 2
+        self.rect.centery = HEIGHT / 2
+        self.rect.centerx = WIDTH / 2
 
         x = 0
         y = 0
@@ -379,17 +379,20 @@ class MenuStatus(pygame.sprite.Sprite):
         self._layer = 3
         self.groups = main.all_sprites
         self.font = pygame.font.Font(FONT_TYPE, FONT_SIZE)
-        self.image = pygame.Surface((width, 25))
+        self.image = pygame.Surface((WIDTH, BARSIZE))
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image.fill(BLACK)
         self.image.set_alpha(150)
         self.rect = self.image.get_rect()
         self.rect.centery = self.image.get_rect().height/2
-        self.rect.centerx = width / 2
+        self.rect.centerx = WIDTH / 2
         self.rect.x = 0
         self.rect.y = 0
 
     def draw(self):
+        self.padding = 1
+        self.margin = 1
+
         #draw battery
         battery = 0 #TODO extract from driver
         charging = False
@@ -411,12 +414,132 @@ class MenuStatus(pygame.sprite.Sprite):
             elif battery>0:
                 level = "25"
         image = pygame.image.load(os.path.join("resources/graphics", "battery-"+str(level)+".png"))
-        self.image.blit(image, (width-(image.get_rect().width*1.5),(image.get_rect().width/2)))
+        rect1 = (WIDTH-(image.get_rect().width*1.5),BARSIZE/2-(image.get_rect().height/2))
+        self.image.blit(image, rect1)
+
+        #draw sound
+        init = self.drawAudio(start=(image.get_rect().width*2),number=False)
 
         #internet
+        self.drawWifi(start=(image.get_rect().width*2)+28)
 
         #bluetooth
+        #TODO
 
+
+
+    def drawAudio(self,start=0,number=False):
+        #cmd = "amixer -D pulse sget Master | grep 'Left:' | awk -F'[][]' '{ print $2 }'"
+        #cmd = "amixer sget Master | grep 'Left' | awk -F'[][]' '{ print $2 }'"
+
+        cmd = "amixer | grep % | head -n 1 | awk -F'[][]' '{ print $2 }'"
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        (out, err) = proc.communicate()
+        level = out.decode("utf-8")
+        level = level[:len(level)-2] #remove % character
+        rect = None
+        if number:
+            width = self.font.size("100")[0] + (self.margin * 2) #max sized to be used in background
+            height = self.font.size(level)[1] + (self.margin * 2)
+            x = WIDTH - width - start
+            rect = pygame.Rect(x, 0, width, BARSIZE)
+            pygame.draw.rect(self.image,BLACK,rect)
+            #self.image.blit(self.bar, rect)
+            #pygame.display.update(rect)
+            txt = self.font.render(level, True, WHITE)
+            x = WIDTH - start
+            y = BARSIZE / 2 - (height/2)
+            textPoint = (x -self.margin*3 -self.padding*3 - (self.font.size(level)[0])/2, y)
+            self.image.blit(txt, textPoint)
+        else:
+            top = 20
+            width = top*2
+            height = top
+            x = WIDTH - start - top
+            y = (BARSIZE - height) / 2
+            rect = pygame.Rect(x  - (self.margin*2), 0, top, BARSIZE)
+            pygame.draw.rect(self.image, BLACK, rect)
+
+            #first display speaker
+            pygame.draw.polygon(self.image,WHITE,( (x+(top/2),y+0),(x+(top/4),y+(top/4)),(x+0,y+(top/4)),(x+0,y+(top*3/4)),(x+(top/4),y+(top*3/4)),(x+(top/2),y+top) ))
+            #next display bars
+            try:
+                bars = int(int(level)/14)
+            except:
+                bars = 0
+                pass
+
+            try:
+                level = int(level)
+            except:
+                logger.debug("couldn't parse level '%s'" % level)
+                pass
+            barSize = 1
+            init = WIDTH - start - (top/2)
+            rect2 = pygame.Rect(init, y, barSize+ self.padding*7*2, top)
+            pygame.draw.rect(self.image,BLACK,rect2)
+            if bars > 0:
+                for x in range(bars):
+                    rect2 = pygame.Rect(init + self.padding*x*2, y, barSize, top)
+                    pygame.draw.rect(self.image,WHITE,rect2)
+            if int(level)==0:
+                txt = self.font.render("X", True, RED)
+                textPoint = (init + self.padding*5, BARSIZE / 2 - (self.font.size("X")[1]/2))
+                self.image.blit(txt, textPoint)
+
+        return init
+
+
+    def drawWifi(self,start=0,totalBars=10,barWidth=3):
+        cmd = "awk 'NR==3 {print $4}''' /proc/net/wireless"
+        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        (out, err) = proc.communicate()
+        level = out.decode("utf-8").replace(".","")
+        level = out.decode("utf-8").replace(".","")
+        try:
+            #level = 2*(int(level)+80) #dBm conversion to percentage
+            dBm = int(level)
+            # dBm to Quality:
+            if(dBm <= -100):
+                level = 0;
+            elif(dBm >= -50):
+                level = 100;
+            else:
+                level = 2 * (dBm + 100)
+            logger.debug(str(level))
+        except Exception as ex:
+            level = 0 #no signal
+            logger.error("not converted"+str(ex))
+            pass
+
+        barHeight = barWidth * 8
+        width = (self.padding*2*totalBars) + (barWidth*totalBars) + (self.margin*2)
+        #background
+        x = WIDTH - start - width
+        rect = pygame.Rect(x, 0, width, BARSIZE)
+        pygame.draw.rect(self.image, BLACK, rect)
+
+        #bars
+        if level==0: #when no signal them display red X
+            yP = int((BARSIZE - barHeight)/2)
+            txt = self.font.render("X", True, RED)
+            textPoint = (x + (self.padding * (totalBars+1)  + (barWidth*totalBars/2)), yP)
+            self.image.blit(txt, textPoint)
+        bars = int(level*totalBars/100)
+        for i in range(0,bars,1):
+            xP = x + self.padding * (i+1) * 2 + (barWidth*i) + self.margin
+            ySize = int(barHeight / totalBars * i)
+            yP = barHeight - ySize + BARSIZE/4#(barHeight)-(int((BARSIZE - barHeight)/2) + (barHeight/totalBars*i))
+
+            rect = pygame.Rect(xP, yP, barWidth, ySize)
+            pygame.draw.rect(self.image, GREEN, rect)
+        for i in range(bars,totalBars,1):  # points
+            txt = self.font.render(".", True, WHITE)
+            xP = x + self.padding * (i+1) * 2 + (barWidth*i) + self.margin
+            yP = (BARSIZE - barHeight) - (self.font.size(".")[1] / 2)
+            textPoint = (xP, yP)
+            self.image.blit(txt, textPoint)
+        return rect
 
 
 class Menu(MenuBoard, MenuCursor, MenuItems):

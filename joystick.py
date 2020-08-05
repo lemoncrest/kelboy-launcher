@@ -4,12 +4,17 @@
 import os, struct, array
 from fcntl import ioctl
 
+from core.settings import *
+import logging
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 # Iterate over the joystick devices.
-print('Available devices:')
+logger.debug('Available devices:')
 
 for fn in os.listdir('/dev/input'):
     if fn.startswith('js'):
-        print(('  /dev/input/%s' % (fn)))
+        logger.debug(('  /dev/input/%s' % (fn)))
 
 # We'll store the states here.
 axis_states = {}
@@ -92,7 +97,7 @@ button_map = []
 
 # Open the joystick device.
 fn = '/dev/input/js0'
-print(('Opening %s...' % fn))
+logger.debug(('Opening %s...' % fn))
 jsdev = open(fn, 'rb')
 
 # Get the device name.
@@ -100,7 +105,7 @@ jsdev = open(fn, 'rb')
 buf = array.array('B', [0] * 64)
 ioctl(jsdev, 0x80006a13 + (0x10000 * len(buf)), buf) # JSIOCGNAME(len)
 js_name = buf.tostring().rstrip(b'\x00').decode('utf-8')
-print(('Device name: %s' % js_name))
+logger.debug(('Device name: %s' % js_name))
 
 # Get number of axes and buttons.
 buf = array.array('B', [0])
@@ -129,8 +134,8 @@ for btn in buf[:num_buttons]:
     button_map.append(btn_name)
     button_states[btn_name] = 0
 
-print(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
-print(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
+logger.debug(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
+logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
 
 # Main event loop
 while True:
@@ -139,37 +144,37 @@ while True:
         time, value, type, number = struct.unpack('IhBB', evbuf)
 
         if type & 0x80:
-             print("(initial)")
+             logger.debug("(initial)")
 
         if type & 0x01:
             button = button_map[number]
             if button:
                 button_states[button] = value
                 if value:
-                    print(("%s pressed" % (button)))
+                    logger.debug(("%s pressed" % (button)))
                 else:
-                    print(("%s released" % (button)))
+                    logger.debug(("%s released" % (button)))
 
         if type & 0x02:
             axis = axis_map[number]
             if axis:
                 fvalue = value / 32767.0
                 axis_states[axis] = fvalue
-                print(("%s: %.3f" % (axis, fvalue)))
+                logger.debug(("%s: %.3f" % (axis, fvalue)))
 
         if button_states["START"] and button_states["UP"]:
-            print("bundle up detected")
+            logger.debug("bundle up detected")
             os.system('amixer set PCM -- 10+')
         if button_states["START"] and button_states["DOWN"]:
-            print("bundle down detected")
+            logger.debug("bundle down detected")
             os.system('amixer set PCM -- 10-')
         if button_states["START"] and button_states["LEFT"]:
-            print("bundle down detected")
+            logger.debug("bundle down detected")
             os.system('amixer set PCM 0')
         if button_states["START"] and button_states["RIGHT"]:
-            print("bundle down detected")
+            logger.debug("bundle down detected")
             os.system('amixer set PCM 50%')
         if button_states["SELECT"] and button_states["UP"]:
-            print("bundle2 up detected")
+            logger.debug("bundle2 up detected")
         if button_states["SELECT"] and button_states["DOWN"]:
-            print("bundle2 down detected")
+            logger.debug("bundle2 down detected")

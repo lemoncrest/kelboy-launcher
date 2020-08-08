@@ -15,12 +15,16 @@ def saveWifiConfig(params=[]):
     logger.debug("starting save wifi config...")
     ssid=''
     pwd=''
+    '''
     if len(params) > 0:
-        element = params[0]
-        if "ssid" in element:
-            ssid = element["ssid"]
-            logger.debug("target ssid %s" % (ssid))
-
+        if type(params) is dict:
+            logger.debug("dict")
+            element = params
+            if "ssid" in element:
+                logger.debug("%s" % str(element))
+                ssid = element["ssid"]
+                logger.debug("target ssid %s" % (ssid))
+    '''
     #read params
     with open(os.path.join("resources/menus","wifi.json")) as jsonMenu:
         menu = json.load(jsonMenu)
@@ -33,7 +37,7 @@ def saveWifiConfig(params=[]):
 
     logger.debug("ssid %s and pass %s" % (ssid,pwd))
     wifi = Wifi()
-    wifi.buildWpaSupplicantAndConnect()
+    wifi.buildWpaSupplicantAndConnect(ssid=ssid,pwd=pwd)
 
 def scanWifi(params=[]):
     wifi = Wifi()

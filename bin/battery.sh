@@ -1,19 +1,21 @@
 #!/bin/bash
 
-status=$(cat /sys/class/power_supply/max1726x_battery/capacity)
+status=$(cat /sys/class/power_supply/max1726x_battery/capacity | bc)
+status=$(($status - 0))
+echo $status
 level="0"
-if [ $status>0 ]
+if [ [$status -gt 0] ]
 then
-  if [ $status > 25 ]
+  if [ $status -gt 25 ]
   then
     level="25"
-    if [ $status > 50 ]
+    if [ $status -gt 50 ]
     then
       level="50"
-      if [ $status > 75 ]
+      if [ $status -gt 75 ]
       then
         level="75"
-        if [ $status > 95 ]
+        if [ $status -gt 95 ]
         then
           level="100"
         fi
@@ -21,7 +23,11 @@ then
     fi
   fi
 fi
-cat
+
+
+echo $level
+
+
 command="./pngview /home/pi/kelboy-launcher/resources/graphics/battery-$level.png -b 0 -l 300003 -x 290 -y 7 &"
 old=$(cat battery.old)
 if [ "$status" != "$old" ]

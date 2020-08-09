@@ -1,7 +1,6 @@
 #!/bin/bash
-
 status=$(cat /sys/class/power_supply/max1726x_battery/capacity | bc)
-status=$(($status - 0))
+status=$((bc -l $status))
 echo $status
 level="0"
 if [ [$status -gt 0] ]

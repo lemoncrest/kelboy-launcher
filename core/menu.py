@@ -161,16 +161,29 @@ class MenuCursor(pygame.sprite.Sprite):
                     self.menu.load(menu)
                     #pixelate
                 elif type(menu) is dict:
-                    logger.debug('dict!!')
-                    #command and exit
-                    pixelate(surface,True)
-                    pygame.display.quit()
-                    pygame.quit()
-                    #os.system(self.items.items[self.selectedItem]["external"])
-                    text_file = open("command", "w")
-                    text_file.write(menu['external'])
-                    text_file.close()
-                    sys.exit(10)
+                    if 'external' in menu:
+                        logger.debug('dict!!')
+                        #command and exit
+                        pixelate(surface,True)
+                        pygame.display.quit()
+                        pygame.quit()
+                        #os.system(self.items.items[self.selectedItem]["external"])
+                        text_file = open("command", "w")
+                        text_file.write(menu['external'])
+                        text_file.close()
+                        sys.exit(10)
+                    elif 'external-keyboard' in external:
+                        function = 'saveWifiPWD'
+                        logger.debug("function %s",funct)
+                        #now call to function with params
+                        #keyboard
+                        self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
+                        self.menu.keyboard.draw()
+                        self.menu.keyboardScreen = KeyboardScreen(self.main)
+                        self.menu.keyboardScreen.draw(buffer)
+                        effect = True
+                        #dynamicMethod = getattr(menuaction, funct)
+                        pass
                 else:
                     logger.debug(str(type(menu)))
 
@@ -506,10 +519,10 @@ class MenuStatus(pygame.sprite.Sprite):
                 level = 100;
             else:
                 level = 2 * (dBm + 100)
-            logger.debug(str(level))
+                #logger.debug(str(level))
         except Exception as ex:
             level = 0 #no signal
-            logger.error("not converted"+str(ex))
+            #logger.error("not converted"+str(ex))
             pass
 
         barHeight = barWidth * 8

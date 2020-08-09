@@ -3,18 +3,18 @@ status=$(cat /sys/class/power_supply/max1726x_battery/capacity | bc)
 status=$((bc -l $status))
 echo $status
 level="0"
-if [ [$status -gt 0] ]
+if [ [$status -gt "0.0"] ]
 then
-  if [ $status -gt 25 ]
+  if [ $status -gt "25.0" ]
   then
     level="25"
-    if [ $status -gt 50 ]
+    if [ $status -gt "50.0" ]
     then
       level="50"
-      if [ $status -gt 75 ]
+      if [ $status -gt "75.0" ]
       then
         level="75"
-        if [ $status -gt 95 ]
+        if [ $status -gt "95.0" ]
         then
           level="100"
         fi

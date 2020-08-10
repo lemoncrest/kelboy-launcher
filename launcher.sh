@@ -19,8 +19,7 @@ then
     #sudo killall -9 battery.sh
     #sudo killall -9 pngview
     foo="`cat command`"
-    $foo 2>&1 &
-    wait
+    $foo
     ./launcher.sh
   fi
 else

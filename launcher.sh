@@ -16,8 +16,8 @@ if [ $status>0 ]
 then
   if [ $status == 10 ]
   then
-    sudo killall -9 battery.sh
-    sudo killall -9 pngview
+    #sudo killall -9 battery.sh
+    #sudo killall -9 pngview
     foo="`cat command`"
     $foo 2>&1 &
     wait

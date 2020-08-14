@@ -270,24 +270,29 @@ def internetBrowser(params=[]):
                 elif '<div class="results">' in html or '<h1 class="is-medium i-mb-15">Search Result for ' in html:
                     if '<h1 class="is-medium i-mb-15">Search Result for ' in html:
                         container = html[html.find('<table class="table">')+len('<table class="table">'):]
+                        splitter = '<tr>'
                     else:
                         logger.debug('<div class="results">')
                         container = html[html.find('<div class="results">')+len('<div class="results">'):]
+                        splitter = '<a href="'
 
                     container = container[:container.find('</table>')]
-                    splitter = '<a href="'
                     i = 0
                     for line in container.split(splitter):
-                        if i > 0:
+                        if i > 1:
                             logger.debug("inside2...")
-                            link = line[:line.find('"')]
+                            link = line[line.find('"'):line.find('">')]
                             logger.debug("inside3...")
                             name = line[line.find('">')+len('">'):]
                             logger.debug("inside4...")
                             name = name[:name.find('<')]
                             logger.debug("extracted info...")
+                            platform = line[line.find('<td><a href="')+len('<td><a href="'):]
+                            platform = platform[platform.find('>')+1:platform.find('<')]
                             element = {}
-                            element["title"] = name.replace('&#039;',"'")
+                            element["title"] = name.replace('&#039;',"'").replace('&amp;','&')
+                            if len(splitter) < 5:
+                                element["title"] += " - "+platform
                             element["action"] = 'function'
                             element["external"] = 'internetBrowser'
                             element["params"] = [{'webpage':link, 'final': True}]

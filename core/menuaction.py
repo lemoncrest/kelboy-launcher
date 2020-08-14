@@ -234,17 +234,29 @@ def internetBrowser(params=[]):
         r.release_conn()
         if len(html)>0:
             if not final:
-                if 'consoles__wrap' in html:
+                if '<form class="filter" action="/roms/platforms-search">' in html:
+
                     logger.debug("consoles wrap")
-                    container = html[html.find('consoles__wrap">')+len('consoles__wrap">'):]
-                    container = container[:container.find('<div class="popular-game">')]
+                    container = html[html.find('<form class="filter" action="/roms/platforms-search">')+len('<form class="filter" action="/roms/platforms-search">'):]
+                    container = container[:container.find('</table>')]
                     i = 0
+
+                    #first search
+                    element = {}
+                    link = url[0:url.rfind('/')+1]
+                    logger.debug("link %s " % link)
+                    link = link+'search?name=%s'
+                    logger.debug("link2 %s " % link)
+                    element["title"] = "Search"
+                    element["action"] = 'function-text'
+                    element["external"] = 'internetBrowser'
+                    element["params"] = [{'webpage':link, 'final': False}]
+                    menu.append(element)
+
                     for line in container.split('<a href="'):
                         if i > 0:
-                            link = url+line[:line.find('"')]
-                            img = line[line.find('src="')+len('src="'):]
-                            img = img[:img.find('"')]
-                            name = line[line.find('console__name">')+len('console__name">'):]
+                            link = line[:line.find('"')]
+                            name = line[line.find('">')+len('">'):]
                             name = name[:name.find('<')]
                             element = {}
                             element["title"] = name
@@ -253,33 +265,22 @@ def internetBrowser(params=[]):
                             element["params"] = [{'webpage':link, 'final': False}]
                             if len(name)>0:
                                 menu.append(element)
-                                logger.debug("%s, %s, %s" % (name,img,link) )
-                        else:
-                            #first search
-                            element = {}
-                            link = url+'search?name=%s'
-                            element["title"] = "Search"
-                            element["action"] = 'function-text'
-                            element["external"] = 'internetBrowser'
-                            element["params"] = [{'webpage':link, 'final': False}]
-                            menu.append(element)
+                                logger.debug("%s, %s" % (name,link) )
                         i+=1
-                elif 'roms-results' in html or '<h1 class="content__title">SEARCH RESULT FOR' in html:
-                    if '<h1 class="content__title">SEARCH RESULT FOR' in html:
-                        container = html[html.find('<table class="table is-large">')+len('<table class="table is-large">'):]
+                elif '<div class="results">' in html or '<h1 class="is-medium i-mb-15">Search Result for ' in html:
+                    if '<h1 class="is-medium i-mb-15">Search Result for ' in html:
+                        container = html[html.find('<table class="table">')+len('<table class="table">'):]
                     else:
-                        logger.debug("roms-results")
-                        container = html[html.find('<div id="roms-results">')+len('<div id="roms-results">'):]
+                        logger.debug('<div class="results">')
+                        container = html[html.find('<div class="results">')+len('<div class="results">'):]
 
                     container = container[:container.find('</table>')]
-                    splitter = '<a class="link"'
+                    splitter = '<a href="'
                     i = 0
                     for line in container.split(splitter):
                         if i > 0:
-                            logger.debug("inside...")
-                            link = line[line.find(' href="')+len(' href="'):]
                             logger.debug("inside2...")
-                            link = link[:link.find('"')]
+                            link = line[:line.find('"')]
                             logger.debug("inside3...")
                             name = line[line.find('">')+len('">'):]
                             logger.debug("inside4...")

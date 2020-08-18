@@ -224,6 +224,7 @@ def internetBrowser(params=[]):
         if final:
             logger.debug("transforming link %s to final link..." % (url))
             url = url.replace('/roms/','/download/roms/')
+            logger.debug("final url is '%s'" % url)
         elif len(text)>0 and '%' in url:
             logger.debug("search detected")
             url = url % text
@@ -281,7 +282,9 @@ def internetBrowser(params=[]):
                     for line in container.split(splitter):
                         if i > 1:
                             logger.debug("inside2...")
-                            link = line[line.find('"'):line.find('">')]
+                            link = line[line.find('"')+1:line.find('">')]
+                            if 'https:' not in link and '//' in link:
+                                link = 'https:'+link
                             logger.debug("inside3...")
                             name = line[line.find('">')+len('">'):]
                             logger.debug("inside4...")

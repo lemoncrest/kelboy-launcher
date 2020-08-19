@@ -283,6 +283,10 @@ def internetBrowser(params=[]):
                         if i > 1:
                             logger.debug("inside2...")
                             link = line[line.find('"')+1:line.find('">')]
+                            if len(link)==0:
+                                logger.debug("line is: '%s'" % (line))
+                                link = line[:line.find('">')]
+                                logger.debug("new link is %s" % (link))
                             if 'https:' not in link and '//' in link:
                                 link = 'https:'+link
                             logger.debug("inside3...")

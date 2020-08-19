@@ -339,33 +339,127 @@ def internetBrowser(params=[]):
                     subtype = 'n64'
                 elif 'nintendo' in url2:
                     subtype = 'nes'
-                elif 'playstation-portable' in url2:
+                elif 'playstation' in url2 and 'portable' in url2:
                     subtype = 'psp'
                 elif 'playstation-2' in url2:
-                    subtype = 'psx2'
+                    subtype = 'ps2'
                 elif 'playstation' in url2:
                     subtype = 'psx'
                 elif 'gamecube' in url2:
                     subtype = 'gc'
                 elif 'nintendo-wii' in url2:
                     subtype = 'wii'
-                elif 'mame' in url2:
+                elif 'mame' in url2 or 'acorn' in url2:
                     subtype = 'arcade/mame2003'
                     #subtype = 'mame-libretro/mame2003'
                 elif 'dreamcast' in url2:
                     subtype = 'dreamcast'
                 elif 'sega-genesis' in url2:
                     subtype = 'genesis'
-                elif 'atari-2600' in url2:
-                    subtype = 'atari2600'
-                elif 'atari-5200' in url2:
-                    subtype = 'atari5200'
-                elif 'atari-7800' in url2:
-                    subtype = 'atari7800'
                 elif 'neo-geo' in url2:
                     subtype = 'neogeo'
                 elif 'microsoft-xbox' in url2:
                     subtype = 'xbox'
+                elif 'amiga' in url2:
+                    subtype = 'amiga'
+                elif 'amstrad' in url2:
+                    subtype = 'amstradcpc'
+                elif 'apple2' in url:
+                    subtype = 'apple2'
+                elif 'atari' in url:
+                    if '2600' in url:
+                        subtype = 'atari2600'
+                    elif '7800' in url:
+                        subtype = 'atari7800'
+                    elif '800' in url:
+                        subtype = 'atari800'
+                    elif '5200' in url:
+                        subtype = 'atari5200'
+                    elif 'jaguar' in url:
+                        subtype = 'atarijaguar'
+                    elif 'lynx' in url:
+                        subtype = 'atarilynx'
+                    elif 'st' in url:
+                        subtype = 'atarist'
+                elif 'tsr-80' in url:
+                    subtype = 'coco'
+                elif 'colecovision' in url:
+                    subtype = 'coleco'
+                elif 'commodore' in url:
+                    subtype = 'c64'
+                elif 'dragon' in url:
+                    subtype = 'dragon32'
+                elif 'famicom' in url:
+                    subtype = 'fds'
+                elif 'gamegear' in url:
+                    subtype = 'gamegear'
+                elif 'gameandwatch' in url:
+                    subtype = 'gameandwatch'
+                elif 'megadrive' in url:
+                    subtype = 'megadrive'
+                elif 'intellivision' in url:
+                    subtype = 'intellivision'
+                elif 'love' in url:
+                    subtype = 'love'
+                elif 'macintosh' in url:
+                    subtype = 'macintosh'
+                elif 'mastersystem' in url:
+                    subtype = 'mastersystem'
+                elif 'msx' in url:
+                    subtype = 'msx'
+                elif 'necpc' in url:
+                    subtype = 'pc88'
+                elif 'neogeo' in url:
+                    if 'pocket' in url:
+                        if 'color' in url:
+                            subtype = 'ngpc'
+                        else:
+                            subtype = 'ngp'
+                elif 'nds' in url:
+                    subtype = 'nds'
+                elif 'openbor' in url:
+                    subtype = 'openbor'
+                elif 'oric' in url:
+                    subtype = 'oric'
+                elif 'pcengine' in url:
+                    subtype = 'pcengine'
+                elif 'samcoupe' in url:
+                    subtype = 'samcoupe'
+                elif 'saturn' in url:
+                    subtype = 'saturn'
+                elif 'scummvm' in url:
+                    subtype = 'scummvm'
+                elif 'sega32x' in url:
+                    subtype = 'sega32x'
+                elif 'segacd' in url:
+                    subtype = 'segacd'
+                elif 'sharp' in url:
+                    subtype = 'x1'
+                elif 'sg-1000' in url:
+                    subtype = 'sg-1000'
+                elif 'thomson' in url:
+                    subtype = 'moto'
+                elif 'ti99' in url:
+                    subtype = 'ti99'
+                elif 'trs-80' in url:
+                    subtype = 'trs-80'
+                elif 'vectrex' in url:
+                    subtype = 'vectrex'
+                elif 'videopac' in url:
+                    subtype = 'videopac'
+                elif 'virtualboy' in url:
+                    subtype = 'virtualboy'
+                elif 'wii' in url:
+                    subtype = 'wii'
+                elif 'wonderswan' in url:
+                    subtype = 'wonderswancolor'
+                    if 'wonderswan' in url:
+                        subtype = 'wonderswan'
+                elif 'zmachine' in url:
+                    subtype = 'zmachine'
+                elif 'spectrum' in url:
+                    subtype = 'zxspectrum'
+
 
                 out = ROMS_PATH+"/"+subtype+"/"
                 element = {}

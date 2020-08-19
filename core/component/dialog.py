@@ -75,7 +75,7 @@ class Dialog(pygame.sprite.Sprite):
         yT2 = (self.height*2/5)
         xT2 = (self.width/2) - ((self.font.size(self.message)[0]) / 2) #TODO, break lines
 
-        txt2 = self.font.render(self.message, True, BLACK)
+        txt2 = self.font.render(self.message, True, WHITE)
         self.image.blit(txt2, (xT2, yT2))
 
         if self.options is not None and len(self.options)>0:

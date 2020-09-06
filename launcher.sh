@@ -18,8 +18,15 @@ then
   then
     #sudo killall -9 battery.sh
     #sudo killall -9 pngview
-    foo="`cat command`"
-    $foo
+    #foo="`cat command`"
+    #$foo
+    #while IFS= read -r line; do
+      #eval "$line" #execute each line
+    #  echo "executed '$line'."
+    #done < command
+    #cat "$foo"
+    sh command
+    echo "done, relaunching..."
     ./launcher.sh
   fi
 else

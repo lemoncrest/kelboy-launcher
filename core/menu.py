@@ -336,9 +336,9 @@ class MenuItems(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.items = items
         self.font = pygame.font.Font(FONT_TYPE, FONT_SIZE)
-        self.image = self.font.render(' ', False, WHITE)
+        self.image = self.font.render(' ', False, FONT_COLOR_ITEM)
 
-        self.height = self.font.render('X', False, WHITE).get_rect().height
+        self.height = self.font.render('X', False, FONT_COLOR_ITEM).get_rect().height
 
         self.rect = self.image.get_rect()
         #self.menu_init_y = 40
@@ -364,7 +364,7 @@ class MenuItems(pygame.sprite.Sprite):
             counterNew = 0
             for item in self.items:
 
-                text_item = self.font.render(item["title"], False, WHITE)
+                text_item = self.font.render(item["title"], False, FONT_COLOR_ITEM)
                 text_item_rect = text_item.get_rect()
                 #self.image.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
                 #self.main.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), 0 + (text_item_rect.height * counter)) )

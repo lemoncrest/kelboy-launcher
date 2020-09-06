@@ -1,3 +1,5 @@
+from core.colors import *
+
 #Constants
 
 WIDTH = 320
@@ -8,6 +10,7 @@ margin = 10
 
 screensaverTime = 60000 #milliseconds
 FONT_SIZE = 18
+FONT_COLOR_ITEM = DARK_GRAY
 FONT_TYPE = 'resources/fonts/editundo_var.ttf'
 FONT_TYPE_KEYBOARD = 'resources/fonts/zeldadxt_mono.ttf'
 FONT_TYPE_KEYBOARDBAR = 'resources/fonts/DejaVuSans.ttf'

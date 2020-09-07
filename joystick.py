@@ -1,7 +1,7 @@
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
-import os, struct, array
+import os, struct, array, subprocess
 from fcntl import ioctl
 
 from core.settings import *

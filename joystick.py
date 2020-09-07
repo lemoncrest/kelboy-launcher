@@ -206,7 +206,7 @@ while True:
                             level = "100"
                     elif battery>0:
                         level = "25"
-                command="bin/pngview resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % level
+                command="sudo bin/pngview resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % level
                 process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = True
         if button_states["SELECT"] and button_states["DOWN"]:

@@ -177,6 +177,7 @@ while True:
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             if battery:
+                logger.debug("killing battery...")
                 #command = "killall pngview"
                 #process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 process = subprocess.run("ps aux | grep pngview | awk '{ print $2 }'", shell=True)
@@ -188,9 +189,10 @@ while True:
                     if i == 2:
                         killid = num
                         command2 = "sudo kill %s" %killid
-                        subprocess.run(command2, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                        os.system(command2, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = False
             else:
+                logger.debug("showing battery...")
                 command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
                 try:
                     process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
@@ -210,7 +212,8 @@ while True:
                         level = "25"
                 pwd = os.getcwd()
                 command="sudo bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % (pwd,level)
-                process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                logger.debug("command... %s")
+                os.system(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = True
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")

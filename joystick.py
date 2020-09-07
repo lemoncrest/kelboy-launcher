@@ -177,8 +177,16 @@ while True:
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             if battery:
-                command = "killall pngview"
-                process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                #command = "killall pngview"
+                #process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                out = check_output("ps aux | grep pngview | awk '{ print $2 }'", shell=True)
+                nums = out.decode('ascii').split('\n')
+                for num in nums:
+                    i += 1
+                    if i == 2:
+                        killid = num
+                        command2 = "sudo kill %s" %killid
+                        subprocess.run(command2, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = False
             else:
                 command = 'cat /sys/class/power_supply/max1726x_battery/capacity'

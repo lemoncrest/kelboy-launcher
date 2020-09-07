@@ -194,9 +194,11 @@ while True:
             else:
                 logger.debug("showing battery...")
                 command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
+                charging = False
                 try:
                     process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                     battery = int(process.stdout)
+                    logger.debug("%s" % str(battery))
                 except:
                     battery = 0 #"lightning-empty-help"
                     level = 0
@@ -210,10 +212,12 @@ while True:
                             level = "100"
                     elif battery>0:
                         level = "25"
+                logger.debug("level is %s" % level)
                 pwd = os.getcwd()
                 command="sudo bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % (pwd,level)
                 logger.debug("command... %s" % command)
                 os.system(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = True
+                logger.debug("done")
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")

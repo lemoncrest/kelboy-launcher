@@ -176,49 +176,32 @@ while True:
             os.system('amixer set PCM 50%')
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
-            if battery:
-                logger.debug("killing battery...")
-                #command = "killall pngview"
-                #process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                process = subprocess.run("ps aux | grep pngview | awk '{ print $2 }'", shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                out = process.stdout
-                nums = out.decode('ascii').split('\n')
-                i=0
-                for num in nums:
-                    i += 1
-                    if i == 2:
-                        killid = num
-                        command2 = "sudo kill %s" %killid
-                        os.system(command2)
-                        logger.debug(command2)
-                battery = False
-            else:
-                logger.debug("showing battery...")
-                command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
-                charging = False
-                try:
-                    process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                    battery = int(process.stdout)
-                    logger.debug("%s" % str(battery))
-                except:
-                    battery = 0 #"lightning-empty-help"
-                    level = 0
-                    pass
-                if not charging:
-                    if(battery>50):
-                        level = "75"
-                        if(battery<75):
-                            level = "50"
-                        elif(battery>=95):
-                            level = "100"
-                    elif battery>0:
-                        level = "25"
-                logger.debug("level is %s" % level)
-                pwd = os.getcwd()
-                command="sudo bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % (pwd,level)
-                logger.debug("command... %s" % command)
-                battery = True
-                os.system(command)
-                logger.debug("done")
+            logger.debug("showing battery...")
+            command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
+            charging = False
+            try:
+                process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                battery = int(process.stdout)
+                logger.debug("%s" % str(battery))
+            except:
+                battery = 0 #"lightning-empty-help"
+                level = 0
+                pass
+            if not charging:
+                if(battery>50):
+                    level = "75"
+                    if(battery<75):
+                        level = "50"
+                    elif(battery>=95):
+                        level = "100"
+                elif battery>0:
+                    level = "25"
+            logger.debug("level is %s" % level)
+            pwd = os.getcwd()
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 -t 5000 &" % (pwd,level)
+            logger.debug("command... %s" % command)
+            battery = True
+            os.system(command)
+            logger.debug("done")
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")

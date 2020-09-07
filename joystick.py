@@ -216,7 +216,7 @@ while True:
                 pwd = os.getcwd()
                 command="sudo bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % (pwd,level)
                 logger.debug("command... %s" % command)
-                os.system(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = True
                 logger.debug("done")
         if button_states["SELECT"] and button_states["DOWN"]:

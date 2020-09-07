@@ -180,7 +180,7 @@ while True:
                 logger.debug("killing battery...")
                 #command = "killall pngview"
                 #process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                process = subprocess.run("ps aux | grep pngview | awk '{ print $2 }'", shell=True)
+                process = subprocess.run("ps aux | grep pngview | awk '{ print $2 }'", shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 out = process.stdout
                 nums = out.decode('ascii').split('\n')
                 i=0

@@ -189,7 +189,8 @@ while True:
                     if i == 2:
                         killid = num
                         command2 = "sudo kill %s" %killid
-                        os.system(command2, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                        os.system(command2)
+                        logger.debug(command2)
                 battery = False
             else:
                 logger.debug("showing battery...")

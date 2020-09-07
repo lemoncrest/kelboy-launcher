@@ -182,6 +182,7 @@ while True:
                 process = subprocess.run("ps aux | grep pngview | awk '{ print $2 }'", shell=True)
                 out = process.stdout
                 nums = out.decode('ascii').split('\n')
+                i=0
                 for num in nums:
                     i += 1
                     if i == 2:

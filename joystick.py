@@ -136,7 +136,7 @@ for btn in buf[:num_buttons]:
 
 logger.debug(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
 logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
-
+battery = False
 # Main event loop
 while True:
     evbuf = jsdev.read(8)
@@ -176,5 +176,30 @@ while True:
             os.system('amixer set PCM 50%')
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
+            if battery:
+                command = "killall pngview"
+                process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                battery = False
+            else:
+                command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
+                try:
+                    process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                    battery = int(process.stdout)
+                except:
+                    battery = 0 #"lightning-empty-help"
+                    level = 0
+                    pass
+                if not charging:
+                    if(battery>50):
+                        level = "75"
+                        if(battery<75):
+                            level = "50"
+                        elif(battery>=95):
+                            level = "100"
+                    elif battery>0:
+                        level = "25"
+                command="bin/pngview resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 &" % level
+                process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                battery = True
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")

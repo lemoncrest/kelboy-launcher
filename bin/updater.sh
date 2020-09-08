@@ -24,6 +24,10 @@ killall -9 pngview
 #clone new one
 #git clone https://github.com/lemoncrest/kelboy-launcher
 #cd kelboy-launcher
+if [ ! -f /lib/arm-linux-gnueabihf/libpng12.so.0 ]; then
+    echo "launching install dependencies..."
+    sudo apt install libpng12-0 bsdtar -y
+fi
 git pull
 chmod +x bin/*.sh
 chmod +x *.sh

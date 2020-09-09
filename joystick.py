@@ -177,31 +177,48 @@ while True:
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             logger.debug("showing battery...")
-            command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
-            charging = False
             try:
-                process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 battery = int(process.stdout)
                 logger.debug("%s" % str(battery))
             except:
                 battery = 0 #"lightning-empty-help"
                 level = 0
                 pass
-            if not charging:
+            charging = False
+            try:
+                process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                charging = int(process.stdout) > 0
+                logger.debug("%s" % str(battery))
+            except:
+                charging = False
+                pass
+            pwd = os.getcwd()
+            if charging:
+                level = "lightning-empty-help"
+                if(battery>50):
+                    level = "lightning-midle"
+                    if(battery>=95):
+                        level = "lightning-full"
+                elif battery>15:
+                    level = "lightning-empty"
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 -t 5000 &" % (pwd,level)
+            else:
                 if(battery>50):
                     level = "75"
                     if(battery<75):
                         level = "50"
                     elif(battery>=95):
                         level = "100"
-                elif battery>0:
+                elif battery>15:
                     level = "25"
-            logger.debug("level is %s" % level)
-            pwd = os.getcwd()
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 -t 5000 &" % (pwd,level)
+                else:
+                    level = "0"
+                logger.debug("level is %s" % level)
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 -t 5000 &" % (pwd,level)
             logger.debug("command... %s" % command)
             battery = True
             os.system(command)
-            logger.debug("done")
+            logger.debug("command done")
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")

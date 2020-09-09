@@ -27,3 +27,7 @@ FRAMES_IN = 16
 FRAMES_OUT = 16
 
 BARSIZE = 25
+
+BATTERY_PERCENTAGE_CMD = 'cat /sys/class/power_supply/max1726x_battery/capacity'
+
+FUELGAUGE_CURRENT_CMD = 'cat /sys/class/power_supply/max1726x_battery/current_now'

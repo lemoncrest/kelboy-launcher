@@ -210,6 +210,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
         logger.debug("with type")
         logger.debug("selected directory is %s " % folder)
         if type == 'gbc':
+            logger.debug("selected gameboycolor...")
             dir = os.listdir(os.path.join(ROMS_PATH,folder))
             for directory in dir:
                 logger.debug("Not empty directory %s, appending to list" % directory)

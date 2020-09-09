@@ -214,15 +214,24 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             newPath = os.path.join(ROMS_PATH,folder)
             dir = os.listdir(newPath)
             for directory in dir:
-                logger.debug("Not empty directory %s, appending to list" % directory)
-                element = {}
-                element["title"] = "%s" % directory[:directory.rfind(".")]
-                element["action"] = "command"
-                element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,newPath,directory)
-                element["params"] = [{
-                    'type' : directory
-                }]
-                menu.append(element)
+                if os.path.getsize(os.path.join(newPath,directory))>8192:
+                    logger.debug("Not empty directory %s, appending to list" % directory)
+                    element = {}
+                    element["title"] = "%s" % directory[:directory.rfind(".")]
+                    element["action"] = "command"
+                    element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,newPath,directory)
+                    element["params"] = [{
+                        'type' : directory
+                    }]
+                    menu.append(element)
+            element = {}
+            element["title"] = "Back"
+            element["action"] = "function"
+            element["external"] = "loadRoms"
+            element["params"] = [{
+                'type' : folder
+            }]
+            menu.append(element)
 
     return menu
 

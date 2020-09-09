@@ -228,9 +228,6 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             element["title"] = "Back"
             element["action"] = "function"
             element["external"] = "loadRoms"
-            element["params"] = [{
-                'type' : folder
-            }]
             menu.append(element)
 
     return menu

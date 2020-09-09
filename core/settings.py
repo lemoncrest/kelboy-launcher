@@ -31,3 +31,8 @@ BARSIZE = 25
 BATTERY_PERCENTAGE_CMD = 'cat /sys/class/power_supply/max1726x_battery/capacity'
 
 FUELGAUGE_CURRENT_CMD = 'cat /sys/class/power_supply/max1726x_battery/current_now'
+
+RETROARCH_BIN = '/opt/retropie/emulators/retroarch/bin/retroarch'
+RETROARCH_CONFIG = '/opt/retropie/configs/gb/retroarch.cfg'
+
+LIB_GBC = '/opt/retropie/libretrocores/lr-gambatte/gambatte_libretro.so'

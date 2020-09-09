@@ -218,7 +218,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                 element = {}
                 element["title"] = "%s" % directory[:directory.rfind(".")]
                 element["action"] = "function"
-                element["external"] = '%s -L %s --config %s "%s%s"' % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,newPath,directory)
+                element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,newPath,directory)
                 element["params"] = [{
                     'type' : directory
                 }]

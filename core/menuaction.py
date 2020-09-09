@@ -178,7 +178,14 @@ def connectBluetooth(params=[]):
 
 def loadRoms(params=[]): #TODO launch emulationstation configurations by path
     menu = []
-    if "type" not in params:
+    folder = None
+    if type(params) is list:
+        logger.debug("list")
+        for element in params:
+            logger.debug("ele %s" % str(element))
+            if "type" in element:
+                folder = element["type"]
+    if folder = None:
         logger.debug("not type")
         dir= os.listdir(ROMS_PATH)
         for directory in dir:
@@ -201,10 +208,9 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
         menu.append(element)
     else:
         logger.debug("with type")
-        type = params["type"]
-        logger.debug("selected directory is %s " % type)
+        logger.debug("selected directory is %s " % folder)
         if type == 'gbc':
-            dir = os.listdir(os.path.join(ROMS_PATH,type))
+            dir = os.listdir(os.path.join(ROMS_PATH,folder))
             for directory in dir:
                 logger.debug("Not empty directory %s, appending to list" % directory)
                 element = {}
@@ -215,7 +221,6 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                     'type' : directory
                 }]
                 menu.append(element)
-
 
     return menu
 

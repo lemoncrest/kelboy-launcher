@@ -187,8 +187,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                 logger.debug("Not empty directory %s, appending to list" % directory)
                 element = {}
                 element["title"] = "%s" % directory
-                element["action"] = "function"
-                element["external"] = 'loadRoms'
+                element["action"] = "loadRoms"
                 element["params"] = [{
                     'type' : directory
                 }]
@@ -208,8 +207,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                 logger.debug("Not empty directory %s, appending to list" % directory)
                 element = {}
                 element["title"] = "%s" % directory[:directory.rfind(".")]
-                element["action"] = "function"
-                element["external"] = "%s -L %s --config %s %s" % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,directory)
+                element["action"] = "%s -L %s --config %s %s" % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,directory)
                 element["params"] = [{
                     'type' : directory
                 }]

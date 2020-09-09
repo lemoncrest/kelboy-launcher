@@ -185,7 +185,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             logger.debug("ele %s" % str(element))
             if "type" in element:
                 folder = element["type"]
-    if folder = None:
+    if folder == None:
         logger.debug("not type")
         dir= os.listdir(ROMS_PATH)
         for directory in dir:

@@ -197,10 +197,22 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
         element["action"] = 'menu'
         element["external"] = 'main'
         menu.append(element)
-
     else:
         type = params["type"]
         logger.debug("selected directory is %s " % type)
+        if type == 'gbc':
+            dir = os.listdir(os.path.join(ROMS_PATH,type))
+            for directory in dir:
+                logger.debug("Not empty directory %s, appending to list" % directory)
+                element = {}
+                element["title"] = "%s" % directory[:directory.rfind(".")]
+                element["action"] = "%s -L %s --config %s %s" % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,rom)
+                element["params"] = [{
+                    'type' : directory
+                }]
+                menu.append(element)
+
+
     return menu
 
 

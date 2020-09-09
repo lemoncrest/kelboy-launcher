@@ -445,6 +445,7 @@ class MenuStatus(pygame.sprite.Sprite):
             logger.debug("level is %s" % level)
         image = pygame.image.load(os.path.join("resources/graphics", "battery-"+str(level)+".png"))
         rect1 = (WIDTH-(image.get_rect().width*1.5),BARSIZE/2-(image.get_rect().height/2))
+        self.image.fill(BLACK)
         self.image.blit(image, rect1)
 
         #draw sound

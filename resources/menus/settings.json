@@ -12,6 +12,10 @@
     "action": "menu",
     "external": "main"
   },{
+    "title": "Calibrate joystick (BIOS)",
+    "action": "command-exit",
+    "external": "i2cset -y 1 0x0a 0x22\ncat /dev/ttyACM0 & sleep 20s"
+  },{
     "title": "Back",
     "action": "menu",
     "external": "main"

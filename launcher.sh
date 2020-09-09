@@ -25,6 +25,7 @@ then
     #  echo "executed '$line'."
     #done < command
     #cat "$foo"
+    clear
     sh command
     echo "done, relaunching..."
     ./launcher.sh

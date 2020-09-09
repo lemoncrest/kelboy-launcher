@@ -25,10 +25,10 @@ then
     #  echo "executed '$line'."
     #done < command
     #cat "$foo"
-    sh clear &
     sleep 2s
     sh command
     echo "done, relaunching..."
+    clear
     ./launcher.sh
   fi
 else

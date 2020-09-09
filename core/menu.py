@@ -409,23 +409,40 @@ class MenuStatus(pygame.sprite.Sprite):
         #draw battery
         battery = 0 #TODO extract from driver
         charging = False
-        command = 'cat /sys/class/power_supply/max1726x_battery/capacity'
         try:
-            process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             battery = int(process.stdout)
         except:
             battery = 0 #"lightning-empty-help"
             level = 0
             pass
-        if not charging:
+        try:
+            process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            charging = int(process.stdout) > 0
+            logger.debug("%s" % str(battery))
+        except:
+            charging = False
+            pass
+        if charging:
+            level = "lightning-empty-help"
+            if(battery>50):
+                level = "lightning-midle"
+                if(battery>=95):
+                    level = "lightning-full"
+            elif battery>15:
+                level = "lightning-empty"
+        else:
             if(battery>50):
                 level = "75"
                 if(battery<75):
                     level = "50"
                 elif(battery>=95):
                     level = "100"
-            elif battery>0:
+            elif battery>15:
                 level = "25"
+            else:
+                level = "0"
+            logger.debug("level is %s" % level)
         image = pygame.image.load(os.path.join("resources/graphics", "battery-"+str(level)+".png"))
         rect1 = (WIDTH-(image.get_rect().width*1.5),BARSIZE/2-(image.get_rect().height/2))
         self.image.blit(image, rect1)

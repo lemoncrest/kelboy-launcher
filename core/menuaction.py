@@ -209,8 +209,24 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
     else:
         logger.debug("with type")
         logger.debug("selected directory is %s " % folder)
-        if folder == 'gbc':
-            logger.debug("selected gameboycolor...")
+        if folder in ['gbc','gb','gba','megadrive','n64']:
+            if folder in ['gbc','gb']:
+                logger.debug("selected gb/gbc...")
+                config = CONFIG_GB
+                lib = LIB_GB
+            elif folder == 'gba':
+                logger.debug("selected gba...")
+                config = CONFIG_GBA
+                lib = LIB_GBA
+            elif folder == 'megadrive':
+                logger.debug("selected megadrive...")
+                config = CONFIG_MD
+                lib = LIB_MD
+            elif folder == 'n64':
+                logger.debug("selected n64...")
+                config = CONFIG_N64
+                lib = LIB_N64
+
             newPath = os.path.join(ROMS_PATH,folder)
             dir = os.listdir(newPath)
             for directory in dir:
@@ -219,7 +235,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
                     element["action"] = "command"
-                    element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,LIB_GBC,RETROARCH_CONFIG,newPath,directory)
+                    element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,lib,config,newPath,directory)
                     element["params"] = [{
                         'type' : directory
                     }]

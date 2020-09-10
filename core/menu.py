@@ -68,22 +68,32 @@ class MenuCursor(pygame.sprite.Sprite):
         self.menu.keyboard = None
 
     def down(self):
-        if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem < len(self.menu.items.items) - 1:
-            if self.selectedItem<MAX_MENU_ITEMS-2:
-                self.rect.y += self.rect.height
-            self.selectedItem += 1
+        if self.menu.keyboard == None and self.menu.dialog == None:
+            if self.selectedItem < len(self.menu.items.items) - 1:
+                if self.selectedItem<MAX_MENU_ITEMS-2:
+                    self.rect.y += self.rect.height
+                self.selectedItem += 1
+            else:
+                self.selectedItem = 0
+                self.rect.y = HEIGHT / 2 - ((len(self.menu.items.items) / 2)*self.items.rect.height )
         elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
             self.menu.keyboard.positionY += 1
-            self.menu.keyboard.draw()
-        else:
-            logger.debug("ELSE DOWN")
 
 
     def up(self):
-        if self.menu.keyboard == None and self.menu.dialog == None and self.selectedItem != 0:
-            if self.selectedItem<MAX_MENU_ITEMS-1:
-                self.rect.y -= self.rect.height
-            self.selectedItem -= 1
+        if self.menu.keyboard == None and self.menu.dialog == None:
+            if self.selectedItem != 0:
+                if self.selectedItem<MAX_MENU_ITEMS-1:
+                    self.rect.y -= self.rect.height
+                self.selectedItem -= 1
+            else:
+                self.selectedItem = len(self.menu.items.items) - 1
+                #the last item is first + number of displayed items
+                self.rect.y = HEIGHT / 2 - ((len(self.menu.items.items) / 2)*self.items.rect.height )
+                if len(self.menu.items.items)>10:
+                    self.selectedItem = 10
+                else:
+                    self.selectedItem = len(self.menu.items.items)
         elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
             self.menu.keyboard.positionY -= 1
             self.menu.keyboard.draw()

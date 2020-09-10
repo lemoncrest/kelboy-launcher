@@ -4,6 +4,7 @@ import json
 import subprocess
 import threading
 import pygame
+import math
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
@@ -469,7 +470,7 @@ class MenuStatus(pygame.sprite.Sprite):
         init = self.drawAudio(start=(image.get_rect().width+25),number=False)
 
         #internet
-        self.drawWifi(start=(image.get_rect().width*2)+28)
+        self.drawWifi(start=(image.get_rect().width*2)+34)
 
         #bluetooth
         #TODO
@@ -538,7 +539,7 @@ class MenuStatus(pygame.sprite.Sprite):
         return init
 
 
-    def drawWifi(self,start=0,totalBars=10,barWidth=3):
+    def drawWifi(self,start=0,totalBars=5,barWidth=3):
         cmd = "awk 'NR==3 {print $4}''' /proc/net/wireless"
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         (out, err) = proc.communicate()
@@ -569,24 +570,28 @@ class MenuStatus(pygame.sprite.Sprite):
 
         #bars
         if level==0: #when no signal them display red X
-            yP = int((BARSIZE - barHeight)/2)
             txt = self.font.render("X", True, RED)
-            textPoint = (x + (self.padding * (totalBars+1)  + (barWidth*totalBars/2)), yP)
-            self.image.blit(txt, textPoint)
-        bars = int(level*totalBars/100)
-        for i in range(0,bars,1):
+            yP = int((BARSIZE - self.font.size("X")[1])/2)
+            x1 = x + self.padding * 2 + (barWidth*0) + self.margin
+            x2 = x + self.padding * (totalBars+2) * 2 + (barWidth*(totalBars+1)) + self.margin
+            x3 = x2-x1
+            xP = x + (x3/2)
+            textPointA = (xP, yP)
+            self.image.blit(txt, textPointA)
+        bars = math.ceil(level*totalBars/100)
+        for i in range(0,bars+1,1):
             xP = x + self.padding * (i+1) * 2 + (barWidth*i) + self.margin
-            ySize = int(barHeight / totalBars * i)
-            yP = barHeight - ySize + BARSIZE/4#(barHeight)-(int((BARSIZE - barHeight)/2) + (barHeight/totalBars*i))
-
+            ySize = int(barHeight / totalBars * i) - (self.padding*i*2)
+            yP = int(BARSIZE) - (ySize) - 5
             rect = pygame.Rect(xP, yP, barWidth, ySize)
             pygame.draw.rect(self.image, GREEN, rect)
         for i in range(bars,totalBars,1):  # points
             txt = self.font.render(".", True, WHITE)
-            xP = x + self.padding * (i+1) * 2 + (barWidth*i) + self.margin
-            yP = (BARSIZE - barHeight) - (self.font.size(".")[1] / 2)
-            textPoint = (xP, yP)
-            self.image.blit(txt, textPoint)
+            xP = x + self.padding * (i+1) * 2 + (barWidth*i) + self.margin + (self.font.size("X")[0]/2)
+            #yP = (BARSIZE - barHeight) - (self.font.size(".")[1] / 2)
+            yP = int(BARSIZE/2) - 2
+            textPointB = (xP, yP)
+            self.image.blit(txt, textPointB)
         return rect
 
 

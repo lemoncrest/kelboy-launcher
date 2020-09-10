@@ -248,7 +248,21 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
                     element["action"] = "command"
-                    element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,lib,config,newPath,directory)
+                    fileName = "%s/%s" % (newPath,directory)
+                    os.system("cp %s/%s /tmp/" % (fileName))
+                    if directory.lower().endswith(".zip"):
+                        #some roms require unzip files (f.i. Yoshi Story)
+                        os.system("rm -Rf /tmp/launcher") #first clean old one if exists
+                        #next unzip
+                        os.system("mkdir /tmp/launcher/")
+                        os.system("unzip /tmp/%s -d /tmp/launcher/")
+                        #last step, get file name extracted
+                        for r, d, f in os.walk(path):
+                            for file in f:
+                                fileName = os.path.join(r, file)
+                        logger.debug("target unzipped file is %s " % fileName)
+
+                    element["external"] = '%s -L %s --config %s "%s"' % (RETROARCH_BIN,lib,config,fileName)
                     element["params"] = [{
                         'type' : directory
                     }]

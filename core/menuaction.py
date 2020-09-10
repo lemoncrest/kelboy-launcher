@@ -243,7 +243,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             dir = os.listdir(newPath)
             for directory in dir:
                 #if os.path.getsize(os.path.join(newPath,directory))>8192:
-                if '.srm' or '.state' not in directory:
+                if '.srm' not in directory or '.state' not in directory:
                     logger.debug("Not empty directory %s, appending to list" % directory)
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]

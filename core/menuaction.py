@@ -237,7 +237,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             elif folder == 'snes':
                 logger.debug("selected super nintendo...")
                 config = CONFIG_SNES
-                lib = LIB_SNES
+                lib = LIB_SNES_2010
 
             newPath = os.path.join(ROMS_PATH,folder)
             dir = os.listdir(newPath)

@@ -423,7 +423,6 @@ class MenuStatus(pygame.sprite.Sprite):
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             charging = int(process.stdout) > 0
-            logger.debug("%s" % str(battery))
         except:
             charging = False
             pass
@@ -446,7 +445,6 @@ class MenuStatus(pygame.sprite.Sprite):
                 level = "25"
             else:
                 level = "0"
-            logger.debug("level is %s" % level)
         image = pygame.image.load(os.path.join("resources/graphics", "battery-"+str(level)+".png"))
         rect1 = (WIDTH-(image.get_rect().width*1.5),BARSIZE/2-(image.get_rect().height/2))
         self.image.fill(BLACK)

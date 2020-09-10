@@ -209,7 +209,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
     else:
         logger.debug("with type")
         logger.debug("selected directory is %s " % folder)
-        if folder in ['gbc','gb','gba','megadrive','n64']:
+        if folder in ['gbc','gb','gba','megadrive','n64','amstradcpc','nes','snes']:
             if folder in ['gbc','gb']:
                 logger.debug("selected gb/gbc...")
                 config = CONFIG_GB
@@ -226,6 +226,18 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                 logger.debug("selected n64...")
                 config = CONFIG_N64
                 lib = LIB_N64
+            elif folder == 'amstradcpc':
+                logger.debug("selected amstrad...")
+                config = CONFIG_AMSTRAD
+                lib = LIB_AMSTRAD
+            elif folder == 'nes':
+                logger.debug("selected famicom/nes...")
+                config = CONFIG_NES
+                lib = LIB_NES
+            elif folder == 'snes':
+                logger.debug("selected super nintendo...")
+                config = CONFIG_SNES
+                lib = LIB_SNES
 
             newPath = os.path.join(ROMS_PATH,folder)
             dir = os.listdir(newPath)

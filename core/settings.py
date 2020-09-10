@@ -46,3 +46,12 @@ LIB_MD = '/opt/retropie/libretrocores/lr-genesis-plus-gx/genesis_plus_gx_libretr
 #nintendo 64
 LIB_N64 = '/opt/retropie/libretrocores/lr-mupen64plus-next/mupen64plus_next_libretro.so'
 CONFIG_N64 = '/opt/retropie/configs/n64/retroarch.cfg'
+#amstrad
+CONFIG_AMSTRAD = '/opt/retropie/configs/amstradcpc/retroarch.cfg'
+LIB_AMSTRAD = '/opt/retropie/libretrocores/lr-caprice32/cap32_libretro.so'
+#nes
+LIB_NES = '/opt/retropie/libretrocores/lr-fceumm/fceumm_libretro.so'
+CONFIG_NES = '/opt/retropie/configs/nes/retroarch.cfg'
+#snes
+LIB_SNES = '/opt/retropie/libretrocores/lr-snes9x2010/snes9x2010_libretro.so'
+CONFIG_SNES = '/opt/retropie/configs/snes/retroarch.cfg'

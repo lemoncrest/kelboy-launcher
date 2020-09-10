@@ -55,3 +55,5 @@ CONFIG_NES = '/opt/retropie/configs/nes/retroarch.cfg'
 #snes
 LIB_SNES = '/opt/retropie/libretrocores/lr-snes9x2010/snes9x2010_libretro.so'
 CONFIG_SNES = '/opt/retropie/configs/snes/retroarch.cfg'
+
+LIB_SNES_2010 = '/opt/retropie/libretrocores/lr-snes9x2010/snes9x2010_libretro.so'

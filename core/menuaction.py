@@ -523,10 +523,11 @@ def internetBrowser(params=[]):
                 element["title"] = "Back"
                 element["action"] = 'command-exit'
                 command = 'wget -N %s -P %s \n' %(link,out)
-                if link.endswith('.zip'):
-                    command = 'mkdir -p "%s" \n' % (out)
+                #download unzipped is commented because some platforms needs to be in .zip format
+#                if link.endswith('.zip'):
+#                    command = 'mkdir -p "%s" \n' % (out)
                     #command += 'curl -L %s | bsdtar -xvf - -C %s\n' % (link,out)
-                    command += 'wget -qO- %s | bsdtar -xvf - -C %s\n' % (link,out)
+#                    command += 'wget -qO- %s | bsdtar -xvf - -C %s\n' % (link,out)
                     #file = link[link.rfind('/')+1:].replace('%20','\ ').replace('%28','\(').replace('%29','\)')#.replace('%20',' ').replace('%28','(').replace('%29',')')
                     #command += 'unzip %s -d %s \n' % (file,out)
                     #command += 'rm -Rf %s%s \n' % (out,file)

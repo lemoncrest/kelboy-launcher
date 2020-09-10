@@ -75,6 +75,8 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
             self.menu.keyboard.positionY += 1
             self.menu.keyboard.draw()
+        else:
+            logger.debug("ELSE DOWN")
 
 
     def up(self):
@@ -85,6 +87,8 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
             self.menu.keyboard.positionY -= 1
             self.menu.keyboard.draw()
+        else:
+            logger.debug("ELSE UP")
 
     def left(self):
         if self.menu.keyboard == None:

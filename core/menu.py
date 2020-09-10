@@ -74,7 +74,8 @@ class MenuCursor(pygame.sprite.Sprite):
                     self.rect.y += self.rect.height
                 self.selectedItem += 1
             else:
-                self.selectedItem = 0
+                logger.debug("limit down")
+                #self.selectedItem = 0
                 #self.rect.y = HEIGHT / 2 - ((len(self.menu.items.items) / 2)*self.items.rect.height )
         elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
             self.menu.keyboard.positionY += 1
@@ -87,7 +88,8 @@ class MenuCursor(pygame.sprite.Sprite):
                     self.rect.y -= self.rect.height
                 self.selectedItem -= 1
             else:
-                self.selectedItem = len(self.menu.items.items) - 1
+                logger.debug("limit up")
+                #self.selectedItem = len(self.menu.items.items) - 1
                 #the last item is first + number of displayed items
                 #self.rect.y = HEIGHT / 2 - ((len(self.menu.items.items) / 2)*self.items.rect.height )
                 #if len(self.menu.items.items)>10:
@@ -97,8 +99,6 @@ class MenuCursor(pygame.sprite.Sprite):
         elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
             self.menu.keyboard.positionY -= 1
             self.menu.keyboard.draw()
-        else:
-            logger.debug("ELSE UP")
 
     def left(self):
         if self.menu.keyboard == None:

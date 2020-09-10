@@ -414,7 +414,7 @@ class MenuStatus(pygame.sprite.Sprite):
         self.image = pygame.Surface((WIDTH, BARSIZE))
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image.fill(BLACK)
-        self.image.set_alpha(150)
+        #self.image.set_alpha(150)
         self.rect = self.image.get_rect()
         self.rect.centery = self.image.get_rect().height/2
         self.rect.centerx = WIDTH / 2

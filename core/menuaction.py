@@ -249,12 +249,8 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                     element["title"] = "%s" % directory[:directory.rfind(".")]
                     element["action"] = "command"
                     fileName = "%s/%s" % (newPath,directory)
-                    os.system("cp %s/%s /tmp/" % (fileName))
                     if directory.lower().endswith(".zip"):
                         #some roms require unzip files (f.i. Yoshi Story)
-                        os.system("rm -Rf /tmp/launcher") #first clean old one if exists
-                        #next unzip
-                        os.system("mkdir /tmp/launcher/")
                         os.system("unzip /tmp/%s -d /tmp/launcher/")
                         #last step, get file name extracted
                         for r, d, f in os.walk(path):

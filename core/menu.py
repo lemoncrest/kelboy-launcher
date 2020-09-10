@@ -466,7 +466,7 @@ class MenuStatus(pygame.sprite.Sprite):
         self.image.blit(image, rect1)
 
         #draw sound
-        init = self.drawAudio(start=(image.get_rect().width*2),number=False)
+        init = self.drawAudio(start=(image.get_rect().width+25),number=False)
 
         #internet
         self.drawWifi(start=(image.get_rect().width*2)+28)
@@ -500,7 +500,7 @@ class MenuStatus(pygame.sprite.Sprite):
             textPoint = (x -self.margin*3 -self.padding*3 - (self.font.size(level)[0])/2, y)
             self.image.blit(txt, textPoint)
         else:
-            top = 20
+            top = 15
             width = top*2
             height = top
             x = WIDTH - start - top

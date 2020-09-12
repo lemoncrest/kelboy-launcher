@@ -147,7 +147,7 @@ battery = False
 lightLevel = 100
 brightness = None
 try:
-    GPIO.setmode(GPIO.BOARD)
+    GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(40, GPIO.OUT)
     brightness = GPIO.PWM(40, 50000)

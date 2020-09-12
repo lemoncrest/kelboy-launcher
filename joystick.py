@@ -9,6 +9,13 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+try:
+    import RPi.GPIO as GPIO
+except:
+    logger.warning("pending ... pip install RPi.GPIO")
+    pass
+
+
 # Iterate over the joystick devices.
 logger.debug('Available devices:')
 
@@ -137,6 +144,16 @@ for btn in buf[:num_buttons]:
 logger.debug(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
 logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
 battery = False
+lightLevel = 100
+try:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(40, GPIO.OUT)
+    brightness = GPIO.PWM(lightLevel, 100)
+except:
+    logger.waring("needs pip library RPi.GPIO")
+    pass
+
 # Main event loop
 while True:
     evbuf = jsdev.read(8)
@@ -222,3 +239,9 @@ while True:
             logger.debug("command done")
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")
+        if button_states["SELECT"] and button_states["LEFT"]:
+            newLevel = lightLevel - 5 if lightLevel >= 5 else 0
+            brightness.start(newLevel)
+        if button_states["SELECT"] and button_states["RIGHT"]:
+            newLevel = lightLevel + 5 if lightLevel <= 95 else 100
+            brightness.start(newLevel)

@@ -150,7 +150,9 @@ try:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(40, GPIO.OUT)
-    brightness = GPIO.PWM(40, lightLevel)
+    brightness = GPIO.PWM(40, 50000)
+    brightness.start(0)
+    brightness.ChangeDutyCycle(100)
 except:
     logger.warning("needs pip library RPi.GPIO")
     pass
@@ -242,7 +244,7 @@ while True:
             logger.debug("bundle2 down detected")
         if button_states["SELECT"] and button_states["LEFT"]:
             lightLevel = lightLevel - 15 if lightLevel >= 15 else 0
-            brightness.start(lightLevel)
+            brightness.ChangeDutyCycle(lightLevel*500)
         if button_states["SELECT"] and button_states["RIGHT"]:
             lightLevel = lightLevel + 15 if lightLevel <= 85 else 100
-            brightness.start(lightLevel)
+            brightness.ChangeDutyCycle(lightLevel*500)

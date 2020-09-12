@@ -150,7 +150,7 @@ try:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(40, GPIO.OUT)
-    brightness = GPIO.PWM(lightLevel, 100)
+    brightness = GPIO.PWM(40, lightLevel)
 except:
     logger.warning("needs pip library RPi.GPIO")
     pass

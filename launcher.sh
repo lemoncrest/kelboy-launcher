@@ -7,6 +7,7 @@ echo "welcome to kelboy-launcher"
 #cd bin
 #./battery.sh &
 #cd ..
+killall python3
 python3 joystick.py &
 #exitCode=$(python3 main.py)
 exitCode=$(python3 main.py 2>&1 )

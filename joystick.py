@@ -245,6 +245,8 @@ while True:
         if button_states["SELECT"] and button_states["LEFT"]:
             lightLevel = lightLevel - 15 if lightLevel >= 15 else 0
             brightness.ChangeDutyCycle(lightLevel)
+            logger.debug("brightness is %s" % lightLevel)
         if button_states["SELECT"] and button_states["RIGHT"]:
             lightLevel = lightLevel + 15 if lightLevel <= 85 else 100
             brightness.ChangeDutyCycle(lightLevel)
+            logger.debug("brightness is %s" % lightLevel)

@@ -150,7 +150,7 @@ try:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(40, GPIO.OUT)
-    brightness = GPIO.PWM(40, 50000)
+    brightness = GPIO.PWM(40, 25000)
     brightness.start(0)
     brightness.ChangeDutyCycle(100)
 except:
@@ -250,3 +250,8 @@ while True:
             lightLevel = lightLevel + 15 if lightLevel <= 85 else 100
             brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
+
+try:
+    brightness.ChangeDutyCycle(100)
+except:
+    pass

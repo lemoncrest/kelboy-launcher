@@ -241,8 +241,8 @@ while True:
         if button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")
         if button_states["SELECT"] and button_states["LEFT"]:
-            newLevel = lightLevel - 5 if lightLevel >= 5 else 0
-            brightness.start(newLevel)
+            lightLevel = lightLevel - 5 if lightLevel >= 5 else 0
+            brightness.start(lightLevel)
         if button_states["SELECT"] and button_states["RIGHT"]:
-            newLevel = lightLevel + 5 if lightLevel <= 95 else 100
-            brightness.start(newLevel)
+            lightLevel = lightLevel + 5 if lightLevel <= 95 else 100
+            brightness.start(lightLevel)

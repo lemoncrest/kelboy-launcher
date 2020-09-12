@@ -145,6 +145,7 @@ logger.debug(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
 logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
 battery = False
 lightLevel = 100
+brightness = None
 try:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)

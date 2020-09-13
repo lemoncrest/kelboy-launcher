@@ -66,7 +66,7 @@ class Matrix():
             events = pygame.event.get()
             if len(events) > 0:
                 exit = True
-            self.clock.tick(frameRate)
+            self.clock.tick(FRAMERATE)
             self.surface.fill(BLACK)
             self.water_fall()
             for x in range(0,int(WIDTH/self.fontSize)):

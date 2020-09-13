@@ -3,7 +3,7 @@ from pygame.surfarray import *
 from pygame.locals import *
 from core.settings import *
 RES = (WIDTH,HEIGHT)
-FRAMES = int(frameRate/4) #15 times
+FRAMES = int(FRAMERATE/4) #15 times
 
 def take_screenshot(screen):
     screen_copy = screen.copy()
@@ -21,7 +21,7 @@ def pixelate(screen, out=False):
         for i in range(0, FRAMES):
             pixelfade(screen, image_buf, pixel_chunk, 0, 0)
             pygame.display.update()
-            fpsClock.tick(frameRate)
+            fpsClock.tick(FRAMERATE)
             pixel_chunk += 2
 
     else:
@@ -29,7 +29,7 @@ def pixelate(screen, out=False):
         for i in range(0, FRAMES):
             pixelfade(screen, image_buf, pixel_chunk, 0, 0)
             pygame.display.update()
-            fpsClock.tick(frameRate)
+            fpsClock.tick(FRAMERATE)
             pixel_chunk -= 2
 
 

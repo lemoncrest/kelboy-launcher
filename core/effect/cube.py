@@ -201,7 +201,7 @@ class RotatingCube():
             events = pygame.event.get()
             if len(events) > 0:
                 exit = True
-            self.clock.tick(frameRate)
+            self.clock.tick(FRAMERATE)
 
             self.screen.fill(BLACK)
 

@@ -5,10 +5,13 @@ from core.colors import *
 WIDTH = 320
 HEIGHT = 240
 
-frameRate = 60
+FRAMERATE = 60
 margin = 10
 
-screensaverTime = 60000 #milliseconds
+SCREENSAVER_TIME = 60000 #milliseconds
+
+WIDGET_FRAMETIME = 200
+
 FONT_SIZE = 18
 FONT_COLOR_ITEM = DARK_GRAY
 FONT_TYPE = 'resources/fonts/editundo_var.ttf'

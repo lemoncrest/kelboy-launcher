@@ -4,10 +4,6 @@
     "action": "function",
     "external": "loadRoms"
   },{
-    "title": "Web browser",
-    "action": "menu",
-    "external": "rompages"
-  },{
     "title": "Back",
     "action": "menu",
     "external": "main"

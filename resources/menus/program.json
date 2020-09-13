@@ -1,8 +1,12 @@
 [
   {
-    "title": "Launch Emulationstation",
+    "title": "Emulationstation",
     "action": "command-exit",
     "external": "emulationstation"
+  },{
+    "title": "Web browser",
+    "action": "menu",
+    "external": "webpages"
   },{
     "title": "Update launcher",
     "action": "command-exit",

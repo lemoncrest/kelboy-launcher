@@ -421,8 +421,14 @@ class MenuStatus(pygame.sprite.Sprite):
         self.rect.centerx = WIDTH / 2
         self.rect.x = 0
         self.rect.y = 0
+        self.time = pygame.time.get_ticks()
 
     def draw(self):
+        if pygame.time.get_ticks() - self.time > WIDGET_FRAMETIME:
+            self.time = pygame.time.get_ticks()
+            self.drawWidgets()
+
+    def drawWidgets(self):
         self.padding = 1
         self.margin = 1
 

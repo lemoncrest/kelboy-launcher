@@ -55,8 +55,6 @@ class Main():
         #self.screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
         pygame.display.set_caption('Menu')
         self.clock = pygame.time.Clock()
-        self.frameRate = frameRate
-        self.frameCounter = 0
         self.running = True
         self.loadAssets()
         logger.debug("launch joystics init...")
@@ -143,7 +141,7 @@ class Main():
         self.screensaver = False #TODO
         self.last = int(round(time.time())*1000)
         while self.running:
-            if self.last+screensaverTime < int(round(time.time())*1000):
+            if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
                 self.screensaver = True
             if self.screensaver:
                 rand = randint(1, 3)
@@ -155,14 +153,11 @@ class Main():
                     Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
-            self.frameCounter += 1
-            self.clock.tick(self.frameRate)
+            self.clock.tick(FRAMERATE)
             self.events()
             self.update()
             self.draw()
             pygame.display.flip()
-            if self.frameCounter == self.frameRate:
-                self.frameCounter = 0
 
 
 main = Main()

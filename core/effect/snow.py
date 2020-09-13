@@ -44,5 +44,5 @@ class SnowBall():
                     snowMatrix.remove(snow)
 
             pygame.display.update()  # update the display
-            self.fpsClock.tick(frameRate)
+            self.fpsClock.tick(FRAMERATE)
             #pygame.time.wait(25)

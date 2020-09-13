@@ -81,6 +81,11 @@ class Keyboard(pygame.sprite.Sprite):
             ["!","\"","·","$","%","&","/","(",")","="],
             ["[","]","\\","|","@","#","<",">","?","¿"]
         ]
+        self.mayusSimbols = [
+            ["*","[","]","{","}","ç","¨","~","½","¬",""],
+            ["!","\"","·","$","%","&","/","(",")","="],
+            ["[","]","\\","|","@","#","<",">","?","¿"]
+        ]
         self.specials = [
             {
                 "name" : Keyboard.MAYUS
@@ -109,13 +114,14 @@ class Keyboard(pygame.sprite.Sprite):
             counter = 0
             for y in range(0,len(self.keys[0])):
                 #logger.debug(self.keys[x][y]) #key draw
-                if self.symb:
+                if self.symb and not self.shift:
                     target = self.symbols[x][y]
+                elif self.shift and not self.symb:
+                    target = self.mayus[x][y]
+                elif self.shift and self.symb:
+                    target = self.mayusSimbols[x][y]
                 else:
-                    if self.shift:
-                        target = self.mayus[x][y]
-                    else:
-                        target = self.keys[x][y]
+                    target = self.keys[x][y]
                 textsurface = self.font.render(target, True, WHITE)
 
                 image = pygame.Surface((30, 30))

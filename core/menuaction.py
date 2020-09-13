@@ -375,7 +375,7 @@ def internetBrowser(params=[]):
                 element = {}
                 element["title"] = "Back"
                 element["action"] = 'menu'
-                element["external"] = 'rompages'
+                element["external"] = 'webpages'
                 menu.append(element)
             else:
                 logger.debug("final link...")

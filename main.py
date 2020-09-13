@@ -166,6 +166,6 @@ class Main():
 
 
 main = Main()
-while main.running:
-    main.run()
+#while main.running:
+main.run()
 pygame.quit()

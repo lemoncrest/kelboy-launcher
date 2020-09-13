@@ -15,6 +15,8 @@ except:
     logger.warning("pending ... pip install RPi.GPIO")
     pass
 
+#FREQ = 65.5689
+FREQ = 65.5689
 
 # Iterate over the joystick devices.
 logger.debug('Available devices:')
@@ -150,7 +152,7 @@ try:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(40, GPIO.OUT)
-    brightness = GPIO.PWM(40, 25000)
+    brightness = GPIO.PWM(40, FREQ)
     brightness.start(0)
     brightness.ChangeDutyCycle(100)
 except:

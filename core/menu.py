@@ -588,11 +588,11 @@ class MenuStatus(pygame.sprite.Sprite):
         for i in range(0,bars+1,1):
             xP = x + self.padding * (i+1) * 2 + (barWidth*i) + self.margin
             ySize = int(barHeight / totalBars * i) - (self.padding*i*2)
+            if ySize < 1:
+                ySize = 1
             yP = int(BARSIZE) - (ySize) - 5
             if yP < 1:
                 yP = 1
-            if ySize < 1:
-                ySize = 1
             rect = pygame.Rect(xP, yP, barWidth, ySize)
             pygame.draw.rect(self.image, GREEN, rect)
         for i in range(bars,totalBars,1):  # points

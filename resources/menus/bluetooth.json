@@ -17,9 +17,9 @@
       "title": "Scan devices..."
   },{
       "action": "function",
-      "external": "connectBluetooth",
+      "external": "removeBluetooth",
       "params": [ ],
-      "title": "Connect to..."
+      "title": "Remove device"
   },{
     "title": "Back",
     "action": "menu",

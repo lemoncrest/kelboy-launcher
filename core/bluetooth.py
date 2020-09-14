@@ -46,30 +46,11 @@ class Bluetooth():
         time.sleep(0.5)
         self.child.sendline("power on")
 
-    def list_devices(self,wait=10):
+    def scan_devices(self,wait=10):
         devices = []
         self.child.sendline('scan on')
         time.sleep(wait)
         self.child.sendline('scan off')
-        exit = False
-        while not exit:
-            try:
-                line = self.child.readline().rstrip()
-                elements = line.split(" ")
-                element = {}
-                if len(elements)>1:
-                    element["address"] = elements[1]
-                if len(elements)>2:
-                    element["name"] = elements[2]
-                devices.append(element)
-            except pexpect.EOF:
-                logger.error('EOF')
-                exit = True
-        return devices
-
-    def scan_devices(self,wait=10):
-        devices = []
-        self.child.sendline('devices')
         line = self.child.readline()
         while b'scan off' not in line:
             if b'Device' in line:

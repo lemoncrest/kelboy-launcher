@@ -40,11 +40,11 @@ class Bluetooth():
 
     def off(self):
         time.sleep(0.5)
-        self.child = pexpect.spawn("power off")
+        self.child.sendline("power off")
 
     def on(self):
         time.sleep(0.5)
-        self.child = pexpect.spawn("power on")
+        self.child.sendline("power on")
 
     def scan_devices(self,wait=10):
         devices = []

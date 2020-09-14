@@ -64,22 +64,20 @@ class Bluetooth():
             line = self.child.readline()
         return devices
 
+    def get_output(self, command, pause = 0):
+        self.child.send(command + "\n")
+        time.sleep(pause)
+        start_failed = self.child.expect(["bluetooth", pexpect.EOF])
+
+        if start_failed:
+            raise BluetoothctlError("Bluetoothctl failed after running " + command)
+
+        return self.child.before.split("\r\n")
+
     def list_devices(self):
         devices = []
-        self.child.sendline('devices')
-        time.sleep(0.5)
-        line = self.child.readline()
-        while b'#' not in line:
-            logger.debug("using line %s " % line)
-            if b'Device' in line:
-                line = str(line.replace(b"\r\n", b'')).strip("b'").strip("'")
-                address, name = line.split('Device ')[1].split(' ', 1)
-                device = {}
-                device["name"] = name
-                device["address"] = address
-                devices.append(device)
-            line = self.child.readline()
-            logger.debug("next line: %s " % line)
+        content = self.get_output("devices")
+        logger.debug(content)
         return devices
 
     def trust_device(self,address):

@@ -21,7 +21,8 @@ def scanBluetoothDevices(params=[]):
         deviceValue = device["address"]
         element = {}
         element["title"] = "%s - %s" % (deviceValue, deviceName)
-        element["action"] = 'connectBluetooth'
+        element["action"] = 'function'
+        element["external"] = 'connectBluetooth'
         element["params"] = [{
             'target' : device["address"],
             'name' : device["name"]

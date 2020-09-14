@@ -46,7 +46,7 @@ class Bluetooth():
         time.sleep(0.5)
         self.child.sendline("power on")
 
-    def scan_devices(self,wait=10):
+    def list_devices(self,wait=10):
         devices = []
         self.child.sendline('scan on')
         time.sleep(wait)
@@ -67,7 +67,7 @@ class Bluetooth():
                 exit = True
         return devices
 
-    def list_devices(self,wait=10):
+    def scan_devices(self,wait=10):
         devices = []
         self.child.sendline('devices')
         line = self.child.readline()

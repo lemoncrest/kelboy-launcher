@@ -69,3 +69,13 @@ def connectBluetooth(params=[]):
         logger.debug("not found, not connected")
 
     bl.exit()
+
+def turnOffBluetooth(params=[]):
+    logger.debug("Turning off bluetooth...")
+    bl = Bluetooth()
+    bl.off()
+
+def turnOnBluetooth(params=[]):
+    logger.debug("Turning on bluetooth...")
+    bl = Bluetooth()
+    bl.on()

@@ -2,17 +2,25 @@
 
   {
       "action": "function",
+      "external": "turnOffBluetooth",
+      "params": [ ],
+      "title": "Turn off bluetooth"
+  },{
+      "action": "function",
+      "external": "turnOnBluetooth",
+      "params": [ ],
+      "title": "Turn on bluetooth"
+  },{
+      "action": "function",
       "external": "scanBluetoothDevices",
       "params": [ ],
       "title": "Scan devices..."
-  },
-  {
+  },{
       "action": "function",
       "external": "connectBluetooth",
       "params": [ ],
       "title": "Connect to..."
-  },
-  {
+  },{
     "title": "Back",
     "action": "menu",
     "external": "settings"

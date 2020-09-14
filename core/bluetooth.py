@@ -64,21 +64,30 @@ class Bluetooth():
             line = self.child.readline()
         return devices
 
-    def get_output(self, command, pause = 0):
-        self.child.send(command + "\n")
+    def send(self, command, pause=0):
+        self.process.send(f"{command}\n")
         time.sleep(pause)
-        start_failed = self.child.expect(["bluetooth", pexpect.EOF])
+        if self.process.expect(["bluetooth", pexpect.EOF]):
+            raise Exception(f"failed after {command}")
 
-        if start_failed:
-            raise BluetoothctlError("Bluetoothctl failed after running " + command)
+    def get_output(self, *args, **kwargs):
+        """Run a command in bluetoothctl prompt, return output as a list of lines."""
+        self.send(*args, **kwargs)
+        return self.process.before.split("\r\n")
 
-        return self.child.before.decode().split("\r\n")
-
-    def list_devices(self):
-        devices = []
-        content = self.get_output("devices")
-        logger.debug(content)
-        return devices
+    def get_available_devices(self):
+        """Return a list of tuples of paired and discoverable devices."""
+        available_devices = []
+        try:
+            out = self.get_output("devices")
+        except Exception as e:
+            logger.error(e)
+        else:
+            for line in out:
+                device = self.parse_device_info(line)
+                if device:
+                    available_devices.append(device)
+        return available_devices
 
     def trust_device(self,address):
         self.child.sendline('agent off')

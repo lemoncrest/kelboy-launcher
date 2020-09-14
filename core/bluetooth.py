@@ -36,7 +36,7 @@ class Bluetooth():
         return devices
 
     def launch(self):
-        self.child = pexpect.spawn("bluetoothctl")
+        self.child = pexpect.spawnu("bluetoothctl", echo=False)
 
     def off(self):
         time.sleep(0.5)
@@ -74,6 +74,24 @@ class Bluetooth():
         """Run a command in bluetoothctl prompt, return output as a list of lines."""
         self.send(*args, **kwargs)
         return self.child.before.split("\r\n")
+
+    def parse_device_info(self, info_string):
+        """Parse a string corresponding to a device."""
+        device = {}
+        block_list = ["[\x1b[0;", "removed"]
+        if not any(keyword in info_string for keyword in block_list):
+            try:
+                device_position = info_string.index("Device")
+            except ValueError:
+                pass
+            else:
+                if device_position > -1:
+                    attribute_list = info_string[device_position:].split(" ", 2)
+                    device = {
+                        "mac_address": attribute_list[1],
+                        "name": attribute_list[2],
+                    }
+        return device
 
     def get_available_devices(self):
         """Return a list of tuples of paired and discoverable devices."""

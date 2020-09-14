@@ -5,10 +5,11 @@ import subprocess
 import threading
 import pygame
 import math
+import re
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
-
+from core.component.dialog import Dialog
 import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -157,6 +158,14 @@ class MenuCursor(pygame.sprite.Sprite):
                 effect = self.manageKeyboard()
             else:
                 logger.debug("show exits!")
+        elif self.items.items[self.selectedItem]["action"] == 'command-message':
+            cmd = self.items.items[self.selectedItem]["external"]
+            logger.debug('command is "%s" ' % cmd)
+            process = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            result = process.stdout
+            result = re.sub('[^A-Za-z0-9.\-,\ ]+', '', result) #just normal chars
+            logger.debug("result is %s" % result)
+            self.menu.dialog = Dialog(main=self.main,title="Result",message=result, dialogWidth=160,dialogHeight=140)
         elif self.items.items[self.selectedItem]["action"] == 'function':
             #loading effect...
             pixelate(self.main.screen,True)

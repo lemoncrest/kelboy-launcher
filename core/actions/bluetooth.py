@@ -73,9 +73,11 @@ def connectBluetooth(params=[]):
 def turnOffBluetooth(params=[]):
     logger.debug("Turning off bluetooth...")
     bl = Bluetooth()
+    time.sleep(0.5)
     bl.off()
 
 def turnOnBluetooth(params=[]):
     logger.debug("Turning on bluetooth...")
     bl = Bluetooth()
+    time.sleep(0.5)
     bl.on()

@@ -69,8 +69,8 @@ class Bluetooth():
         self.child.sendline('devices')
         line = self.child.readline()
         while b'#' not in line:
+            logger.debug("using line %s " % line)
             if b'Device' in line:
-                logger.debug("using line %s " % line)
                 line = str(line.replace(b"\r\n", b'')).strip("b'").strip("'")
                 address, name = line.split('Device ')[1].split(' ', 1)
                 device = {}

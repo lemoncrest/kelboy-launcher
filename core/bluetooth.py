@@ -78,6 +78,7 @@ class Bluetooth():
                 device["address"] = address
                 devices.append(device)
             line = self.child.readline()
+            logger.debug("next line: %s " % line)
         return devices
 
     def trust_device(self,address):

@@ -8,9 +8,9 @@
     "action": "menu",
     "external": "bluetooth"
   },{
-    "title": "Brightness",
+    "title": "Network",
     "action": "menu",
-    "external": "main"
+    "external": "network"
   },{
     "title": "Calibrate joystick (BIOS)",
     "action": "command-exit",

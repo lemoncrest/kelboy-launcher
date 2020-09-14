@@ -160,7 +160,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 logger.debug("show exits!")
         elif self.items.items[self.selectedItem]["action"] == 'command-message':
             cmd = self.items.items[self.selectedItem]["external"]
-            logger.debug('command is "%s" ' % cmd)
+            logger.debug('command message is "%s" ' % cmd)
             process = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             result = process.stdout
             result = re.sub('[^A-Za-z0-9.\-,\ ]+', '', result) #just normal chars

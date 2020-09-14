@@ -1,19 +1,25 @@
 [
     {
+      "title": "Turn on WiFi",
+      "action": "command",
+      "external": "sudo ifconfig wlan0 up"
+    },{
+      "title": "Turn off WiFi",
+      "action": "command",
+      "external": "sudo ifconfig wlan0 down"
+    },{
         "action": "function",
         "external": "scanWifi",
         "params": [ ],
         "title": "Scan wifi..."
-    },
-    {
+    },{
         "action": "param",
         "external": "text-config",
         "name": "ssid",
         "title": "Network name",
         "value": "",
         "visible": "true"
-    },
-    {
+    },{
         "action": "param",
         "external": "config",
         "name": "pass",

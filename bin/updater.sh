@@ -33,6 +33,11 @@ fi
 if ! python3 -c 'import pkgutil; exit(not pkgutil.find_loader("RPi.GPIO"))'; then
     sudo apt install python3-rpi.gpio -y
 fi
+#pulseaudio and pulseaudio-module-bluetooth
+if [ $(dpkg-query -W -f='${Status}' pulseaudio 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt-get install pulseaudio pulseaudio-module-bluetooth -y
+fi
 
 git pull
 chmod +x bin/*.sh

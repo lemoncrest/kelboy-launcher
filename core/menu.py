@@ -127,7 +127,7 @@ class MenuCursor(pygame.sprite.Sprite):
 
     def select(self,surface):
         effect = False
-        logger.debug(self.items.items[self.selectedItem]["action"])
+        logger.debug("action: %s" % self.items.items[self.selectedItem]["action"])
         if self.menu.dialog != None:
             self.menu.dialog.kill()
             self.menu.dialog = None
@@ -171,14 +171,14 @@ class MenuCursor(pygame.sprite.Sprite):
             pixelate(self.main.screen,True)
             params = []
             funct = self.items.items[self.selectedItem]["external"]
-            logger.debug("function %s",funct)
+            logger.debug("function %s" % funct)
             #now call to function with params
             dynamicMethod = getattr(menuaction, funct)
             params = []
             if "params" in self.items.items[self.selectedItem]:
                 params = self.items.items[self.selectedItem]["params"]
             menu = dynamicMethod(params=params)
-            logger.debug(str(menu))
+            logger.debug("menu: %s " % str(menu))
             if menu:
                 if type(menu) is list:
                     logger.debug('list!!')
@@ -214,7 +214,7 @@ class MenuCursor(pygame.sprite.Sprite):
                         #dynamicMethod = getattr(menuaction, funct)
                         pass
                 else:
-                    logger.debug(str(type(menu)))
+                    logger.debug("else %s" % str(type(menu)))
 
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
             #save last param name

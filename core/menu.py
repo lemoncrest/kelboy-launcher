@@ -167,6 +167,7 @@ class MenuCursor(pygame.sprite.Sprite):
             logger.debug("result is %s" % result)
             self.menu.dialog = Dialog(main=self.main,title="Result",message=result, dialogWidth=160,dialogHeight=140)
         elif self.items.items[self.selectedItem]["action"] == 'function':
+            logger.debug("dynamicMethod...")
             #loading effect...
             pixelate(self.main.screen,True)
             params = []

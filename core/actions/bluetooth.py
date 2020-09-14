@@ -61,12 +61,10 @@ def connectBluetooth(params=[]):
                             name = params["name"]
 
     if target != None:
-        logger.debug("pairing %s..." % target)
-        #pair
-        bl.pair(target)
-        logger.debug("connecting %s..." % target)
+        bl.trust_device(target)
         #connect
         bl.connect(target)
+        logger.debug("connect done...")
     else:
         logger.debug("not found, not connected")
 

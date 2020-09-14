@@ -186,7 +186,7 @@ while True:
 
         if button_states["START"]:
             process = subprocess.run(AUDIO_CONTROL_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            device = process.stdout
+            device = process.stdout.strip()
             logger.debug("device is: %s" % device)
             if button_states["UP"]:
                 logger.debug("bundle up detected")

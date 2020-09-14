@@ -190,12 +190,12 @@ while True:
             logger.debug("device is: %s" % device)
             if button_states["UP"]:
                 logger.debug("bundle up detected")
-                command = 'amixer set %s -- 10+' % device
+                command = 'amixer set %s -- 10%%+' % device
                 os.system(command)
                 logger.debug("command %s" % command)
             elif button_states["DOWN"]:
                 logger.debug("bundle down detected")
-                command = 'amixer set %s -- 10-' % device
+                command = 'amixer set %s -- 10%%-' % device
                 os.system(command)
                 logger.debug("command %s" % command)
             elif button_states["LEFT"]:

@@ -42,8 +42,12 @@ def connectBluetooth(params=[]):
     logger.debug("connecting...")
     target = None
     name = None
-    if "address" in params:
-        target = params["address"]
+    if type(params) is list:
+        logger.debug("list")
+        for element in params:
+            logger.debug("ele %s" % str(element))
+            if "target" in element:
+                target = element["target"]
     else: #search stored address
         with open(os.path.join("resources/menus","bluetooth.json")) as jsonMenu:
             menu = json.load(jsonMenu)

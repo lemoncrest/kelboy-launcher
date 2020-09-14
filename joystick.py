@@ -190,16 +190,24 @@ while True:
             logger.debug("device is: %s" % device)
             if button_states["UP"]:
                 logger.debug("bundle up detected")
-                os.system('amixer set %s -- 10+' % device)
+                command = 'amixer set %s -- 10+' % device
+                os.system(command)
+                logger.debug("command %s" % command)
             elif button_states["DOWN"]:
                 logger.debug("bundle down detected")
-                os.system('amixer set %s -- 10-' % device)
+                command = 'amixer set %s -- 10-' % device
+                os.system(command)
+                logger.debug("command %s" % command)
             elif button_states["LEFT"]:
                 logger.debug("bundle down detected")
-                os.system('amixer set %s 0' % device)
+                command = 'amixer set %s 0' % device
+                os.system(command)
+                logger.debug("command %s" % command)
             elif button_states["RIGHT"]:
                 logger.debug("bundle down detected")
-                os.system('amixer set %s 50%' % device)
+                command = 'amixer set %s 50%%' % device
+                os.system(command)
+                logger.debug("command %s" % command)
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             logger.debug("showing battery...")

@@ -65,15 +65,15 @@ class Bluetooth():
         return devices
 
     def send(self, command, pause=0):
-        self.process.send(f"{command}\n")
+        self.child.send(f"{command}\n")
         time.sleep(pause)
-        if self.process.expect(["bluetooth", pexpect.EOF]):
+        if self.child.expect(["bluetooth", pexpect.EOF]):
             raise Exception(f"failed after {command}")
 
     def get_output(self, *args, **kwargs):
         """Run a command in bluetoothctl prompt, return output as a list of lines."""
         self.send(*args, **kwargs)
-        return self.process.before.split("\r\n")
+        return self.child.before.split("\r\n")
 
     def get_available_devices(self):
         """Return a list of tuples of paired and discoverable devices."""

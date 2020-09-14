@@ -184,18 +184,22 @@ while True:
                 axis_states[axis] = fvalue
                 logger.debug(("%s: %.3f" % (axis, fvalue)))
 
-        if button_states["START"] and button_states["UP"]:
-            logger.debug("bundle up detected")
-            os.system('amixer set PCM -- 10+')
-        if button_states["START"] and button_states["DOWN"]:
-            logger.debug("bundle down detected")
-            os.system('amixer set PCM -- 10-')
-        if button_states["START"] and button_states["LEFT"]:
-            logger.debug("bundle down detected")
-            os.system('amixer set PCM 0')
-        if button_states["START"] and button_states["RIGHT"]:
-            logger.debug("bundle down detected")
-            os.system('amixer set PCM 50%')
+        if button_states["START"]:
+            process = subprocess.run(AUDIO_CONTROL_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            device = process.stdout
+            logger.debug("device is: %s" % device)
+            if button_states["UP"]:
+                logger.debug("bundle up detected")
+                os.system('amixer set %s -- 10+' % device)
+            elif button_states["DOWN"]:
+                logger.debug("bundle down detected")
+                os.system('amixer set %s -- 10-' % device)
+            elif button_states["LEFT"]:
+                logger.debug("bundle down detected")
+                os.system('amixer set %s 0' % device)
+            elif button_states["RIGHT"]:
+                logger.debug("bundle down detected")
+                os.system('amixer set %s 50%' % device)
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             logger.debug("showing battery...")

@@ -67,6 +67,7 @@ class Bluetooth():
     def list_devices(self):
         devices = []
         self.child.sendline('devices')
+        time.sleep(0.5)
         line = self.child.readline()
         while b'#' not in line:
             logger.debug("using line %s " % line)

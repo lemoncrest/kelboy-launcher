@@ -71,12 +71,10 @@ class Bluetooth():
             raise Exception(f"failed after {command}")
 
     def get_output(self, *args, **kwargs):
-        """Run a command in bluetoothctl prompt, return output as a list of lines."""
         self.send(*args, **kwargs)
         return self.child.before.split("\r\n")
 
     def parse_device_info(self, info_string):
-        """Parse a string corresponding to a device."""
         device = {}
         block_list = ["[\x1b[0;", "removed"]
         if not any(keyword in info_string for keyword in block_list):
@@ -93,8 +91,19 @@ class Bluetooth():
                     }
         return device
 
+    def remove(self, mac_address):
+        try:
+            self.send(f"remove {mac_address}", 3)
+        except Exception as e:
+            logger.error(e)
+            return False
+        else:
+            res = self.process.expect(
+                ["not available", "Device has been removed", pexpect.EOF]
+            )
+            return res == 1
+
     def get_available_devices(self):
-        """Return a list of tuples of paired and discoverable devices."""
         available_devices = []
         try:
             out = self.get_output("devices")

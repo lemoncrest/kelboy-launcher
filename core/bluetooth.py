@@ -72,7 +72,7 @@ class Bluetooth():
         if start_failed:
             raise BluetoothctlError("Bluetoothctl failed after running " + command)
 
-        return self.child.before.split("\r\n")
+        return self.child.before.decode().split("\r\n")
 
     def list_devices(self):
         devices = []

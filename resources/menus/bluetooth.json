@@ -16,11 +16,6 @@
       "params": [ ],
       "title": "Scan devices..."
   },{
-      "action": "function",
-      "external": "removeBluetooth",
-      "params": [ ],
-      "title": "Remove device"
-  },{
     "title": "Back",
     "action": "menu",
     "external": "settings"

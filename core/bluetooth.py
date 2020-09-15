@@ -103,6 +103,27 @@ class Bluetooth():
             )
             return res == 1
 
+
+    def get_paired_devices(self):
+        """Return a list of tuples of paired devices."""
+        paired_devices = []
+        try:
+            out = self.get_output("paired-devices")
+        except Exception as e:
+            logger.error(e)
+        else:
+            for line in out:
+                device = self.parse_device_info(line)
+                if device:
+                    paired_devices.append(device)
+        return paired_devices
+
+    def get_discoverable_devices(self):
+        """Filter paired devices out of available."""
+        available = self.get_available_devices()
+        paired = self.get_paired_devices()
+        return [d for d in available if d not in paired]
+
     def get_available_devices(self):
         available_devices = []
         try:

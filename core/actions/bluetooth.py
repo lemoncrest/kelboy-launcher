@@ -83,7 +83,7 @@ def turnOnBluetooth(params=[]):
 def removeBluetooth(params=[]):
     logger.debug("removing bluetooth...")
     bl = Bluetooth()
-    devices = bl.get_available_devices()
+    devices = bl.get_paired_devices()
     menu = []
     #now put in a list...
     for device in devices:

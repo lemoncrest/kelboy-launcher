@@ -79,3 +79,41 @@ def turnOnBluetooth(params=[]):
     logger.debug("Turning on bluetooth...")
     bl = Bluetooth()
     bl.on()
+
+def removeBluetooth(params=[]):
+    logger.debug("removing bluetooth...")
+    bl = Bluetooth()
+    devices = bl.get_paired_devices()
+    menu = []
+    #now put in a list...
+    for device in devices:
+        deviceName = device["name"]
+        deviceValue = device["mac_address"]
+        element = {}
+        element["title"] = "%s - %s" % (deviceValue, deviceName)
+        element["action"] = 'function'
+        element["external"] = 'deleteBluetooth'
+        element["params"] = [{
+            'target' : device["mac_address"]
+        }]
+        menu.append(element)
+    #back
+    element = {}
+    element["title"] = "Back"
+    element["action"] = 'menu'
+    element["external"] = 'bluetooth'
+    menu.append(element)
+    return menu
+
+def deleteBluetooth(params=[]):
+    target = None
+    if type(params) is list:
+        logger.debug("list")
+        for element in params:
+            logger.debug("ele %s" % str(element))
+            if "target" in element:
+                target = element["target"]
+
+    if target != None:
+        bl = Bluetooth()
+        bl.remove(target)

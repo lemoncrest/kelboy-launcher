@@ -8,6 +8,10 @@
     "action": "menu",
     "external": "webpages"
   },{
+    "title": "SteamLink",
+    "action": "command",
+    "external": "steamlink"
+  },{
     "title": "Update launcher",
     "action": "command-exit",
     "external": "bin/updater.sh"

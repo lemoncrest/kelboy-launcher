@@ -41,11 +41,11 @@ fi
 #bluetooth controllers
 if [ $(dpkg-query -W -f='${Status}' bluez-tools 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
-    sudo apt-get install bluetooth python-dbus python-gobject bluez-tools
+    sudo apt-get install bluetooth python-dbus python-gobject bluez-tools -y
 fi
 if [ $(dpkg-query -W -f='${Status}' xinit 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
-    sudo apt-get install xinit chromium-browser
+    sudo apt-get install xinit firefox-esr -y
     #TODO replace .bashrc by .xinitrc
 fi
 git pull

@@ -1,0 +1,11 @@
+[
+  {
+    "title": "Turn on WiFi",
+    "action": "command",
+    "external": "chromium-browser --start-fullscreen http://v6p9d9t4.ssl.hwcdn.net/html/2695920/index.html"
+  },{
+    "title": "Back",
+    "action": "menu",
+    "external": "launcher"
+  }
+]

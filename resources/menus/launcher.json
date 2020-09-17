@@ -4,6 +4,10 @@
     "action": "function",
     "external": "loadRoms"
   },{
+    "title": "Free Games",
+    "action": "menu",
+    "external": "freegames"
+  },{
     "title": "Back",
     "action": "menu",
     "external": "main"

@@ -2,7 +2,7 @@
   {
     "title": "Quest Of Graal",
     "action": "command",
-    "external": "midori -e Fullscreen -a  http://v6p9d9t4.ssl.hwcdn.net/html/2695920/index.html"
+    "external": "chromium-browser --start-fullscreen http://v6p9d9t4.ssl.hwcdn.net/html/2695920/index.html"
   },{
     "title": "Back",
     "action": "menu",

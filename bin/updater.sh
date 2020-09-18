@@ -53,6 +53,10 @@ then
     sudo apt-get install snapd adb -y
     sudo snap install --edge scrcpy
 fi
+if [ $(dpkg-query -W -f='${Status}' youtube-dl 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo pip3 install youtube-dl -U
+fi
 git pull
 chmod +x bin/*.sh
 chmod +x *.sh

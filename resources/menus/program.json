@@ -4,6 +4,10 @@
     "action": "command-exit",
     "external": "emulationstation"
   },{
+    "title": "YouTube",
+    "action": "command",
+    "external": "youtube-dl -o - 'https://www.youtube.com/watch?v=2lvaWoeHUAk' | mplayer -vf scale=320:240 -"
+  },{
     "title": "Web browser",
     "action": "menu",
     "external": "webpages"

@@ -34,13 +34,13 @@ class Youtube(Downloader):
             element["title"] = "Search"
             element["page"] = 'search'
             x.append(element)
-        elif '/channel/' in page or '/trending' in page:
+        elif '/channel/' in page or '/trending' in page or '/gaming' in page:
             headers = Youtube.buildHeaders()
             response = Youtube.getContentFromUrl(url=str(page+"?pbj=1"),headers=headers,launchLocation=True)
             try:
                 jsonResponse = json.loads(response)
                 logger.debug("parsed json from '"+page+"', continue...")
-                logger.debug("json is: "+response)
+                #logger.debug("json is: "+response)
                 try:
                     logger.debug("using way 1...")
                     x = Youtube.extractVideosFromJSON(jsonResponse[1]["response"])
@@ -48,10 +48,11 @@ class Youtube(Downloader):
                     logger.debug("fails way 1, using way 2...")
                     x = Youtube.extractVideosFromSpecialChannelJSON(jsonResponse[1]["response"])
                     pass
-            except:
-                logger.error("Could not parse response: "+str(response))
+            except Exception as ex:
+                logger.error("Could not parse response: "+str(ex))
                 pass
         else:
+            logger.debug("else!!")
             element = Youtube.extractTargetVideoJSON(page)
             x.append(element)
         return x
@@ -66,7 +67,7 @@ class Youtube(Downloader):
         logger.debug("response is: "+response)
         try:
             responseJ = Decoder.extract('ytplayer.config = ','};',response)+"}"
-            logger.debug("json extracted is: " + responseJ)
+            #logger.debug("json extracted is: " + responseJ)
             jsonResponse = json.loads(responseJ)
             logger.debug("json loaded")
             bruteVideoInfo = jsonResponse["args"]
@@ -177,15 +178,15 @@ class Youtube(Downloader):
         return x
 
     @staticmethod
-    def extractVideosFromSpecialChannelJSON(jsonScript):
+    def extractVideosFromSpecialChannelJSON(jsonList):
         x = []
-        jsonList = json.loads(jsonScript)
+        logger.debug("special....")
         if 'tabs' in jsonList['contents']['twoColumnBrowseResultsRenderer']:
             targets = jsonList['contents']['twoColumnBrowseResultsRenderer']['tabs'][0]['tabRenderer']['content']
         elif 'primaryContents' in jsonList['contents']['twoColumnBrowseResultsRenderer']:
             targets = jsonList['contents']['twoColumnBrowseResultsRenderer']['primaryContents']
         for jsonElements in targets['sectionListRenderer']['contents']:
-            if 'tabs' in jsonList['contents']['twoColumnBrowseResultsRenderer']:
+            if 'tabs' in jsonList['contents']['twoColumnBrowseResultsRenderer'] and 'itemSectionRenderer' in jsonElements and 'shelfRenderer' in jsonElements['itemSectionRenderer']['contents'][0]:
                 content = jsonElements['itemSectionRenderer']['contents'][0]['shelfRenderer']['content']
                 if 'horizontalListRenderer' in content:
                     for jsonElement in content['horizontalListRenderer']['items']:
@@ -197,17 +198,29 @@ class Youtube(Downloader):
                         element2 = jsonElement["videoRenderer"]
                         element = Youtube.extractVideoElement(element2)
                         x.append(element)
-            else: #search
+                if 'horizontalMovieListRenderer' in content:
+                    for jsonElement in content['horizontalMovieListRenderer']['items']:
+                        element2 = jsonElement["gridMovieRenderer"]
+                        element = Youtube.extractVideoElement(element2)
+                        x.append(element)
+            elif 'itemSectionRenderer' in jsonElements: #search
+                logger.debug("search....")
                 content = jsonElements['itemSectionRenderer']['contents']
                 for jsonElement in content:
                     try:
-                        if "gridMovieRenderer" in jsonElement:
-                            element2 = jsonElement["gridMovieRenderer"]
-                        elif "videoRenderer" in jsonElement:
-                            element2 = jsonElement["videoRenderer"]
-                        #element2 = jsonElement["videoRenderer"]
-                        element = Youtube.extractVideoElement(element2)
-                        x.append(element)
+                        if "horizontalCardListRenderer" in jsonElement:
+                            for element2 in  jsonElement["horizontalCardListRenderer"]['cards']:
+                                #element2 = jsonElement["videoRenderer"]
+                                element = Youtube.extractVideoElement(element2["videoCardRenderer"])
+                                x.append(element)
+                        else:
+                            if "gridMovieRenderer" in jsonElement:
+                                element2 = jsonElement["gridMovieRenderer"]
+                            elif "videoRenderer" in jsonElement:
+                                element2 = jsonElement["videoRenderer"]
+                            #element2 = jsonElement["videoRenderer"]
+                            element = Youtube.extractVideoElement(element2)
+                            x.append(element)
                     except:
                         logger.debug("fails this way, so needs other new way...")
 
@@ -221,7 +234,11 @@ class Youtube(Downloader):
         url = ''
         thumbnail = ''
         if 'title' in element2:
-            title = element2['title']['simpleText']
+            try:
+                title = element2['title']['simpleText']
+            except:
+                title = element2['title']['runs'][0]['text']
+                pass
         if 'thumbnails' in element2:
             thumbnail = element2['thumbnail']['thumbnails'][0]['url']
             if 'https' not in thumbnail:

@@ -16,6 +16,10 @@
     "action": "command",
     "external": "scrcpy"
   },{
+    "title": "Xterm",
+    "action": "command",
+    "external": "xterm"
+  },{
     "title": "Update launcher",
     "action": "command-exit",
     "external": "bin/updater.sh"

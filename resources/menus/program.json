@@ -14,7 +14,7 @@
   },{
     "title": "ScrCpy",
     "action": "command",
-    "external": "scrcpy -f"
+    "external": "scrcpy"
   },{
     "title": "Xterm",
     "action": "command",

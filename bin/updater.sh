@@ -50,7 +50,7 @@ then
 fi
 if [ $(dpkg-query -W -f='${Status}' snap 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
-    sudo apt-get install snapd -y
+    sudo apt-get install snapd adb -y
     sudo snap install --edge scrcpy
 fi
 git pull

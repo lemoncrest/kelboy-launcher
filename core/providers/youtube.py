@@ -40,7 +40,7 @@ class Youtube(Downloader):
             try:
                 jsonResponse = json.loads(response)
                 logger.debug("parsed json from '"+page+"', continue...")
-                #logger.debug("json is: "+response)
+                logger.debug("json is: "+response)
                 try:
                     logger.debug("using way 1...")
                     x = Youtube.extractVideosFromJSON(jsonResponse[1]["response"])
@@ -190,9 +190,10 @@ class Youtube(Downloader):
                 content = jsonElements['itemSectionRenderer']['contents'][0]['shelfRenderer']['content']
                 if 'horizontalListRenderer' in content:
                     for jsonElement in content['horizontalListRenderer']['items']:
-                        element2 = jsonElement["gridVideoRenderer"]
-                        element = Youtube.extractVideoElement(element2)
-                        x.append(element)
+                        if 'gridVideoRenderer' in jsonElement:
+                            element2 = jsonElement["gridVideoRenderer"]
+                            element = Youtube.extractVideoElement(element2)
+                            x.append(element)
                 if 'expandedShelfContentsRenderer' in content:
                     for jsonElement in content['expandedShelfContentsRenderer']['items']:
                         element2 = jsonElement["videoRenderer"]

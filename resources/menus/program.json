@@ -12,6 +12,10 @@
     "action": "command",
     "external": "steamlink"
   },{
+    "title": "ScrCpy",
+    "action": "command",
+    "external": "scrcpy"
+  },{
     "title": "Update launcher",
     "action": "command-exit",
     "external": "bin/updater.sh"

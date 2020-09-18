@@ -5,8 +5,8 @@
     "external": "emulationstation"
   },{
     "title": "YouTube",
-    "action": "command",
-    "external": "youtube-dl -o - 'https://www.youtube.com/watch?v=2lvaWoeHUAk' | mplayer -vf scale=320:240 -"
+    "action": "function",
+    "external": "youtubeMenu"
   },{
     "title": "Web browser",
     "action": "menu",

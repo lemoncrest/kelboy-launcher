@@ -20,7 +20,6 @@ import sys
 class Youtube(Downloader):
 
     MAIN_URL = "https://www.youtube.com"
-    SEARCH_URL = "https://www.youtube.com/results?search_query="
 
     @staticmethod
     def getChannels(page='0'):
@@ -52,23 +51,6 @@ class Youtube(Downloader):
             except:
                 logger.error("Could not parse response: "+str(response))
                 pass
-        elif str(page) == 'search':
-            keyboard = XBMCUtils.getKeyboard()
-            keyboard.doModal()
-            text = ""
-            if (keyboard.isConfirmed()):
-                text = keyboard.getText()
-                text = urllib.quote_plus(text)
-
-                headers = Youtube.buildHeaders()
-                response = Youtube.getContentFromUrl(url=str(Youtube.SEARCH_URL+text+"?pbj=1"), headers=headers)
-                try:
-                    jsonResponse = json.loads(response)
-                    logger.debug("parsed search json with text: '" + page + "', continue...")
-                    x = Youtube.extractVideosFromSpecialChannelJSON(jsonResponse[1]["response"])
-                except:
-                    logger.error("Could not parse response: " + str(response))
-                logger.debug("finished search logic!")
         else:
             element = Youtube.extractTargetVideoJSON(page)
             x.append(element)
@@ -96,16 +78,6 @@ class Youtube(Downloader):
             #url = url[:-1]
             thumbnail = bruteVideoInfo["thumbnail_url"]
             logger.debug("extracted final url: "+url)
-            '''
-            content = Youtube.getContentFromUrl(url=url)
-            logger.debug("content extracted: "+content)
-            if '<BaseURL>' in content:
-                link = Decoder.rExtract('<BaseURL>','</BaseURL>',content)
-            else:
-                logger.info("No video url found :(")
-                pass
-            '''
-            logger.debug("parsed video info")
         except:
             logger.error("error parsing video info")
             pass
@@ -263,35 +235,3 @@ class Youtube(Downloader):
         element["thumbnail"] = thumbnail
         element["finalLink"] = True
         return element
-
-    @staticmethod
-    def decodeY2Mate(link):
-        url = "http://y2mate.com/analyze/ajax"
-        data = "url="+urllib.quote(link)+"&ajax=1"
-        headers = {}
-        headers["Host"]="y2mate.com"
-        headers["User-Agent"] = Downloader.USER_AGENT
-        headers["Accept"] = "*/*"
-        headers["Accept-Language"] = "en-US,en;q=0.8,es-ES;q=0.5,es;q=0.3"
-        headers["Referer"] = "http://y2mate.com"
-        headers["Connection"] = "keep-alive"
-        headers["Content-Type"] = "application/x-www-form-urlencoded"
-        headers["charset"] = "UTF-8"
-        headers["X-Requested-With"] = "XMLHttpRequest"
-        headers["DNT"] = "1"
-        Downloader.TIMEOUT=30
-        html = Downloader.getContentFromUrl(url=url,data=data,headers=headers)
-        logger.debug("html is: "+html)
-        selectedLink = Decoder.extract('data-vlink="','"',html)
-        logger.debug("decoded link is: "+selectedLink)
-        #now try to get better quality
-        try:
-            logger.debug("trying better quality...")
-            secondLink = Decoder.extract('<th>Download</th>',"<small>m-HD</small>",html)
-            logger.debug("link is inside: "+secondLink)
-            secondLink = Decoder.extract('data-vlink="', '"', secondLink)
-            logger.debug("new target link is: " + secondLink)
-            selectedLink = secondLink
-        except:
-            logger.debug("could not obtain better quality, using default link: "+link)
-        return selectedLink

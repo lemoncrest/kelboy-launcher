@@ -42,8 +42,9 @@ def youtubeMenu(params=[]):
         else:
             element["title"] = "%s" % (name)
             element["action"] = "command"
-            element["external"] =  "youtube-dl -o - '%s' | mplayer -vf scale=320:240 -" % channel["page"]
+            element["external"] =  "youtube-dl -f 'best[height<=360] -o - '%s' | mplayer -vf scale=320:240 -" % channel["page"]
             #element["external"] =  "omxplayer -o alsa $(youtube-dl -g -f 'best[height<=360]' %s)" % channel["page"]
+            #element["external"] = "cvlc --fullscreen $(youtube-dl  -g -f 'best[height<=360]' %s)" % channel["page"]
             menu.append(element)
 
     #search

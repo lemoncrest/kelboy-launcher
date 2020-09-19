@@ -8,6 +8,7 @@ from core.providers.youtube import Youtube
 
 def youtubeMenu(params=[]):
     page = "0"
+    logger.debug("params: %s" % str(params))
     if type(params) is list:
         for element in params:
             logger.debug("ele %s" % str(element))
@@ -34,7 +35,16 @@ def youtubeMenu(params=[]):
             element["title"] = "%s" % (name)
             element["action"] = "command"
             element["external"] =  "youtube-dl -o - '%s' | mplayer -vf scale=320:240 -" % channel["page"]
+            #element["external"] =  "omxplayer -o alsa $(youtube-dl -g -f 'best[height<=360]' %s)" % channel["page"]
             menu.append(element)
+
+    #search
+    if page == "0":
+        element["title"] = "Search"
+        element["action"] = 'function-text'
+        element["external"] = 'youtubeMenu'
+        menu.append(element)
+
     #back
     element = {}
     element["title"] = "Back"

@@ -20,6 +20,7 @@ import sys
 class Youtube(Downloader):
 
     MAIN_URL = "https://www.youtube.com"
+    SEARCH_URL = "https://www.youtube.com/results?search_query=%s"
 
     @staticmethod
     def getChannels(page='0'):
@@ -30,10 +31,6 @@ class Youtube(Downloader):
             logger.debug("html: "+html)
             jsonScript = Decoder.extract('ytInitialGuideData = ',';',html)
             x = Youtube.extractMainChannelsJSON(jsonScript)
-            element = {}
-            element["title"] = "Search"
-            element["page"] = 'search'
-            x.append(element)
         elif '/channel/' in page or '/trending' in page or '/gaming' in page:
             headers = Youtube.buildHeaders()
             response = Youtube.getContentFromUrl(url=str(page+"?pbj=1"),headers=headers,launchLocation=True)
@@ -56,6 +53,26 @@ class Youtube(Downloader):
             element = Youtube.extractTargetVideoJSON(page)
             x.append(element)
         return x
+
+    @staticmethod
+    def search(text):
+        start = 'window["ytInitialData"] = '
+        end = ";"
+        page = Youtube.SEARCH_URL % urllib.parse.quote_plus(text)
+        logger.debug("search url is: %s" % page)
+        html = Youtube.getContentFromUrl(page)
+        logger.debug("now extracting json search results...")
+        jsonString = Decoder.extract(start,end,html)
+        logger.debug("done, loading json...")
+        jsonList = json.loads(jsonString)
+        with open('/tmp/data.json', 'w') as outfile:
+            json.dump(jsonList, outfile)
+        logger.debug("parsed and saved!")
+        listed = Youtube.extractVideosSearchFromJSON(jsonList)
+        logger.debug("json to lists done")
+        return listed
+
+
 
     @staticmethod
     def extractTargetVideoJSON(page):
@@ -175,6 +192,43 @@ class Youtube(Downloader):
                 except:
                     logger.debug("fail parser for: "+str(jsonElement))
                     pass
+        return x
+
+    @staticmethod
+    def extractVideosSearchFromJSON(jsonList):
+        x = []
+        for jsonElements in jsonList['contents']['twoColumnSearchResultsRenderer']["primaryContents"]['sectionListRenderer']['contents']:
+            if "itemSectionRenderer" in jsonElements:
+                for jsonElement in jsonElements["itemSectionRenderer"]["contents"]:
+                    logger.debug("inside first for...")
+                    try:
+                        title = ''
+                        url = ''
+                        thumbnail = ''
+                        element2 = jsonElement["videoRenderer"]
+                        logger.debug("inside element2...")
+                        if 'title' in element2:
+                            title = element2['title']['runs'][0]['text']
+                        logger.debug("simple text: "+str(title))
+                        if 'thumbnail' in element2:
+                            thumbnail = element2['thumbnail']['thumbnails'][0]['url']
+                            if 'https' not in thumbnail:
+                                thumbnail = 'https:' + thumbnail
+                        logger.debug("simple thumb: "+str(thumbnail))
+                        if 'videoId' in element2:
+                            url = element2['videoId']
+                            url = 'https://youtube.com/watch?v='+url
+                        logger.debug("simple url: "+str(url))
+                        element = {}
+                        element["title"] = title
+                        element["page"] = url
+                        element["thumbnail"] = thumbnail
+                        element["finalLink"] = True
+                        logger.debug("append: "+title+", page: "+url+", thumb: "+thumbnail)
+                        x.append(element)
+                    except Exception as ex:
+                        logger.debug("fail parser for: "+str(ex))
+                        pass
         return x
 
     @staticmethod

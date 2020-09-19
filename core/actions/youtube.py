@@ -8,6 +8,7 @@ from core.providers.youtube import Youtube
 
 def youtubeMenu(params=[]):
     page = "0"
+    text = ""
     logger.debug("params: %s" % str(params))
     if type(params) is list:
         for element in params:
@@ -16,7 +17,14 @@ def youtubeMenu(params=[]):
                 logger.debug("%s" % str(element))
                 page = element["page"]
                 logger.debug("target page %s" % (page))
-    channels = Youtube.getChannels(page)
+            if "text" in element:
+                logger.debug("%s" % str(element))
+                text = element["text"]
+                logger.debug("target search text is %s" % (text))
+    if len(text) == 0:
+        channels = Youtube.getChannels(page)
+    else: #search
+        channels = Youtube.search(text)
     logger.debug("found %s channels" % str(len(channels)))
     menu = []
     #now put in a list...

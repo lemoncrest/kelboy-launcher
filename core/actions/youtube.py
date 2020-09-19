@@ -40,6 +40,7 @@ def youtubeMenu(params=[]):
 
     #search
     if page == "0":
+        element = {}
         element["title"] = "Search"
         element["action"] = 'function-text'
         element["external"] = 'youtubeMenu'

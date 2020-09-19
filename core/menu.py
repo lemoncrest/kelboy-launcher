@@ -78,7 +78,7 @@ class MenuCursor(pygame.sprite.Sprite):
             else:
                 logger.debug("limit down")
                 self.selectedItem = 0
-                if len(self.menu.items.items)>10:
+                if len(self.menu.items.items)>MAX_MENU_ITEMS-1:
                     self.rect.y -= (self.rect.height*8)
                 else:
                     self.rect.y -= (self.rect.height*(len(self.menu.items.items)-1))
@@ -407,7 +407,7 @@ class MenuItems(pygame.sprite.Sprite):
                     if index<MAX_MENU_ITEMS-1:
                         self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
                     else:
-                        if index-MAX_MENU_ITEMS<counter-1 and counterNew<MAX_MENU_ITEMS:
+                        if index-MAX_MENU_ITEMS<counter-1 and counterNew<MAX_MENU_ITEMS-1:
                             self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counterNew*self.height ))
                             counterNew+=1
                             logger.debug("writting %s with %s and %s with %s" % (title,str(counter),str(counterNew),str(index)))

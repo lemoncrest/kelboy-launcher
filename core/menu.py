@@ -35,7 +35,7 @@ class MenuBoard(pygame.sprite.Sprite):
         logger.debug("loading background...")
         filename = os.path.join("resources/graphics", BACKGROUND_PICTURE)
         picture = pygame.image.load(filename)
-        pygame.transform.scale(picture, (WIDTH,HEIGHT))
+        picture = pygame.transform.scale(picture, (WIDTH,HEIGHT))
         self.image.blit(picture, (0, 0))
 
 class MenuCursor(pygame.sprite.Sprite):

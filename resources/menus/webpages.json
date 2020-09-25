@@ -8,8 +8,11 @@
             }
         ],
         "title": "romsmania.cc"
-    },
-    {
+    },{
+      "title": "YouTube",
+      "action": "function",
+      "external": "youtubeMenu"
+    },{
         "action": "menu",
         "external": "program",
         "title": "Back"

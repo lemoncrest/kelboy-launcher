@@ -46,12 +46,6 @@ fi
 if [ $(dpkg-query -W -f='${Status}' xinit 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
     sudo apt-get install xinit chromium-browser steamlink cec-utils libcec4 libp8-platform2 -y
-    #TODO replace .bashrc by .xinitrc
-fi
-if [ $(dpkg-query -W -f='${Status}' snap 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-    sudo apt-get install snapd adb -y
-    sudo snap install --edge scrcpy
 fi
 if [ $(dpkg-query -W -f='${Status}' youtube-dl 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then

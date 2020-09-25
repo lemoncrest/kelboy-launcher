@@ -4,10 +4,6 @@
     "action": "command-exit",
     "external": "emulationstation"
   },{
-    "title": "YouTube",
-    "action": "function",
-    "external": "youtubeMenu"
-  },{
     "title": "Web browser",
     "action": "menu",
     "external": "webpages"
@@ -15,14 +11,6 @@
     "title": "SteamLink",
     "action": "command",
     "external": "steamlink"
-  },{
-    "title": "ScrCpy",
-    "action": "command",
-    "external": "scrcpy"
-  },{
-    "title": "Xterm",
-    "action": "command",
-    "external": "xterm"
   },{
     "title": "Update launcher",
     "action": "command-exit",

@@ -13,7 +13,7 @@ SCREENSAVER_TIME = 60000 #milliseconds
 WIDGET_FRAMETIME = 200
 
 FONT_SIZE = 18
-FONT_COLOR_ITEM = DARK_GRAY
+FONT_COLOR_ITEM = WHITE
 FONT_TYPE = 'resources/fonts/editundo_var.ttf'
 FONT_TYPE_KEYBOARD = 'resources/fonts/zeldadxt_mono.ttf'
 FONT_TYPE_KEYBOARDBAR = 'resources/fonts/DejaVuSans.ttf'
@@ -22,7 +22,7 @@ LOG_FILE = "log.txt"
 WPA_SUPPLICANT = '/etc/wpa_supplicant/wpa_supplicant.conf'
 UPLOAD_SITE = 'https://github.com/lemoncrest/kelboy-launcher/archive/master.zip'
 MAX_MENU_ITEMS = 10
-BACKGROUND_PICTURE = "start-background.png"
+BACKGROUND_PICTURE = "background-br.png"
 
 ROMS_PATH = '/home/pi/RetroPie/roms'
 

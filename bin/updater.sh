@@ -38,7 +38,19 @@ if [ $(dpkg-query -W -f='${Status}' pulseaudio 2>/dev/null | grep -c "ok install
 then
     sudo apt-get install pulseaudio pulseaudio-module-bluetooth -y
 fi
-
+#bluetooth controllers
+if [ $(dpkg-query -W -f='${Status}' bluez-tools 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt-get install bluetooth python-dbus python-gobject bluez-tools -y
+fi
+if [ $(dpkg-query -W -f='${Status}' xinit 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt-get install xinit chromium-browser steamlink cec-utils libcec4 libp8-platform2 -y
+fi
+if [ $(dpkg-query -W -f='${Status}' youtube-dl 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo pip3 install youtube-dl -U
+fi
 git pull
 chmod +x bin/*.sh
 chmod +x *.sh

@@ -35,7 +35,7 @@ class MenuBoard(pygame.sprite.Sprite):
         logger.debug("loading background...")
         filename = os.path.join("resources/graphics", BACKGROUND_PICTURE)
         picture = pygame.image.load(filename)
-        pygame.transform.scale(picture, (WIDTH,HEIGHT))
+        picture = pygame.transform.scale(picture, (WIDTH,HEIGHT))
         self.image.blit(picture, (0, 0))
 
 class MenuCursor(pygame.sprite.Sprite):
@@ -78,7 +78,7 @@ class MenuCursor(pygame.sprite.Sprite):
             else:
                 logger.debug("limit down")
                 self.selectedItem = 0
-                if len(self.menu.items.items)>10:
+                if len(self.menu.items.items)>MAX_MENU_ITEMS-1:
                     self.rect.y -= (self.rect.height*8)
                 else:
                     self.rect.y -= (self.rect.height*(len(self.menu.items.items)-1))
@@ -395,8 +395,8 @@ class MenuItems(pygame.sprite.Sprite):
             counter = 0
             counterNew = 0
             for item in self.items:
-
-                text_item = self.font.render(item["title"], False, FONT_COLOR_ITEM)
+                title = result = re.sub('[^A-Za-z0-9.\-,\ ]+', '', item["title"]) #just normal chars
+                text_item = self.font.render(title, False, FONT_COLOR_ITEM)
                 text_item_rect = text_item.get_rect()
                 #self.image.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
                 #self.main.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), 0 + (text_item_rect.height * counter)) )
@@ -407,10 +407,10 @@ class MenuItems(pygame.sprite.Sprite):
                     if index<MAX_MENU_ITEMS-1:
                         self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
                     else:
-                        if index-MAX_MENU_ITEMS<counter-1 and counterNew<MAX_MENU_ITEMS:
+                        if index-MAX_MENU_ITEMS<counter-1 and counterNew<MAX_MENU_ITEMS-1:
                             self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counterNew*self.height ))
                             counterNew+=1
-                            logger.debug("writting %s with %s and %s with %s" % (item["title"],str(counter),str(counterNew),str(index)))
+                            logger.debug("writting %s with %s and %s with %s" % (title,str(counter),str(counterNew),str(index)))
                         else:
                             logger.debug("discarting %s" % str(counter))
 

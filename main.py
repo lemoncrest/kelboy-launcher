@@ -64,9 +64,11 @@ class Main():
         utils.initJoysticks()
         #disable mouse
         pygame.event.set_blocked(pygame.MOUSEMOTION)
-        #movements init
+        #movements and keys init
         self.downPushed = False
         self.upPushed = False
+        self.zPressed = False
+        self.tPressed = False
 
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -90,13 +92,21 @@ class Main():
                 logger.debug("up...")
                 self.menu.cursor.up()
                 await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+            if self.zPressed:
+                for i in range(0,MAX_MENU_ITEMS):
+                    self.menu.cursor.up()
+                self.zPressed = False
+            if self.tPressed:
+                for i in range(0,MAX_MENU_ITEMS):
+                    self.menu.cursor.down()
+                self.tPressed = False
 
     async def events(self,event_queue):
         logger.info("in-side events...")
         while self.running:
-            logger.debug("while (events)...")
+            #logger.debug("while (events)...")
             event = await event_queue.get()
-            logger.debug("events!!!")
+            #logger.debug("events!!!")
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -131,6 +141,10 @@ class Main():
                     self.menu.cursor.select(self.screen)
                 elif event.button == 14:  # button B - back
                     pass #TODO
+                elif event.button == 3:  # Z
+                    self.zPressed = True
+                elif event.button == 2:  # T
+                    self.tPressed = True
                 elif event.button == 7:  # start
                     pass #TODO
                 elif event.button == 6:  # select

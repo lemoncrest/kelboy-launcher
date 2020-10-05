@@ -251,6 +251,8 @@ class MenuCursor(pygame.sprite.Sprite):
             sys.exit(10)
         elif self.items.items[self.selectedItem]["action"] == 'exit':
             pixelate(surface,True)
+            pygame.display.quit()
+            pygame.quit()
             sys.exit(0)
         elif self.menu.keyboard != None and self.menu.keyboard.show:
             effect = self.manageKeyboard()

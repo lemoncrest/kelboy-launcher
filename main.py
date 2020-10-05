@@ -2,6 +2,8 @@ import os
 import json
 import time
 
+import asyncio
+
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame
@@ -72,8 +74,12 @@ class Main():
             self.menu.keyboard = None
             self.menu.lastMenu = "main"
 
-    def events(self):
-        for event in pygame.event.get():
+    async def events(self,event_queue):
+        logger.info("in-side events...")
+        while self.running:
+            logger.debug("while (events)...")
+            event = await event_queue.get()
+            logger.debug("events!!!")
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -124,6 +130,7 @@ class Main():
                         self.menu.cursor.right()
                     elif event.value < 0:
                         self.menu.cursor.left()
+        logger.info("ended... out-side events...")
 
     def update(self):
         self.all_sprites.update()
@@ -137,27 +144,71 @@ class Main():
             self.menu.dialog.draw()
 
 
-    def run(self):
-        self.screensaver = False #TODO
-        self.last = int(round(time.time())*1000)
+
+
+    def pygame_event_loop(self,loop, event_queue):
+        logger.info("inside pygame_event_loop...")
         while self.running:
-            if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
-                self.screensaver = True
-            if self.screensaver:
-                rand = randint(1, 3)
-                if(rand==1):
-                    SnowBall().launchSnowBalls()
-                elif (rand == 2):
-                    RotatingCube().run()
-                else:
-                    Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
-                self.last = int(round(time.time())*1000)
-                self.screensaver = False
-            self.clock.tick(FRAMERATE)
-            self.events()
-            self.update()
-            self.draw()
-            pygame.display.flip()
+            event = pygame.event.wait()
+            asyncio.run_coroutine_threadsafe(event_queue.put(event), loop=loop)
+
+    def run(self):
+        logger.info("inside run...")
+        self.running = True
+        #asyncio.run(self.async_run())
+        loop = asyncio.get_event_loop()
+        event_queue = asyncio.Queue()
+
+        #main loop
+        pygame_task = loop.run_in_executor(None, self.pygame_event_loop, loop, event_queue)
+        #events loop
+        event_task = asyncio.ensure_future(self.events(event_queue))
+        #draw loop
+        draw_task = asyncio.ensure_future(self.async_run())
+
+        try:
+            loop.run_forever()
+        except Exception as exc:
+            logger.error(str(exc))
+        finally:
+            pygame_task.cancel()
+            draw_task.cancel()
+            event_task.cancel()
+
+        pygame.quit()
+
+    async def async_run(self):
+        logger.info("inside async_run...")
+        current_time = 0
+        try:
+            self.screensaver = False #TODO
+            self.last = int(round(time.time())*1000)
+            while self.running:
+                if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
+                    self.screensaver = True
+                if self.screensaver:
+                    rand = randint(1, 3)
+                    if(rand==1):
+                        SnowBall().launchSnowBalls()
+                    elif (rand == 2):
+                        RotatingCube().run()
+                    else:
+                        Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
+                    self.last = int(round(time.time())*1000)
+                    self.screensaver = False
+
+                #removed old flip with new tick
+                #self.clock.tick(FRAMERATE)
+                last_time, current_time = current_time, time.time()
+                await asyncio.sleep(1 / FRAMERATE - (current_time - last_time))  # tick
+                pygame.display.flip()
+
+                #self.events() #removed from this thread
+                self.update()
+                self.draw()
+
+        except Exception as ex:
+            logger.error(str(ex))
 
 
 main = Main()

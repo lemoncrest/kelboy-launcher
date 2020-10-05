@@ -9,6 +9,8 @@ FRAMERATE = 60
 margin = 10
 
 SCREENSAVER_TIME = 60000 #milliseconds
+KEY_SLEEP = 0.05 #repeat time
+KEY_WHILE_SLEEP = 0.1
 
 WIDGET_FRAMETIME = 200
 

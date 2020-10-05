@@ -2,6 +2,8 @@ import os
 import json
 import time
 
+import asyncio
+
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame
@@ -62,6 +64,9 @@ class Main():
         utils.initJoysticks()
         #disable mouse
         pygame.event.set_blocked(pygame.MOUSEMOTION)
+        #movements init
+        self.downPushed = False
+        self.upPushed = False
 
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -72,8 +77,26 @@ class Main():
             self.menu.keyboard = None
             self.menu.lastMenu = "main"
 
-    def events(self):
-        for event in pygame.event.get():
+
+    async def moves(self):
+        logger.info("in-side async moves...")
+        while self.running:
+            await asyncio.sleep(KEY_SLEEP)  # wait until release time
+            if self.downPushed:
+                logger.debug("down...")
+                self.menu.cursor.down()
+                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+            if self.upPushed:
+                logger.debug("up...")
+                self.menu.cursor.up()
+                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+
+    async def events(self,event_queue):
+        logger.info("in-side events...")
+        while self.running:
+            logger.debug("while (events)...")
+            event = await event_queue.get()
+            logger.debug("events!!!")
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -81,15 +104,25 @@ class Main():
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
                 if event.key == pygame.K_DOWN:
-                    self.menu.cursor.down()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                    self.menu.cursor.up()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    self.downPushed = True
+                elif event.key == pygame.K_UP:
+                    self.upPushed = True
+                elif event.key == pygame.K_RETURN:
                     self.menu.cursor.select(self.screen)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT:
                     self.menu.cursor.left()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT:
                     self.menu.cursor.right()
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_DOWN:
+                    self.downPushed = False
+                elif event.key == pygame.K_UP:
+                    self.upPushed = False
+            elif event.type == pygame.JOYBUTTONUP:
+                if event.button == 11:  # up
+                    self.upPushed = False
+                elif event.button == 10:  # down
+                    self.downPushed = False
             elif event.type == pygame.JOYBUTTONDOWN:
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
@@ -103,9 +136,9 @@ class Main():
                 elif event.button == 6:  # select
                     pass #TODO
                 elif event.button == 11:  # up
-                    self.menu.cursor.up()
+                    self.upPushed = True
                 elif event.button == 10:  # down
-                    self.menu.cursor.down()
+                    self.downPushed = True
                 elif event.button == 9:  # left
                     self.menu.cursor.left()
                 elif event.button == 8:  # right
@@ -124,6 +157,7 @@ class Main():
                         self.menu.cursor.right()
                     elif event.value < 0:
                         self.menu.cursor.left()
+        logger.info("ended... out-side events...")
 
     def update(self):
         self.all_sprites.update()
@@ -137,27 +171,73 @@ class Main():
             self.menu.dialog.draw()
 
 
-    def run(self):
-        self.screensaver = False #TODO
-        self.last = int(round(time.time())*1000)
+    def pygame_event_loop(self,loop, event_queue):
+        logger.info("inside pygame_event_loop...")
         while self.running:
-            if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
-                self.screensaver = True
-            if self.screensaver:
-                rand = randint(1, 3)
-                if(rand==1):
-                    SnowBall().launchSnowBalls()
-                elif (rand == 2):
-                    RotatingCube().run()
-                else:
-                    Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
-                self.last = int(round(time.time())*1000)
-                self.screensaver = False
-            self.clock.tick(FRAMERATE)
-            self.events()
-            self.update()
-            self.draw()
-            pygame.display.flip()
+            event = pygame.event.wait()
+            asyncio.run_coroutine_threadsafe(event_queue.put(event), loop=loop)
+
+    def run(self):
+        logger.info("inside run...")
+        self.running = True
+
+        loop = asyncio.get_event_loop()
+        event_queue = asyncio.Queue()
+
+        #main loop
+        pygame_task = loop.run_in_executor(None, self.pygame_event_loop, loop, event_queue)
+        #events loop
+        event_task = asyncio.ensure_future(self.events(event_queue))
+        #draw loop
+        draw_task = asyncio.ensure_future(self.async_run())
+        #moves loop
+        moves_task = asyncio.ensure_future(self.moves())
+
+        try:
+            loop.run_forever()
+        except Exception as exc:
+            logger.error(str(exc))
+        finally:
+            self.running = False
+            pygame_task.cancel()
+            draw_task.cancel()
+            event_task.cancel()
+            moves_task.cancel()
+
+        pygame.quit()
+
+    async def async_run(self):
+        logger.info("inside async_run...")
+        current_time = 0
+        try:
+            self.screensaver = False #TODO
+            self.last = int(round(time.time())*1000)
+            while self.running:
+                if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
+                    self.screensaver = True
+                if self.screensaver:
+                    rand = randint(1, 3)
+                    if(rand==1):
+                        SnowBall().launchSnowBalls()
+                    elif (rand == 2):
+                        RotatingCube().run()
+                    else:
+                        Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
+                    self.last = int(round(time.time())*1000)
+                    self.screensaver = False
+
+                #removed old flip with new tick
+                #self.clock.tick(FRAMERATE)
+                last_time, current_time = current_time, time.time()
+                await asyncio.sleep(1 / FRAMERATE - (current_time - last_time))  # tick
+                pygame.display.flip()
+
+                #self.events() #removed from this thread
+                self.update()
+                self.draw()
+
+        except Exception as ex:
+            logger.error(str(ex))
 
 
 main = Main()

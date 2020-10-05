@@ -51,6 +51,7 @@ if [ $(dpkg-query -W -f='${Status}' youtube-dl 2>/dev/null | grep -c "ok install
 then
     sudo pip3 install youtube-dl -U
 fi
+git reset --hard HEAD #temp fix to remove local changes to force update
 git pull
 chmod +x bin/*.sh
 chmod +x *.sh

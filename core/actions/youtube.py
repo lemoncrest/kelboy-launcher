@@ -58,7 +58,7 @@ def youtubeMenu(params=[]):
     #back
     element = {}
     element["title"] = "Back"
-    element["action"] = 'menu'
-    element["external"] = 'program'
+    element["action"] = 'function'
+    element["external"] = 'youtubeMenu'
     menu.append(element)
     return menu

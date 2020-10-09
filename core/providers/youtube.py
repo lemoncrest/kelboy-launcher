@@ -27,10 +27,7 @@ class Youtube(Downloader):
         x = []
         if str(page) == '0':
             page=Youtube.MAIN_URL+"/"
-            html = Youtube.getContentFromUrl(page,"",Youtube.cookie,"")
-            logger.debug("html: "+html)
-            jsonScript = Decoder.extract('ytInitialGuideData = ',';',html)
-            x = Youtube.extractMainChannelsJSON(jsonScript)
+            x = Youtube.extractMainChannels()
         elif '/channel/' in page or '/trending' in page or '/gaming' in page:
             headers = Youtube.buildHeaders()
             response = Youtube.getContentFromUrl(url=str(page+"?pbj=1"),headers=headers,launchLocation=True)
@@ -117,30 +114,16 @@ class Youtube(Downloader):
         return headers
 
     @staticmethod
-    def extractMainChannelsJSON(jsonScript):
-        x = []
-        jsonList = json.loads(jsonScript)
-        for jsonElement in jsonList['items'][3]["guideSectionRenderer"]["items"]:
-            title = ''
-            url = ''
-            thumbnail = ''
-            element = {}
-            element2 = jsonElement["guideEntryRenderer"]
-            if 'title' in element2:
-                title = element2['title']
-            if 'thumbnail' in element2:
-                thumbnail = element2['thumbnail']['thumbnails'][0]['url']
-                if 'https' not in thumbnail:
-                    thumbnail = 'https:'+thumbnail
-            if 'navigationEndpoint' in element2:
-                url = element2['navigationEndpoint']['commandMetadata']['webCommandMetadata']['url']
-                if 'youtube.com' not in url:
-                    url = 'https://youtube.com'+url
-            element = {}
-            element["title"] = title
-            element["page"] = url
-            element["thumbnail"] = thumbnail
-            x.append(element)
+    def extractMainChannels():
+        x = [
+            {'title':'Music','page':'https://www.youtube.com/channel/UC-9-kyTW8ZkZNDHQJ6FgpwQ','thumbnail':''},
+            {'title':'Sports','page':'https://www.youtube.com/channel/UCEgdi0XIXXZ-qJOFPf4JSKw','thumbnail':''},
+            {'title':'Gaming','page':'https://www.youtube.com/gaming','thumbnail':''},
+            {'title':'News','page':'https://www.youtube.com/channel/UCYfdidRxbB8Qhf0Nx7ioOYw','thumbnail':''},
+            {'title':'Live','page':'https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig','thumbnail':''},
+            {'title':'Learning','page':'https://www.youtube.com/channel/UCtFRv9O2AHqOZjjynzrv-xg','thumbnail':''},
+            {'title':'360','page':'https://www.youtube.com/channel/UCzuqhhs6NWbgTzMuM09WKDQ','thumbnail':''}
+        ]
 
         return x
 

@@ -70,7 +70,8 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
 
             newPath = os.path.join(ROMS_PATH,folder)
             dir = os.listdir(newPath)
-            for directory in dir:
+            #for directory in dir:
+            for directory in sorted(dir):
                 #if os.path.getsize(os.path.join(newPath,directory))>8192:
                 if '.srm' not in directory and '.state' not in directory:
                     logger.debug("Not empty directory %s, appending to list" % directory)

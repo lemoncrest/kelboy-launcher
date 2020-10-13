@@ -24,7 +24,7 @@
 #clone new one
 #git clone https://github.com/lemoncrest/kelboy-launcher
 #cd kelboy-launcher
-
+sudo apt update
 if [ ! -f /lib/arm-linux-gnueabihf/libpng12.so.0 ]; then
     echo "launching install dependencies..."
     sudo apt install libpng12-0 bsdtar -y
@@ -54,6 +54,10 @@ fi
 if [ $(dpkg-query -W -f='${Status}' mplayer 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
     sudo apt install mplayer -y
+fi
+if [ $(dpkg-query -W -f='${Status}' mpv 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt-get install mpv -y
 fi
 git reset --hard HEAD #temp fix to remove local changes to force update
 git pull

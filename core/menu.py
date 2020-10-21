@@ -47,6 +47,7 @@ class MenuCursor(pygame.sprite.Sprite):
         self.main = main
         self._layer = 2
         self.loadBackground()
+        self.last = pygame.time.get_ticks()
 
     def loadBackground(self):
         logger.debug("loading CURSOR background...")
@@ -126,143 +127,146 @@ class MenuCursor(pygame.sprite.Sprite):
 
 
     def select(self,surface):
-        effect = False
-        logger.debug("action: %s" % self.items.items[self.selectedItem]["action"])
-        if self.menu.dialog != None:
-            self.menu.dialog.kill()
-            self.menu.dialog = None
-        elif self.items.items[self.selectedItem]["action"] == 'menu' and self.menu.keyboard == None:
-            #reload menu with the new items
-            self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
-            with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
-                menu = json.load(jsonMenu)
-                #destroy sprites
-                self.board.kill()
-                self.items.kill()
-                self.kill()
-                #reload menu (rebuil sprites)
-                self.menu.load(menu)
-                #pixelate
-                effect = True
-        elif self.items.items[self.selectedItem]["action"] == 'function-text':
-            if self.menu.keyboard == None:
-                fade(self.main.screen)
-                self.menu.keyboard = Keyboard(main=self.main,buffer='')
+        if pygame.time.get_ticks() - self.last > 2000:
+            self.last = pygame.time.get_ticks()
+            effect = False
+            logger.debug("action: %s" % self.items.items[self.selectedItem]["action"])
+            if self.menu.dialog != None:
+                self.menu.dialog.kill()
+                self.menu.dialog = None
+            elif self.items.items[self.selectedItem]["action"] == 'menu' and self.menu.keyboard == None:
+                #reload menu with the new items
+                self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
+                with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                    menu = json.load(jsonMenu)
+                    #destroy sprites
+                    self.board.kill()
+                    self.items.kill()
+                    self.kill()
+                    #reload menu (rebuil sprites)
+                    self.menu.load(menu)
+                    #pixelate
+                    effect = True
+            elif self.items.items[self.selectedItem]["action"] == 'function-text':
+                if self.menu.keyboard == None:
+                    fade(self.main.screen)
+                    self.menu.keyboard = Keyboard(main=self.main,buffer='')
+                    self.menu.keyboard.draw()
+                    self.menu.keyboardScreen = KeyboardScreen(self.main)
+                    self.menu.keyboardScreen.draw('')
+                    self.menu.keyboard.loadMenu = False
+                    effect = True
+                elif self.menu.keyboard.show:
+                    logger.debug("continue with show")
+                    effect = self.manageKeyboard()
+                else:
+                    logger.debug("show exits!")
+            elif self.items.items[self.selectedItem]["action"] == 'command-message':
+                cmd = self.items.items[self.selectedItem]["external"]
+                logger.debug('command message is "%s" ' % cmd)
+                process = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                result = process.stdout
+                result = re.sub('[^A-Za-z0-9.\-,\ ]+', '', result) #just normal chars
+                logger.debug("result is %s" % result)
+                self.menu.dialog = Dialog(main=self.main,title="Result",message=result, dialogWidth=160,dialogHeight=140)
+            elif self.items.items[self.selectedItem]["action"] == 'function':
+                logger.debug("dynamicMethod...")
+                #loading effect...
+                pixelate(self.main.screen,True)
+                params = []
+                funct = self.items.items[self.selectedItem]["external"]
+                logger.debug("function %s" % funct)
+                #now call to function with params
+                dynamicMethod = getattr(menuaction, funct)
+                params = []
+                if "params" in self.items.items[self.selectedItem]:
+                    params = self.items.items[self.selectedItem]["params"]
+                try:
+                    menu = dynamicMethod(params=params)
+                    logger.debug("menu: %s " % str(menu))
+                    if menu:
+                        if type(menu) is list:
+                            logger.debug('list!!')
+                            #destroy sprites
+                            self.board.kill()
+                            self.items.kill()
+                            self.kill()
+                            #reload menu (rebuil sprites)
+                            self.menu.load(menu)
+                            #pixelate
+                        elif type(menu) is dict:
+                            if 'external' in menu:
+                                logger.debug('dict!!')
+                                #command and exit
+                                pixelate(surface,True)
+                                pygame.display.quit()
+                                pygame.quit()
+                                #os.system(self.items.items[self.selectedItem]["external"])
+                                text_file = open("command", "w")
+                                text_file.write(menu['external'])
+                                text_file.close()
+                                sys.exit(10)
+                            elif 'external-keyboard' in external:
+                                function = 'saveWifiPWD'
+                                logger.debug("function %s",funct)
+                                #now call to function with params
+                                #keyboard
+                                self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
+                                self.menu.keyboard.draw()
+                                self.menu.keyboardScreen = KeyboardScreen(self.main)
+                                self.menu.keyboardScreen.draw(buffer)
+                                effect = True
+                                #dynamicMethod = getattr(menuaction, funct)
+                                pass
+                        else:
+                            logger.debug("else %s" % str(type(menu)))
+                except Exception as ex:
+                    logger.error(str(ex))
+
+            elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
+                #save last param name
+                self.lastMenuParam = self.items.items[self.selectedItem]["name"]
+                logger.debug("storing %s param in memory" % self.lastMenuParam)
+                buffer = ""
+                with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
+                    menu = json.load(jsonMenu)
+                    for element in menu:
+                        if "name" in element and element["name"] == self.lastMenuParam:
+                            buffer = element["value"]
+
+                #keyboard
+                self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
                 self.menu.keyboard.draw()
                 self.menu.keyboardScreen = KeyboardScreen(self.main)
-                self.menu.keyboardScreen.draw('')
-                self.menu.keyboard.loadMenu = False
+                self.menu.keyboardScreen.draw(buffer)
                 effect = True
-            elif self.menu.keyboard.show:
-                logger.debug("continue with show")
+            elif self.items.items[self.selectedItem]["action"] == 'command':
+                #command
+                pixelate(self.main.screen,True)
+                os.system(self.items.items[self.selectedItem]["external"])
+                pygame.event.clear()
+                self.last = pygame.time.get_ticks()
+                effect = True
+            elif self.items.items[self.selectedItem]["action"] == 'command-exit':
+                #command and exit
+                pixelate(surface,True)
+                pygame.display.quit()
+                pygame.quit()
+                #os.system(self.items.items[self.selectedItem]["external"])
+                text_file = open("command", "w")
+                text_file.write(self.items.items[self.selectedItem]["external"])
+                text_file.close()
+                sys.exit(10)
+            elif self.items.items[self.selectedItem]["action"] == 'exit':
+                pixelate(surface,True)
+                pygame.display.quit()
+                pygame.quit()
+                sys.exit(0)
+            elif self.menu.keyboard != None and self.menu.keyboard.show:
                 effect = self.manageKeyboard()
-            else:
-                logger.debug("show exits!")
-        elif self.items.items[self.selectedItem]["action"] == 'command-message':
-            cmd = self.items.items[self.selectedItem]["external"]
-            logger.debug('command message is "%s" ' % cmd)
-            process = subprocess.run(cmd, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            result = process.stdout
-            result = re.sub('[^A-Za-z0-9.\-,\ ]+', '', result) #just normal chars
-            logger.debug("result is %s" % result)
-            self.menu.dialog = Dialog(main=self.main,title="Result",message=result, dialogWidth=160,dialogHeight=140)
-        elif self.items.items[self.selectedItem]["action"] == 'function':
-            logger.debug("dynamicMethod...")
-            #loading effect...
-            pixelate(self.main.screen,True)
-            params = []
-            funct = self.items.items[self.selectedItem]["external"]
-            logger.debug("function %s" % funct)
-            #now call to function with params
-            dynamicMethod = getattr(menuaction, funct)
-            params = []
-            if "params" in self.items.items[self.selectedItem]:
-                params = self.items.items[self.selectedItem]["params"]
-            try:
-                menu = dynamicMethod(params=params)
-                logger.debug("menu: %s " % str(menu))
-                if menu:
-                    if type(menu) is list:
-                        logger.debug('list!!')
-                        #destroy sprites
-                        self.board.kill()
-                        self.items.kill()
-                        self.kill()
-                        #reload menu (rebuil sprites)
-                        self.menu.load(menu)
-                        #pixelate
-                    elif type(menu) is dict:
-                        if 'external' in menu:
-                            logger.debug('dict!!')
-                            #command and exit
-                            pixelate(surface,True)
-                            pygame.display.quit()
-                            pygame.quit()
-                            #os.system(self.items.items[self.selectedItem]["external"])
-                            text_file = open("command", "w")
-                            text_file.write(menu['external'])
-                            text_file.close()
-                            sys.exit(10)
-                        elif 'external-keyboard' in external:
-                            function = 'saveWifiPWD'
-                            logger.debug("function %s",funct)
-                            #now call to function with params
-                            #keyboard
-                            self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
-                            self.menu.keyboard.draw()
-                            self.menu.keyboardScreen = KeyboardScreen(self.main)
-                            self.menu.keyboardScreen.draw(buffer)
-                            effect = True
-                            #dynamicMethod = getattr(menuaction, funct)
-                            pass
-                    else:
-                        logger.debug("else %s" % str(type(menu)))
-            except Exception as ex:
-                logger.error(str(ex))
 
-        elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
-            #save last param name
-            self.lastMenuParam = self.items.items[self.selectedItem]["name"]
-            logger.debug("storing %s param in memory" % self.lastMenuParam)
-            buffer = ""
-            with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
-                menu = json.load(jsonMenu)
-                for element in menu:
-                    if "name" in element and element["name"] == self.lastMenuParam:
-                        buffer = element["value"]
-
-            #keyboard
-            self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
-            self.menu.keyboard.draw()
-            self.menu.keyboardScreen = KeyboardScreen(self.main)
-            self.menu.keyboardScreen.draw(buffer)
-            effect = True
-        elif self.items.items[self.selectedItem]["action"] == 'command':
-            #command
-            pixelate(self.main.screen,True)
-            os.system(self.items.items[self.selectedItem]["external"])
-            pygame.event.clear()
-            effect = True
-        elif self.items.items[self.selectedItem]["action"] == 'command-exit':
-            #command and exit
-            pixelate(surface,True)
-            pygame.display.quit()
-            pygame.quit()
-            #os.system(self.items.items[self.selectedItem]["external"])
-            text_file = open("command", "w")
-            text_file.write(self.items.items[self.selectedItem]["external"])
-            text_file.close()
-            sys.exit(10)
-        elif self.items.items[self.selectedItem]["action"] == 'exit':
-            pixelate(surface,True)
-            pygame.display.quit()
-            pygame.quit()
-            sys.exit(0)
-        elif self.menu.keyboard != None and self.menu.keyboard.show:
-            effect = self.manageKeyboard()
-
-        if effect:
-            pixelate(surface,False)
+            if effect:
+                pixelate(surface,False)
 
 
     def manageKeyboard(self):
@@ -312,6 +316,7 @@ class MenuCursor(pygame.sprite.Sprite):
                     params.append({'text':buffer})
                     menu = dynamicMethod(params=params)
                     pygame.event.clear()
+                    self.last = pygame.time.get_ticks()
                     logger.debug("returning menu: %s " % str(menu))
 
                 #destroy sprites

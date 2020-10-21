@@ -127,7 +127,7 @@ class MenuCursor(pygame.sprite.Sprite):
 
 
     def select(self,surface):
-        if pygame.time.get_ticks() - self.last > 2000:
+        if pygame.time.get_ticks() - self.last > 1000:
             self.last = pygame.time.get_ticks()
             effect = False
             logger.debug("action: %s" % self.items.items[self.selectedItem]["action"])

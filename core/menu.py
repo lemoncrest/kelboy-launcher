@@ -178,44 +178,47 @@ class MenuCursor(pygame.sprite.Sprite):
             params = []
             if "params" in self.items.items[self.selectedItem]:
                 params = self.items.items[self.selectedItem]["params"]
-            menu = dynamicMethod(params=params)
-            logger.debug("menu: %s " % str(menu))
-            if menu:
-                if type(menu) is list:
-                    logger.debug('list!!')
-                    #destroy sprites
-                    self.board.kill()
-                    self.items.kill()
-                    self.kill()
-                    #reload menu (rebuil sprites)
-                    self.menu.load(menu)
-                    #pixelate
-                elif type(menu) is dict:
-                    if 'external' in menu:
-                        logger.debug('dict!!')
-                        #command and exit
-                        pixelate(surface,True)
-                        pygame.display.quit()
-                        pygame.quit()
-                        #os.system(self.items.items[self.selectedItem]["external"])
-                        text_file = open("command", "w")
-                        text_file.write(menu['external'])
-                        text_file.close()
-                        sys.exit(10)
-                    elif 'external-keyboard' in external:
-                        function = 'saveWifiPWD'
-                        logger.debug("function %s",funct)
-                        #now call to function with params
-                        #keyboard
-                        self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
-                        self.menu.keyboard.draw()
-                        self.menu.keyboardScreen = KeyboardScreen(self.main)
-                        self.menu.keyboardScreen.draw(buffer)
-                        effect = True
-                        #dynamicMethod = getattr(menuaction, funct)
-                        pass
-                else:
-                    logger.debug("else %s" % str(type(menu)))
+            try:
+                menu = dynamicMethod(params=params)
+                logger.debug("menu: %s " % str(menu))
+                if menu:
+                    if type(menu) is list:
+                        logger.debug('list!!')
+                        #destroy sprites
+                        self.board.kill()
+                        self.items.kill()
+                        self.kill()
+                        #reload menu (rebuil sprites)
+                        self.menu.load(menu)
+                        #pixelate
+                    elif type(menu) is dict:
+                        if 'external' in menu:
+                            logger.debug('dict!!')
+                            #command and exit
+                            pixelate(surface,True)
+                            pygame.display.quit()
+                            pygame.quit()
+                            #os.system(self.items.items[self.selectedItem]["external"])
+                            text_file = open("command", "w")
+                            text_file.write(menu['external'])
+                            text_file.close()
+                            sys.exit(10)
+                        elif 'external-keyboard' in external:
+                            function = 'saveWifiPWD'
+                            logger.debug("function %s",funct)
+                            #now call to function with params
+                            #keyboard
+                            self.menu.keyboard = Keyboard(main=self.main,buffer=buffer)
+                            self.menu.keyboard.draw()
+                            self.menu.keyboardScreen = KeyboardScreen(self.main)
+                            self.menu.keyboardScreen.draw(buffer)
+                            effect = True
+                            #dynamicMethod = getattr(menuaction, funct)
+                            pass
+                    else:
+                        logger.debug("else %s" % str(type(menu)))
+            except Exception as ex:
+                logger.error(str(ex))
 
         elif self.items.items[self.selectedItem]["action"] == 'param' and self.menu.keyboard == None:
             #save last param name

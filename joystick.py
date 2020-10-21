@@ -3,6 +3,7 @@
 
 import os, struct, array, subprocess
 from fcntl import ioctl
+from evdev import uinput, ecodes as e
 
 from core.settings import *
 import logging
@@ -159,6 +160,12 @@ except:
     logger.warning("needs pip library RPi.GPIO")
     pass
 
+ui = None
+try:
+    ui = uinput.UInput()
+except:
+    logger.warning("no uinput was defined")
+
 # Main event loop
 while True:
     evbuf = jsdev.read(8)
@@ -168,7 +175,7 @@ while True:
         if type & 0x80:
              logger.debug("(initial)")
 
-        if type & 0x01:
+        elif type & 0x01:
             button = button_map[number]
             if button:
                 button_states[button] = value
@@ -177,14 +184,14 @@ while True:
                 else:
                     logger.debug(("%s released" % (button)))
 
-        if type & 0x02:
+        elif type & 0x02:
             axis = axis_map[number]
             if axis:
                 fvalue = value / 32767.0
                 axis_states[axis] = fvalue
                 logger.debug(("%s: %.3f" % (axis, fvalue)))
 
-        if button_states["START"]:
+        elif button_states["START"]:
             process = subprocess.run(AUDIO_CONTROL_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             device = process.stdout.strip()
             logger.debug("device is: %s" % device)
@@ -208,7 +215,7 @@ while True:
                 command = 'amixer set %s 50%%' % device
                 os.system(command)
                 logger.debug("command %s" % command)
-        if button_states["SELECT"] and button_states["UP"]:
+        elif button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             logger.debug("showing battery...")
             try:
@@ -254,17 +261,76 @@ while True:
             battery = True
             os.system(command)
             logger.debug("command done")
-        if button_states["SELECT"] and button_states["DOWN"]:
+        elif button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")
-        if button_states["SELECT"] and button_states["LEFT"]:
+        elif button_states["SELECT"] and button_states["LEFT"]:
             lightLevel = lightLevel - 10 if lightLevel >= 10 else 0
             brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
-        if button_states["SELECT"] and button_states["RIGHT"]:
+        elif button_states["SELECT"] and button_states["RIGHT"]:
             lightLevel = lightLevel + 10 if lightLevel <= 90 else 100
             brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
 
+        #check input
+        if ui:
+            #input conversor
+            if "UP" in button_states:
+                if button_states["UP"]:
+                    ui.write(e.EV_KEY, e.KEY_UP, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_UP, 0)
+                    ui.syn()
+            elif "DOWN" in button_states:
+                if button_states["DOWN"]:
+                    ui.write(e.EV_KEY, e.KEY_DOWN, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_DOWN, 0)
+                    ui.syn()
+            elif "LEFT" in button_states:
+                if button_states["LEFT"]:
+                    ui.write(e.EV_KEY, e.KEY_LEFT, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_LEFT, 0)
+                    ui.syn()
+            elif "RIGHT" in button_states:
+                if button_states["RIGHT"]:
+                    ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
+                    ui.syn()
+            elif "A" in button_states:
+                if button_states["A"]:
+                    ui.write(e.EV_KEY, e.KEY_X, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_X, 0)
+                    ui.syn()
+            elif "B" in button_states:
+                if button_states["B"]:
+                    ui.write(e.EV_KEY, e.KEY_C, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_C, 0)
+                    ui.syn()
+            elif "START" in button_states:
+                if button_states["B"]:
+                    ui.write(e.EV_KEY, e.KEY_RETURN, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_RETURN, 0)
+                    ui.syn()
+            elif "SELECT" in button_states:
+                if button_states["B"]:
+                    ui.write(e.EV_KEY, e.KEY_ESC, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_ESC, 0)
+                    ui.syn()
 try:
     brightness.ChangeDutyCycle(100)
 except:

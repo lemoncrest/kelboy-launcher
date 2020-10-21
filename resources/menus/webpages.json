@@ -9,7 +9,11 @@
         ],
         "title": "romsmania.cc"
     },{
-      "title": "YouTube",
+      "title": "lexaloffle.com",
+      "action": "function",
+      "external": "getCatalogMenu"
+    },{
+      "title": "youtube.com",
       "action": "function",
       "external": "youtubeMenu"
     },{

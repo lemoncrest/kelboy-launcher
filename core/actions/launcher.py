@@ -83,12 +83,20 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                         'type' : directory
                     }]
                     menu.append(element)
-            element = {}
-            element["title"] = "Back"
-            element["action"] = "function"
-            element["external"] = "loadRoms"
-            menu.append(element)
-
+        elif folder == 'pico8':
+            logger.debug("selected pico8")
+            picoPath = os.path.join(ROMS_PATH,"pico8")
+            for directory in sorted(os.listdir(picoPath)):
+                element = {}
+                element["title"] = "%s" % directory[:directory.rfind(".")]
+                element["action"] = "command"
+                element["external"] = '%s -run "%s/%s"' % (PICO8_BIN,picoPath,directory)
+                menu.append(element)
+        element = {}
+        element["title"] = "Back"
+        element["action"] = "function"
+        element["external"] = "loadRoms"
+        menu.append(element)
     return menu
 
 

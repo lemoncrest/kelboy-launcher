@@ -31,12 +31,16 @@ ROMS_PATH = '/home/pi/RetroPie/roms'
 FRAMES_IN = 16
 FRAMES_OUT = 16
 
+EVENT_DELAY_TIME = 500
+
 BARSIZE = 25
 
 BATTERY_PERCENTAGE_CMD = 'cat /sys/class/power_supply/max1726x_battery/capacity'
 FUELGAUGE_CURRENT_CMD = 'cat /sys/class/power_supply/max1726x_battery/current_now'
 
 AUDIO_CONTROL_CMD = "amixer | grep control | head -n 1 | awk -F' ' '{ print $4 }'"
+
+PICO8_BIN = '/home/pi/pico-8/pico8'
 
 RETROARCH_BIN = '/opt/retropie/emulators/retroarch/bin/retroarch'
 

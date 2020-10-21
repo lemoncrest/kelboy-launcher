@@ -175,7 +175,7 @@ while True:
         if type & 0x80:
              logger.debug("(initial)")
 
-        elif type & 0x01:
+        if type & 0x01:
             button = button_map[number]
             if button:
                 button_states[button] = value
@@ -184,14 +184,14 @@ while True:
                 else:
                     logger.debug(("%s released" % (button)))
 
-        elif type & 0x02:
+        if type & 0x02:
             axis = axis_map[number]
             if axis:
                 fvalue = value / 32767.0
                 axis_states[axis] = fvalue
                 logger.debug(("%s: %.3f" % (axis, fvalue)))
 
-        elif button_states["START"]:
+        if button_states["START"]:
             process = subprocess.run(AUDIO_CONTROL_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             device = process.stdout.strip()
             logger.debug("device is: %s" % device)
@@ -215,7 +215,7 @@ while True:
                 command = 'amixer set %s 50%%' % device
                 os.system(command)
                 logger.debug("command %s" % command)
-        elif button_states["SELECT"] and button_states["UP"]:
+        if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
             logger.debug("showing battery...")
             try:
@@ -282,49 +282,49 @@ while True:
                 else:
                     ui.write(e.EV_KEY, e.KEY_UP, 0)
                     ui.syn()
-            elif "DOWN" in button_states:
+            if "DOWN" in button_states:
                 if button_states["DOWN"]:
                     ui.write(e.EV_KEY, e.KEY_DOWN, 1)
                     ui.syn()
                 else:
                     ui.write(e.EV_KEY, e.KEY_DOWN, 0)
                     ui.syn()
-            elif "LEFT" in button_states:
+            if "LEFT" in button_states:
                 if button_states["LEFT"]:
                     ui.write(e.EV_KEY, e.KEY_LEFT, 1)
                     ui.syn()
                 else:
                     ui.write(e.EV_KEY, e.KEY_LEFT, 0)
                     ui.syn()
-            elif "RIGHT" in button_states:
+            if "RIGHT" in button_states:
                 if button_states["RIGHT"]:
                     ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
                     ui.syn()
                 else:
                     ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
                     ui.syn()
-            elif "A" in button_states:
+            if "A" in button_states:
                 if button_states["A"]:
                     ui.write(e.EV_KEY, e.KEY_X, 1)
                     ui.syn()
                 else:
                     ui.write(e.EV_KEY, e.KEY_X, 0)
                     ui.syn()
-            elif "B" in button_states:
+            if "B" in button_states:
                 if button_states["B"]:
                     ui.write(e.EV_KEY, e.KEY_C, 1)
                     ui.syn()
                 else:
                     ui.write(e.EV_KEY, e.KEY_C, 0)
                     ui.syn()
-            elif "START" in button_states:
+            if "START" in button_states:
                 if button_states["B"]:
                     ui.write(e.EV_KEY, e.KEY_RETURN, 1)
                     ui.syn()
                 else:
                     ui.write(e.EV_KEY, e.KEY_RETURN, 0)
                     ui.syn()
-            elif "SELECT" in button_states:
+            if "SELECT" in button_states:
                 if button_states["B"]:
                     ui.write(e.EV_KEY, e.KEY_ESC, 1)
                     ui.syn()

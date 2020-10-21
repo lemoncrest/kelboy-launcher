@@ -2,6 +2,7 @@
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
 import os, struct, array, subprocess
+from subprocess import check_output
 from fcntl import ioctl
 from evdev import uinput, ecodes as e
 
@@ -273,7 +274,13 @@ while True:
             logger.debug("brightness is %s" % lightLevel)
 
         #check input
-        if ui:
+        pico = True
+        try:
+            check_output(["pidof","pico8"]) #if isset continue, else not
+        except:
+            pico = False
+            pass
+        if ui and pico:
             #input conversor
             if "UP" in button_states:
                 if button_states["UP"]:

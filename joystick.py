@@ -319,10 +319,10 @@ while True:
                     ui.syn()
             if "START" in button_states:
                 if button_states["B"]:
-                    ui.write(e.EV_KEY, e.KEY_RETURN, 1)
+                    ui.write(e.EV_KEY, e.KEY_ENTER, 1)
                     ui.syn()
                 else:
-                    ui.write(e.EV_KEY, e.KEY_RETURN, 0)
+                    ui.write(e.EV_KEY, e.KEY_ENTER, 0)
                     ui.syn()
             if "SELECT" in button_states:
                 if button_states["B"]:

@@ -241,6 +241,7 @@ class MenuCursor(pygame.sprite.Sprite):
             #command
             pixelate(self.main.screen,True)
             os.system(self.items.items[self.selectedItem]["external"])
+            pygame.event.clear()
             effect = True
         elif self.items.items[self.selectedItem]["action"] == 'command-exit':
             #command and exit
@@ -310,6 +311,7 @@ class MenuCursor(pygame.sprite.Sprite):
                         params = self.items.items[self.selectedItem]["params"]
                     params.append({'text':buffer})
                     menu = dynamicMethod(params=params)
+                    pygame.event.clear()
                     logger.debug("returning menu: %s " % str(menu))
 
                 #destroy sprites

@@ -43,6 +43,16 @@ def getCatalogMenu(params=[]):
     element["action"] = 'function-text'
     element["external"] = 'getCatalogSearchMenu'
     element["params"] = [{'webpage':link, 'final': False}]
-    cards.append(element)
     #TODO append getCatalogSearchMenu search
+    cards.append(element)
+    #back
+    element = {}
+    element["title"] = "Back"
+    if page != '0':
+        element["action"] = 'function'
+        element["external"] = 'getCatalogMenu'
+    else:
+        element["action"] = 'menu'
+        element["external"] = 'webpages'
+    cards.append(element)
     return cards

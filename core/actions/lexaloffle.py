@@ -67,7 +67,7 @@ def getCatalogMenu(params=[]):
     #back
     element = {}
     element["title"] = "Back"
-    if page != '0':
+    if int(page) != 1:
         element["action"] = 'function'
         element["external"] = 'getCatalogMenu'
     else:

@@ -412,6 +412,11 @@ class MenuItems(pygame.sprite.Sprite):
         if lenItems>MAX_MENU_ITEMS:
             lenItems = MAX_MENU_ITEMS
         self.image = pygame.Surface((self.menu.board.rect.width * 0.97, self.height * lenItems), pygame.SRCALPHA)
+        self.timer = pygame.time.get_ticks()
+        self.lastSelected = 0
+        self.movement = 0
+        self.refreshTime = HORIZONTAL_MOVEMENT_REFRESH_TIME
+        self.waitTime = HORIZONTAL_MOVEMENT_WAIT_TIME * (1000/self.refreshTime)
 
     def draw(self):
         #it's need to be recalculated each time, so not put it in builder
@@ -432,19 +437,40 @@ class MenuItems(pygame.sprite.Sprite):
                 text_item_rect = text_item.get_rect()
                 #self.image.blit(text_item, (self.menu.cursor.rect.left + (margin), self.menu_init_y + (text_item_rect.height * counter)))
                 #self.main.screen.blit(text_item, (self.menu.cursor.rect.left + (margin), 0 + (text_item_rect.height * counter)) )
+
+                #this movement is used to launch horizontal pixel movement effect in menu
                 index = self.menu.cursor.selectedItem
+                if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
+                    self.lastSelected = index
+                    self.timer = pygame.time.get_ticks()
+                    self.movement = 0
+                    logger.debug("updated timer '%s'!" % self.items[index]["title"])
+
+                if int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) > self.waitTime:
+                    self.movement = int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) - self.waitTime
+                    logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
+
+
+                else:
+                    self.movement = 0
+
+                movement = 0
+                if index == counter:
+                    movement = self.movement
+
                 if len(self.items)<MAX_MENU_ITEMS:
-                    self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
+
+                    self.image.blit(text_item, (self.menu.cursor.rect.left + margin - movement, counter*self.height ))
                 else:
                     if index<MAX_MENU_ITEMS-1:
-                        self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counter*self.height ))
+                        self.image.blit(text_item, (self.menu.cursor.rect.left + margin - movement, counter*self.height ))
                     else:
                         if index-MAX_MENU_ITEMS<counter-1 and counterNew<MAX_MENU_ITEMS-1:
-                            self.image.blit(text_item, (self.menu.cursor.rect.left + margin, counterNew*self.height ))
+                            self.image.blit(text_item, (self.menu.cursor.rect.left + margin - movement, counterNew*self.height ))
                             counterNew+=1
-                            logger.debug("writting %s with %s and %s with %s" % (title,str(counter),str(counterNew),str(index)))
-                        else:
-                            logger.debug("discarting %s" % str(counter))
+#                            logger.debug("writting %s with %s and %s with %s" % (title,str(counter),str(counterNew),str(index)))
+#                        else:
+#                            logger.debug("discarting %s" % str(counter))
 
                 counter += 1
 

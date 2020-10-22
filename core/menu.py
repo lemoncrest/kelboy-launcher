@@ -125,6 +125,24 @@ class MenuCursor(pygame.sprite.Sprite):
             self.menu.keyboard.positionX += 1
             self.menu.keyboard.draw()
 
+    def back(self,surface):
+        if pygame.time.get_ticks() - self.last > EVENT_DELAY_TIME:
+            with open(os.path.join("resources/menus/"+self.menu.prevMenu+".json")) as jsonMenu:
+                currentMenu = json.load(jsonMenu)
+                #destroy sprites
+                self.board.kill()
+                self.items.kill()
+                self.kill()
+                #reload menu (rebuil sprites)
+                self.menu.load(currentMenu)
+
+                #update prevMenu and lastMenu (current)
+                self.menu.lastMenu = self.menu.prevMenu
+                for menu in currentMenu:
+                    if "title" in menu and menu["title"].lower() == 'back' and "action" in menu and menu["action"] == 'menu':
+                        self.menu.prevMenu = menu["external"]
+
+                pixelate(surface,True)
 
     def select(self,surface):
         if pygame.time.get_ticks() - self.last > EVENT_DELAY_TIME:
@@ -136,6 +154,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.menu.dialog = None
             elif self.items.items[self.selectedItem]["action"] == 'menu' and self.menu.keyboard == None:
                 #reload menu with the new items
+                self.menu.prevMenu = self.menu.lastMenu #to be used in back button
                 self.menu.lastMenu = self.items.items[self.selectedItem]["external"]
                 with open(os.path.join("resources/menus/"+self.menu.lastMenu+".json")) as jsonMenu:
                     menu = json.load(jsonMenu)

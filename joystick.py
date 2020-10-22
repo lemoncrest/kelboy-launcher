@@ -324,6 +324,20 @@ while True:
                 else:
                     ui.write(e.EV_KEY, e.KEY_C, 0)
                     ui.syn()
+            if "X" in button_states:
+                if button_states["X"]:
+                    ui.write(e.EV_KEY, e.KEY_S, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_S, 0)
+                    ui.syn()
+            if "Y" in button_states:
+                if button_states["Y"]:
+                    ui.write(e.EV_KEY, e.KEY_P, 1)
+                    ui.syn()
+                else:
+                    ui.write(e.EV_KEY, e.KEY_P, 0)
+                    ui.syn()
             if "START" in button_states:
                 if button_states["START"]:
                     ui.write(e.EV_KEY, e.KEY_ENTER, 1)
@@ -333,10 +347,12 @@ while True:
                     ui.syn()
             if "SELECT" in button_states:
                 if button_states["SELECT"]:
-                    ui.write(e.EV_KEY, e.KEY_ESC, 1)
+                    ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
+                    ui.write(e.EV_KEY, e.KEY_Q, 1)
                     ui.syn()
                 else:
-                    ui.write(e.EV_KEY, e.KEY_ESC, 0)
+                    ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
+                    ui.write(e.EV_KEY, e.KEY_Q, 0)
                     ui.syn()
 try:
     brightness.ChangeDutyCycle(100)

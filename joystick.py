@@ -331,13 +331,6 @@ while True:
                 else:
                     ui.write(e.EV_KEY, e.KEY_S, 0)
                     ui.syn()
-            if "Y" in button_states:
-                if button_states["Y"]:
-                    ui.write(e.EV_KEY, e.KEY_P, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_P, 0)
-                    ui.syn()
             if "START" in button_states:
                 if button_states["START"]:
                     ui.write(e.EV_KEY, e.KEY_ENTER, 1)

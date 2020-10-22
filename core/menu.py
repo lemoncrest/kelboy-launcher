@@ -415,7 +415,7 @@ class MenuItems(pygame.sprite.Sprite):
         self.timer = pygame.time.get_ticks()
         self.lastSelected = 0
         self.movement = 0
-        self.refreshTime = HORIZONTAL_MOVEMENT_REFRESH_TIME
+        self.refreshTime = HORIZONTAL_MOVEMENT_REFRESH_FACTOR
         self.waitTime = HORIZONTAL_MOVEMENT_WAIT_TIME * (1000/self.refreshTime)
 
     def draw(self):

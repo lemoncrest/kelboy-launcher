@@ -48,6 +48,7 @@ class MenuCursor(pygame.sprite.Sprite):
         self._layer = 2
         self.loadBackground()
         self.last = pygame.time.get_ticks()
+        self.menu.prevMenu = "main" #intanced back to the first
 
     def loadBackground(self):
         logger.debug("loading CURSOR background...")

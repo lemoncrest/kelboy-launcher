@@ -119,6 +119,8 @@ class Main():
                     self.upPushed = True
                 elif event.key == pygame.K_RETURN:
                     self.menu.cursor.select(self.screen)
+                elif event.key == pygame.K_ESCAPE:
+                    self.menu.cursor.back(self.screen)
                 elif event.key == pygame.K_LEFT:
                     self.menu.cursor.left()
                 elif event.key == pygame.K_RIGHT:
@@ -140,7 +142,7 @@ class Main():
                 if event.button == 15:  # button A - enter
                     self.menu.cursor.select(self.screen)
                 elif event.button == 14:  # button B - back
-                    pass #TODO
+                    self.menu.cursor.back(self.screen)
                 elif event.button == 3:  # Z
                     self.zPressed = True
                 elif event.button == 2:  # T

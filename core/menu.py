@@ -127,7 +127,7 @@ class MenuCursor(pygame.sprite.Sprite):
             self.menu.keyboard.draw()
 
     def back(self,surface):
-        if pygame.time.get_ticks() - self.last > EVENT_DELAY_TIME:
+        if (pygame.time.get_ticks() - self.last > EVENT_DELAY_TIME) and not (self.menu.dialog or self.menu.keyboard):
             with open(os.path.join("resources/menus/"+self.menu.prevMenu+".json")) as jsonMenu:
                 currentMenu = json.load(jsonMenu)
                 #destroy sprites

@@ -273,80 +273,134 @@ while True:
             brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
 
-        #check input
+        #check process
         pico = True
         try:
             check_output(["pidof","pico8"]) #if isset continue, else not
         except:
             pico = False
             pass
-        if ui and pico:
-            #input conversor
-            if "UP" in button_states:
-                if button_states["UP"]:
-                    ui.write(e.EV_KEY, e.KEY_UP, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_UP, 0)
-                    ui.syn()
-            if "DOWN" in button_states:
-                if button_states["DOWN"]:
-                    ui.write(e.EV_KEY, e.KEY_DOWN, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_DOWN, 0)
-                    ui.syn()
-            if "LEFT" in button_states:
-                if button_states["LEFT"]:
-                    ui.write(e.EV_KEY, e.KEY_LEFT, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_LEFT, 0)
-                    ui.syn()
-            if "RIGHT" in button_states:
-                if button_states["RIGHT"]:
-                    ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
-                    ui.syn()
-            if "A" in button_states:
-                if button_states["A"]:
-                    ui.write(e.EV_KEY, e.KEY_X, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_X, 0)
-                    ui.syn()
-            if "B" in button_states:
-                if button_states["B"]:
-                    ui.write(e.EV_KEY, e.KEY_C, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_C, 0)
-                    ui.syn()
-            if "X" in button_states:
-                if button_states["X"]:
-                    ui.write(e.EV_KEY, e.KEY_S, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_S, 0)
-                    ui.syn()
-            if "START" in button_states:
-                if button_states["START"]:
-                    ui.write(e.EV_KEY, e.KEY_ENTER, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_ENTER, 0)
-                    ui.syn()
-            if "SELECT" in button_states:
-                if button_states["SELECT"]:
-                    ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
-                    ui.write(e.EV_KEY, e.KEY_Q, 1)
-                    ui.syn()
-                else:
-                    ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
-                    ui.write(e.EV_KEY, e.KEY_Q, 0)
-                    ui.syn()
+
+        mpv = True
+        try:
+            check_output(["pidof","mpv"]) #if isset continue, else not
+        except:
+            mpv = False
+            pass
+
+        #input conversor
+        if ui:
+            if pico:
+                if "UP" in button_states:
+                    if button_states["UP"]:
+                        ui.write(e.EV_KEY, e.KEY_UP, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_UP, 0)
+                        ui.syn()
+                if "DOWN" in button_states:
+                    if button_states["DOWN"]:
+                        ui.write(e.EV_KEY, e.KEY_DOWN, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_DOWN, 0)
+                        ui.syn()
+                if "LEFT" in button_states:
+                    if button_states["LEFT"]:
+                        ui.write(e.EV_KEY, e.KEY_LEFT, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_LEFT, 0)
+                        ui.syn()
+                if "RIGHT" in button_states:
+                    if button_states["RIGHT"]:
+                        ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
+                        ui.syn()
+                if "A" in button_states:
+                    if button_states["A"]:
+                        ui.write(e.EV_KEY, e.KEY_X, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_X, 0)
+                        ui.syn()
+                if "B" in button_states:
+                    if button_states["B"]:
+                        ui.write(e.EV_KEY, e.KEY_C, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_C, 0)
+                        ui.syn()
+                if "X" in button_states:
+                    if button_states["X"]:
+                        ui.write(e.EV_KEY, e.KEY_S, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_S, 0)
+                        ui.syn()
+                if "START" in button_states:
+                    if button_states["START"]:
+                        ui.write(e.EV_KEY, e.KEY_ENTER, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_ENTER, 0)
+                        ui.syn()
+                if "SELECT" in button_states:
+                    if button_states["SELECT"]:
+                        ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
+                        ui.write(e.EV_KEY, e.KEY_Q, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
+                        ui.write(e.EV_KEY, e.KEY_Q, 0)
+                        ui.syn()
+            elif mpv:
+                #input conversor
+                if "UP" in button_states:
+                    if button_states["UP"]:
+                        ui.write(e.EV_KEY, e.KEY_UP, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_UP, 0)
+                        ui.syn()
+                if "DOWN" in button_states:
+                    if button_states["DOWN"]:
+                        ui.write(e.EV_KEY, e.KEY_DOWN, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_DOWN, 0)
+                        ui.syn()
+                if "LEFT" in button_states:
+                    if button_states["LEFT"]:
+                        ui.write(e.EV_KEY, e.KEY_LEFT, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_LEFT, 0)
+                        ui.syn()
+                if "RIGHT" in button_states:
+                    if button_states["RIGHT"]:
+                        ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
+                        ui.syn()
+                if "A" in button_states:
+                    if button_states["A"]:
+                        ui.write(e.EV_KEY, e.KEY_SPACE, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_SPACE, 0)
+                        ui.syn()
+                if "B" in button_states:
+                    if button_states["B"]:
+                        ui.write(e.EV_KEY, e.KEY_Q, 1)
+                        ui.syn()
+                    else:
+                        ui.write(e.EV_KEY, e.KEY_Q, 0)
+                        ui.syn()
+
 try:
     brightness.ChangeDutyCycle(100)
 except:

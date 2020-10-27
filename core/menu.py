@@ -444,11 +444,11 @@ class MenuItems(pygame.sprite.Sprite):
                     self.lastSelected = index
                     self.timer = pygame.time.get_ticks()
                     self.movement = 0
-                    logger.debug("updated timer '%s'!" % self.items[index]["title"])
+                    #logger.debug("updated timer '%s'!" % self.items[index]["title"])
 
                 if int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) > self.waitTime:
                     self.movement = int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) - self.waitTime
-                    logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
+                    #logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
 
 
                 else:

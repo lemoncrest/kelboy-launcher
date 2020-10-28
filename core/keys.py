@@ -111,5 +111,18 @@ addKey("scummvm","A",["BTN_LEFT"],"EV_KEY")
 addKey("scummvm","B",["BTN_RIGHT"],"EV_KEY")
 addKey("scummvm","X",["BTN_MIDDLE"],"EV_KEY")
 
+addProcess("shell") #steamlink
+addKey("shell","MOUSE",[],"EV_ABS")
+addKey("shell","A",["BTN_LEFT"],"EV_KEY")
+addKey("shell","B",["BTN_RIGHT"],"EV_KEY")
+addKey("shell","X",["BTN_MIDDLE"],"EV_KEY")
+
+addProcess("xinit") #steamlink
+addKey("xinit","MOUSE",[],"EV_ABS")
+addKey("xinit","A",["BTN_LEFT"],"EV_KEY")
+addKey("xinit","B",["BTN_RIGHT"],"EV_KEY")
+addKey("xinit","X",["BTN_MIDDLE"],"EV_KEY")
+
+
 #load configurations from configuration file to KEYS
 KEYS = getKeys();

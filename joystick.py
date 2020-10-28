@@ -2,6 +2,8 @@
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
 import os, sys, struct, array, subprocess
+import _thread as thread
+import time
 from subprocess import check_output
 from fcntl import ioctl
 from evdev import UInput, AbsInfo, InputDevice, uinput, ecodes as e
@@ -190,11 +192,38 @@ except:
 x=0
 y=0
 
+
+#thread
+def check_process():
+    global activeProcess
+    activeProcess = {}
+    while True:
+        for process in KEYS:
+            try:
+                #if isset assign in to activeProcess
+                name = process["process"]
+                check_output(["pidof",name])
+                activeProcess[name] = True
+            except:
+                #not exists so flag it to false
+                activeProcess[name] = False
+                pass
+        logger.debug("sleep 1 second...")
+        time.sleep(1)
+
+
+logger.debug("launching thread")
+try:
+    thread.start_new_thread(check_process,())
+    logger.debug("done! launching main loop...")
+except Exception as ex:
+    logger.error(str(ex))
+
 # Main event loop
 while True:
     evbuf = jsdev.read(8)
     if evbuf:
-        time, value, type, number = struct.unpack('IhBB', evbuf)
+        t, value, type, number = struct.unpack('IhBB', evbuf)
 
         if type & 0x80:
              logger.debug("(initial)")
@@ -303,31 +332,31 @@ while True:
                 name = process["process"]
                 try:
                     #if isset continue
-                    check_output(["pidof",name])
-                    for key in process["keys"]:
-                        type = key["type"] #e.EV_KEY
-                        if key["key"] in button_states and button_states[key["key"]]: #push
-                            #ui.write(e.EV_KEY, e.KEY_UP, 1) getattr(this_prize,choice)
-                            for value in key["callback"]:
-                                ui.write(getattr(e,type), getattr(e,value), 1)
-                        else: #release
-                            for value in key["callback"]:
-                                ui.write(getattr(e,type), getattr(e,value), 0)
-                        ui.syn()
-                        #mouse other ui device
-                        if key["key"] == "MOUSE" and ui2:
-                            if axis_states["x"]>0.1 and x<WIDTH:
-                                x=x+5
-                            elif axis_states["x"]<-0.1 and x>0:
-                                x=x-5
-                            if axis_states["y"]>0.1 and y>0:
-                                y=y-5
-                            elif axis_states["y"]<-0.1 and y<HEIGHT:
-                                y=y+5
-                            logger.debug("x: %s, y: %s" % (x,y))
-                            ui2.write(e.EV_ABS, e.ABS_X, x)
-                            ui2.write(e.EV_ABS, e.ABS_Y, y)
-                            ui2.syn()
+                    if name in activeProcess and activeProcess[name]:
+                        for key in process["keys"]:
+                            type = key["type"] #e.EV_KEY
+                            if key["key"] in button_states and button_states[key["key"]]: #push
+                                #ui.write(e.EV_KEY, e.KEY_UP, 1) getattr(this_prize,choice)
+                                for value in key["callback"]:
+                                    ui.write(getattr(e,type), getattr(e,value), 1)
+                            else: #release
+                                for value in key["callback"]:
+                                    ui.write(getattr(e,type), getattr(e,value), 0)
+                            ui.syn()
+                            #mouse other ui device
+                            if key["key"] == "MOUSE" and ui2:
+                                if axis_states["x"]>0.1 and x<WIDTH:
+                                    x=x+5
+                                elif axis_states["x"]<-0.1 and x>0:
+                                    x=x-5
+                                if axis_states["y"]>0.1 and y>0:
+                                    y=y-5
+                                elif axis_states["y"]<-0.1 and y<HEIGHT:
+                                    y=y+5
+                                logger.debug("x: %s, y: %s" % (x,y))
+                                ui2.write(e.EV_ABS, e.ABS_X, x)
+                                ui2.write(e.EV_ABS, e.ABS_Y, y)
+                                ui2.syn()
                 except Exception as ex:
                     logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                     pass

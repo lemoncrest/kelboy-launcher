@@ -110,6 +110,9 @@ addKey("scummvm","MOUSE",[],"EV_ABS")
 addKey("scummvm","A",["BTN_LEFT"],"EV_KEY")
 addKey("scummvm","B",["BTN_RIGHT"],"EV_KEY")
 addKey("scummvm","X",["BTN_MIDDLE"],"EV_KEY")
+addKey("scummvm","Z",["KEY_ESC"],"EV_KEY")
+addKey("scummvm","START",["KEY_ENTER"],"EV_KEY")
+addKey("scummvm","SELECT",["KEY_LEFTCTRL","KEY_F5"],"EV_KEY")
 
 addProcess("shell") #steamlink
 addKey("shell","MOUSE",[],"EV_ABS")

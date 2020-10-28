@@ -87,7 +87,7 @@ class Point3D:
 
 class RotatingCube():
 
-    def __init__(self, win_width = 320, win_height = 240):
+    def __init__(self, win_width = WIDTH, win_height = HEIGHT):
 
         pygame.init()
 

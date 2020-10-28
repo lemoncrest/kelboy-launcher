@@ -1,10 +1,10 @@
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
-import os, struct, array, subprocess
+import os, sys, struct, array, subprocess
 from subprocess import check_output
 from fcntl import ioctl
-from evdev import uinput, ecodes as e
+from evdev import UInput, AbsInfo, InputDevice, uinput, ecodes as e
 
 from core.keys import *
 
@@ -164,10 +164,31 @@ except:
     pass
 
 ui = None
+ui2 = None
 try:
     ui = uinput.UInput()
 except:
     logger.warning("no uinput was defined")
+
+
+cap = {
+    e.EV_KEY : [e.BTN_LEFT, e.BTN_RIGHT, e.BTN_MIDDLE],
+    e.EV_ABS : [
+        (e.ABS_X, AbsInfo(value=0, min=0, max=255,fuzz=0, flat=0, resolution=0)) ,
+        (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)) ,
+        (e.ABS_MT_POSITION_X, (0, 128, 255, 0))
+    ]
+}
+
+try:
+    ui2 = UInput(cap, name='virtual-mouse', version=0x3)
+    #it's unknown but needs 2 times to work :S
+    ui2 = UInput(cap, name='virtual-mouse', version=0x3)
+except:
+    logger.warning("no uinput was defined (MOUSE)")
+
+x=0
+y=0
 
 # Main event loop
 while True:
@@ -284,16 +305,31 @@ while True:
                     #if isset continue
                     check_output(["pidof",name])
                     for key in process["keys"]:
-                        if button_states[key["key"]]: #push
+                        type = key["type"] #e.EV_KEY
+                        if key["key"] in button_states and button_states[key["key"]]: #push
                             #ui.write(e.EV_KEY, e.KEY_UP, 1) getattr(this_prize,choice)
                             for value in key["callback"]:
-                                ui.write(e.EV_KEY, getattr(e,value), 1)
+                                ui.write(getattr(e,type), getattr(e,value), 1)
                         else: #release
                             for value in key["callback"]:
-                                ui.write(e.EV_KEY, getattr(e,value), 0)
+                                ui.write(getattr(e,type), getattr(e,value), 0)
                         ui.syn()
+                        #mouse other ui device
+                        if key["key"] == "MOUSE" and ui2:
+                            if axis_states["x"]>0.1 and x<WIDTH:
+                                x=x+5
+                            elif axis_states["x"]<-0.1 and x>0:
+                                x=x-5
+                            if axis_states["y"]>0.1 and y>0:
+                                y=y-5
+                            elif axis_states["y"]<-0.1 and y<HEIGHT:
+                                y=y+5
+                            logger.debug("x: %s, y: %s" % (x,y))
+                            ui2.write(e.EV_ABS, e.ABS_X, x)
+                            ui2.write(e.EV_ABS, e.ABS_Y, y)
+                            ui2.syn()
                 except Exception as ex:
-                    logger.debug(str(ex))
+                    logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                     pass
 
 try:

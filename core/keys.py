@@ -57,7 +57,7 @@ def addProcess(process,force=False):
     with open(JOYSTICK_FILE,'w') as json_file:
         json.dump(defaultKeys, json_file, indent=4)
 
-def addKey(process,key,values=[],replace=False):
+def addKey(process,key,values=[],type='EV_KEY',replace=False):
 
     with open(JOYSTICK_FILE, 'r') as json_file:
         data = json.load(json_file)
@@ -72,10 +72,11 @@ def addKey(process,key,values=[],replace=False):
                         found = True
                         if replace:
                             assigned["callback"] = values
+                            assigned["type"] = type
 
                 if not found:
                     #not found so needs to be appended
-                    element["keys"].append({"key":key,"callback":values})
+                    element["keys"].append({"key":key,"callback":values,"type":type})
 
     with open(JOYSTICK_FILE, 'w') as outfile:
         json.dump(data, outfile, indent=4)
@@ -103,6 +104,12 @@ addKey("mpv","LEFT",["KEY_LEFT"])
 addKey("mpv","RIGHT",["KEY_RIGHT"])
 addKey("mpv","A",["KEY_SPACE"])
 addKey("mpv","B",["KEY_Q"])
+
+addProcess("scummvm")
+addKey("scummvm","MOUSE",[],"EV_ABS")
+addKey("scummvm","A",["BTN_LEFT"],"EV_KEY")
+addKey("scummvm","B",["BTN_RIGHT"],"EV_KEY")
+addKey("scummvm","X",["BTN_MIDDLE"],"EV_KEY")
 
 #load configurations from configuration file to KEYS
 KEYS = getKeys();

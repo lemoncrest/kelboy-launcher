@@ -66,6 +66,11 @@ if [ $(dpkg-query -W -f='${Status}' python3-evdev 2>/dev/null | grep -c "ok inst
 then
     sudo apt-get install -y python3-evdev
 fi
+if [ $(dpkg-query -W -f='${Status}' scummvm 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt install scummvm
+fi
+
 git reset --hard HEAD #temp fix to remove local changes to force update
 git pull
 chmod +x bin/*.sh

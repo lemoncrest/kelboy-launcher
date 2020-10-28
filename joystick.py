@@ -166,7 +166,6 @@ except:
     pass
 
 ui = None
-ui2 = None
 try:
     ui = uinput.UInput()
 except:
@@ -182,15 +181,47 @@ cap = {
     ]
 }
 
-try:
-    ui2 = UInput(cap, name='virtual-mouse', version=0x3)
-    #it's unknown but needs 2 times to work :S
-    ui2 = UInput(cap, name='virtual-mouse', version=0x3)
-except:
-    logger.warning("no uinput was defined (MOUSE)")
+def pointer_handler():
+    global ui2
+    global xFactor
+    global yFactor
+    xFactor = yFactor = 0
 
-x=0
-y=0
+    #capture current mouse coordinates. TODO If user uses a real mouse/touchpad input could confuses
+    x = 0
+    y = 0
+    try:
+        ui2 = UInput(cap, name='virtual-mouse', version=0x3)
+        #it's unknown but needs 2 times to work :S
+        ui2 = UInput(cap, name='virtual-mouse', version=0x3)
+    except:
+        logger.warning("no uinput was defined (MOUSE)")
+
+
+    #just to avoid init effect of cursor, joystick.py puts the cursor
+    #ui2.write(e.EV_ABS, e.ABS_X, 0)
+    #ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT)
+    #ui2.syn()
+
+    while True:
+        if x+xFactor<WIDTH and x+xFactor >=0:
+            x=x+xFactor
+        if y+yFactor<HEIGHT and y+yFactor >=0:
+            y=y+yFactor
+        ui2.write(e.EV_ABS, e.ABS_X, x)
+        ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
+        ui2.syn()
+        logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
+        time.sleep(0.01)
+
+logger.debug("launching mouse thread")
+try:
+    thread.start_new_thread(pointer_handler,())
+    logger.debug("MOUSE done! launching process loop...")
+except Exception as ex:
+    logger.error(str(ex))
+
+
 
 
 #thread
@@ -345,18 +376,20 @@ while True:
                             ui.syn()
                             #mouse other ui device
                             if key["key"] == "MOUSE" and ui2:
-                                if axis_states["x"]>0.1 and x<WIDTH:
-                                    x=x+5
-                                elif axis_states["x"]<-0.1 and x>0:
-                                    x=x-5
-                                if axis_states["y"]>0.1 and y>0:
-                                    y=y-5
-                                elif axis_states["y"]<-0.1 and y<HEIGHT:
-                                    y=y+5
-                                logger.debug("x: %s, y: %s" % (x,y))
-                                ui2.write(e.EV_ABS, e.ABS_X, x)
-                                ui2.write(e.EV_ABS, e.ABS_Y, y)
-                                ui2.syn()
+                                if axis_states["x"]>0.1:
+                                    xFactor = int(5*axis_states["x"])
+                                elif axis_states["x"]<-0.1:
+                                    xFactor = int(5*axis_states["x"])
+                                else:
+                                    xFactor = 0
+                                if axis_states["y"]>0.1:
+                                    yFactor = int(5*axis_states["y"])
+                                elif axis_states["y"]<-0.1:
+                                    yFactor = int(5*axis_states["y"])
+                                else:
+                                    yFactor = 0
+                                logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))
+
                 except Exception as ex:
                     logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                     pass

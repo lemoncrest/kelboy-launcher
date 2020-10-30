@@ -11,6 +11,8 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+KEY_SIZE_X = WIDTH / 10
+
 class KeyboardScreen(pygame.sprite.Sprite):
     def __init__(self, main):
 
@@ -124,17 +126,17 @@ class Keyboard(pygame.sprite.Sprite):
                     target = self.keys[x][y]
                 textsurface = self.font.render(target, True, WHITE)
 
-                image = pygame.Surface((30, 30))
+                image = pygame.Surface((KEY_SIZE_X, 30))
 
-                rect = image.get_rect(x=10+(30*y), y=30*x)
+                rect = image.get_rect(x=10+(KEY_SIZE_X*y), y=30*x)
 
                 if y==self.positionX and x == self.positionY:
                     #draw selector
-                    rect2 = image.get_rect(x=10+(30*y), y=30*x)
+                    rect2 = image.get_rect(x=(KEY_SIZE_X*y), y=30*x)
                     pygame.draw.rect(self.image, NAVY, rect2)
                 else:
                     pygame.draw.rect(self.image, BLUE, rect) #pygame 1.9.4 has not width=1 param
-                self.image.blit(textsurface, (21+(30*y) , 10+(30*x)))
+                self.image.blit(textsurface, (11+(KEY_SIZE_X*y) , 10+(30*x)))
 
 
         #now specials

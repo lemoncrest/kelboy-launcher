@@ -1,10 +1,14 @@
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
-import os, struct, array, subprocess
+import os, sys, struct, array, subprocess
+import _thread as thread
+import time
 from subprocess import check_output
 from fcntl import ioctl
-from evdev import uinput, ecodes as e
+from evdev import UInput, AbsInfo, InputDevice, uinput, ecodes as e
+
+from core.keys import *
 
 from core.settings import *
 import logging
@@ -167,11 +171,90 @@ try:
 except:
     logger.warning("no uinput was defined")
 
+
+cap = {
+    e.EV_KEY : [e.BTN_LEFT, e.BTN_RIGHT, e.BTN_MIDDLE],
+    e.EV_ABS : [
+        (e.ABS_X, AbsInfo(value=0, min=0, max=255,fuzz=0, flat=0, resolution=0)) ,
+        (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)) ,
+        (e.ABS_MT_POSITION_X, (0, 128, 255, 0))
+    ]
+}
+
+def pointer_handler():
+    global ui2
+    global xFactor
+    global yFactor
+    xFactor = yFactor = 0
+
+    #capture current mouse coordinates. TODO If user uses a real mouse/touchpad input could confuses
+    x = 0
+    y = 0
+    try:
+        ui2 = UInput(cap, name='virtual-mouse', version=0x3)
+        #it's unknown but needs 2 times to work :S
+        ui2 = UInput(cap, name='virtual-mouse', version=0x3)
+    except:
+        logger.warning("no uinput was defined (MOUSE)")
+
+
+    #just to avoid init effect of cursor, joystick.py puts the cursor
+    #ui2.write(e.EV_ABS, e.ABS_X, 0)
+    #ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT)
+    #ui2.syn()
+
+    while True:
+        if x+xFactor<WIDTH and x+xFactor >=0:
+            x=x+xFactor
+        if y+yFactor<HEIGHT and y+yFactor >=0:
+            y=y+yFactor
+        ui2.write(e.EV_ABS, e.ABS_X, x)
+        ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
+        ui2.syn()
+        logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
+        time.sleep(0.01)
+
+logger.debug("launching mouse thread")
+try:
+    thread.start_new_thread(pointer_handler,())
+    logger.debug("MOUSE done! launching process loop...")
+except Exception as ex:
+    logger.error(str(ex))
+
+
+
+
+#thread
+def check_process():
+    global activeProcess
+    activeProcess = {}
+    while True:
+        for process in KEYS:
+            try:
+                #if isset assign in to activeProcess
+                name = process["process"]
+                check_output(["pidof",name])
+                activeProcess[name] = True
+            except:
+                #not exists so flag it to false
+                activeProcess[name] = False
+                pass
+        logger.debug("sleep 1 second...")
+        time.sleep(1)
+
+
+logger.debug("launching thread")
+try:
+    thread.start_new_thread(check_process,())
+    logger.debug("done! launching main loop...")
+except Exception as ex:
+    logger.error(str(ex))
+
 # Main event loop
 while True:
     evbuf = jsdev.read(8)
     if evbuf:
-        time, value, type, number = struct.unpack('IhBB', evbuf)
+        t, value, type, number = struct.unpack('IhBB', evbuf)
 
         if type & 0x80:
              logger.debug("(initial)")
@@ -273,133 +356,43 @@ while True:
             brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
 
-        #check process
-        pico = True
-        try:
-            check_output(["pidof","pico8"]) #if isset continue, else not
-        except:
-            pico = False
-            pass
-
-        mpv = True
-        try:
-            check_output(["pidof","mpv"]) #if isset continue, else not
-        except:
-            mpv = False
-            pass
-
-        #input conversor
+        #starts dynamic emulation keys
         if ui:
-            if pico:
-                if "UP" in button_states:
-                    if button_states["UP"]:
-                        ui.write(e.EV_KEY, e.KEY_UP, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_UP, 0)
-                        ui.syn()
-                if "DOWN" in button_states:
-                    if button_states["DOWN"]:
-                        ui.write(e.EV_KEY, e.KEY_DOWN, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_DOWN, 0)
-                        ui.syn()
-                if "LEFT" in button_states:
-                    if button_states["LEFT"]:
-                        ui.write(e.EV_KEY, e.KEY_LEFT, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_LEFT, 0)
-                        ui.syn()
-                if "RIGHT" in button_states:
-                    if button_states["RIGHT"]:
-                        ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
-                        ui.syn()
-                if "A" in button_states:
-                    if button_states["A"]:
-                        ui.write(e.EV_KEY, e.KEY_X, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_X, 0)
-                        ui.syn()
-                if "B" in button_states:
-                    if button_states["B"]:
-                        ui.write(e.EV_KEY, e.KEY_C, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_C, 0)
-                        ui.syn()
-                if "X" in button_states:
-                    if button_states["X"]:
-                        ui.write(e.EV_KEY, e.KEY_S, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_S, 0)
-                        ui.syn()
-                if "START" in button_states:
-                    if button_states["START"]:
-                        ui.write(e.EV_KEY, e.KEY_ENTER, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_ENTER, 0)
-                        ui.syn()
-                if "SELECT" in button_states:
-                    if button_states["SELECT"]:
-                        ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 1)
-                        ui.write(e.EV_KEY, e.KEY_Q, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_LEFTCTRL, 0)
-                        ui.write(e.EV_KEY, e.KEY_Q, 0)
-                        ui.syn()
-            elif mpv:
-                #input conversor
-                if "UP" in button_states:
-                    if button_states["UP"]:
-                        ui.write(e.EV_KEY, e.KEY_UP, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_UP, 0)
-                        ui.syn()
-                if "DOWN" in button_states:
-                    if button_states["DOWN"]:
-                        ui.write(e.EV_KEY, e.KEY_DOWN, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_DOWN, 0)
-                        ui.syn()
-                if "LEFT" in button_states:
-                    if button_states["LEFT"]:
-                        ui.write(e.EV_KEY, e.KEY_LEFT, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_LEFT, 0)
-                        ui.syn()
-                if "RIGHT" in button_states:
-                    if button_states["RIGHT"]:
-                        ui.write(e.EV_KEY, e.KEY_RIGHT, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_RIGHT, 0)
-                        ui.syn()
-                if "A" in button_states:
-                    if button_states["A"]:
-                        ui.write(e.EV_KEY, e.KEY_SPACE, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_SPACE, 0)
-                        ui.syn()
-                if "B" in button_states:
-                    if button_states["B"]:
-                        ui.write(e.EV_KEY, e.KEY_Q, 1)
-                        ui.syn()
-                    else:
-                        ui.write(e.EV_KEY, e.KEY_Q, 0)
-                        ui.syn()
+            #input conversor
+            for process in KEYS:
+                name = process["process"]
+                try:
+                    #if isset continue
+                    if name in activeProcess and activeProcess[name]:
+                        for key in process["keys"]:
+                            type = key["type"] #e.EV_KEY
+                            if key["key"] in button_states and button_states[key["key"]]: #push
+                                #ui.write(e.EV_KEY, e.KEY_UP, 1) getattr(this_prize,choice)
+                                for value in key["callback"]:
+                                    ui.write(getattr(e,type), getattr(e,value), 1)
+                            else: #release
+                                for value in key["callback"]:
+                                    ui.write(getattr(e,type), getattr(e,value), 0)
+                            ui.syn()
+                            #mouse other ui device
+                            if key["key"] == "MOUSE" and ui2:
+                                if axis_states["x"]>0.1:
+                                    xFactor = int(5*axis_states["x"])
+                                elif axis_states["x"]<-0.1:
+                                    xFactor = int(5*axis_states["x"])
+                                else:
+                                    xFactor = 0
+                                if axis_states["y"]>0.1:
+                                    yFactor = int(5*axis_states["y"])
+                                elif axis_states["y"]<-0.1:
+                                    yFactor = int(5*axis_states["y"])
+                                else:
+                                    yFactor = 0
+                                logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))
+
+                except Exception as ex:
+                    logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
+                    pass
 
 try:
     brightness.ChangeDutyCycle(100)

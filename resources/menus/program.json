@@ -8,6 +8,10 @@
     "action": "menu",
     "external": "webpages"
   },{
+    "title": "ScummVM",
+    "action": "command",
+    "external": "scummvm"
+  },{
     "title": "SteamLink",
     "action": "command",
     "external": "steamlink"

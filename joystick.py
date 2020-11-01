@@ -327,7 +327,7 @@ while True:
                         level = "lightning-full"
                 elif battery>15:
                     level = "lightning-empty"
-                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 -t 5000 &" % (pwd,level)
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t 5000 &" % (pwd,level,WIDTH-30)
             else:
                 if(battery>50):
                     level = "75"
@@ -340,7 +340,7 @@ while True:
                 else:
                     level = "0"
                 logger.debug("level is %s" % level)
-                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x 290 -y 7 -t 5000 &" % (pwd,level)
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t 5000 &" % (pwd,level,WIDTH-30)
             logger.debug("command... %s" % command)
             battery = True
             os.system(command)

@@ -70,6 +70,10 @@ if [ $(dpkg-query -W -f='${Status}' scummvm 2>/dev/null | grep -c "ok installed"
 then
     sudo apt install scummvm -y
 fi
+if [ $(dpkg-query -W -f='${Status}' unrar-free 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt install unrar-free -y
+fi
 
 git reset --hard HEAD #temp fix to remove local changes to force update
 git pull

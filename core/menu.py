@@ -204,6 +204,7 @@ class MenuCursor(pygame.sprite.Sprite):
                 try:
                     menu = dynamicMethod(params=params)
                     logger.debug("menu: %s " % str(menu))
+                    self.last = pygame.time.get_ticks() #refresh time for dynamic methods
                     if menu:
                         if type(menu) is list:
                             logger.debug('list!!')
@@ -336,7 +337,7 @@ class MenuCursor(pygame.sprite.Sprite):
                     params.append({'text':buffer})
                     menu = dynamicMethod(params=params)
                     pygame.event.clear()
-                    self.last = pygame.time.get_ticks()
+                    self.last = pygame.time.get_ticks() #refresh time for dynamic
                     logger.debug("returning menu: %s " % str(menu))
 
                 #destroy sprites

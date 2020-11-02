@@ -133,8 +133,11 @@ def loadZippedRom(params=[]):
         os.system("sudo rm -Rf /tmp/game")
         #do temp folder
         os.system("mkdir /tmp/game/")
-        #now unzip
-        command = 'unzip "%s" -d /tmp/game' % path
+        if path.lower().endswith('.zip'):
+            #now unzip
+            command = 'unzip "%s" -d /tmp/game' % path
+        elif path.lower().endswith('.rar'):
+            command = 'unrar x "%s" /tmp/game/' % path
         logger.debug(command)
         os.system(command)
         #last get gamePath

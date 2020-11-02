@@ -73,7 +73,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             #for directory in dir:
             for directory in sorted(dir):
                 #if os.path.getsize(os.path.join(newPath,directory))>8192:
-                if '.zip' in directory:
+                if directory.lower().endswith('.zip') or directory.lower().endswith('.rar'):
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
                     element["action"] = "function"
@@ -85,7 +85,7 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                         'config': config
                     }]
                     menu.append(element)
-                elif '.srm' not in directory and '.state' not in directory:
+                elif not directory.lower().endswith('.srm') and not directory.lower().endswith('.state'):
                     logger.debug("Not empty directory %s, appending to list" % directory)
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
@@ -133,8 +133,11 @@ def loadZippedRom(params=[]):
         os.system("sudo rm -Rf /tmp/game")
         #do temp folder
         os.system("mkdir /tmp/game/")
-        #now unzip
-        command = 'unzip "%s" -d /tmp/game' % path
+        if path.lower().endswith('.zip'):
+            #now unzip
+            command = 'unzip "%s" -d /tmp/game' % path
+        elif path.lower().endswith('.rar'):
+            command = 'unrar x "%s" /tmp/game/' % path
         logger.debug(command)
         os.system(command)
         #last get gamePath

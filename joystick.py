@@ -211,7 +211,7 @@ def pointer_handler():
         ui2.write(e.EV_ABS, e.ABS_X, x)
         ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
         ui2.syn()
-        logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
+        #logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
         time.sleep(0.01)
 
 logger.debug("launching mouse thread")
@@ -388,7 +388,7 @@ while True:
                                     yFactor = int(5*axis_states["y"])
                                 else:
                                     yFactor = 0
-                                logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))
+                                #logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))
 
                 except Exception as ex:
                     logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))

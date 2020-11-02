@@ -73,7 +73,19 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
             #for directory in dir:
             for directory in sorted(dir):
                 #if os.path.getsize(os.path.join(newPath,directory))>8192:
-                if '.srm' not in directory and '.state' not in directory:
+                if '.zip' in directory:
+                    element = {}
+                    element["title"] = "%s" % directory[:directory.rfind(".")]
+                    element["action"] = "function"
+                    element["external"] = "loadZippedRom"
+                    path = os.path.join(newPath,directory)
+                    element["params"] = [{
+                        'path' : path,
+                        'lib': lib,
+                        'config': config
+                    }]
+                    menu.append(element)
+                elif '.srm' not in directory and '.state' not in directory:
                     logger.debug("Not empty directory %s, appending to list" % directory)
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
@@ -98,6 +110,59 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
         element["external"] = "loadRoms"
         menu.append(element)
     return menu
+
+def loadZippedRom(params=[]):
+    menu = []
+    path = None
+    lib = None
+    config = None
+    #read params
+    if type(params) is list:
+        logger.debug("list")
+        for element in params:
+            logger.debug("ele %s" % str(element))
+            if "path" in element:
+                path = element["path"]
+            if "lib" in element:
+                lib = element["lib"]
+            if "config" in element:
+                config = element["config"]
+    #launch logic
+    if path and lib:
+        #remove old folder if exists
+        os.system("sudo rm -Rf /tmp/game")
+        #do temp folder
+        os.system("mkdir /tmp/game/")
+        #now unzip
+        command = 'unzip "%s" -d /tmp/game' % path
+        logger.debug(command)
+        os.system(command)
+        #last get gamePath
+        gamePath = None
+        for file in os.listdir("/tmp/game/"):
+            logger.debug(str(file))
+            if os.path.isfile(os.path.join("/tmp/game",file)):
+                logger.debug("found!")
+                gamePath = os.path.join("/tmp/game",file)
+                logger.debug("get unzipped file: %s" % gamePath)
+        logger.debug("launching %s" % gamePath)
+        #next launch command
+        command = '%s -L %s --config %s "%s"' % (RETROARCH_BIN,lib,config,gamePath)
+        logger.debug(command)
+        os.system(command)
+        logger.debug("get saved file (if exists...)")
+        files = os.listdir("/tmp/game")
+        for file in files:
+            if os.path.join("/tmp/game",file) != gamePath:
+                logger.debug(gamePath)
+                logger.debug(os.path.join("/tmp/game",file))
+                savedFile = file
+                logger.debug("saved file: %s" % savedFile)
+                command = "cp '/tmp/game/%s' '%s'" % (savedFile,os.path.dirname(path))
+                logger.debug(command)
+                os.system(command)
+        #last remove old one
+        os.system("sudo rm -Rf /tmp/game")
 
 
 def internetBrowser(params=[]):

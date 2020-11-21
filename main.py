@@ -67,6 +67,10 @@ class Main():
         #movements and keys init
         self.downPushed = False
         self.upPushed = False
+        self.joyUp = False
+        self.joyDown = False
+        self.joyLeft = False
+        self.joyRight = False
         self.zPressed = False
         self.tPressed = False
 
@@ -84,11 +88,11 @@ class Main():
         logger.info("in-side async moves...")
         while self.running:
             await asyncio.sleep(KEY_SLEEP)  # wait until release time
-            if self.downPushed:
+            if self.downPushed or self.joyDown:
                 logger.debug("down...")
                 self.menu.cursor.down()
                 await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
-            if self.upPushed:
+            if self.upPushed or self.joyUp:
                 logger.debug("up...")
                 self.menu.cursor.up()
                 await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
@@ -164,15 +168,19 @@ class Main():
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
                 if event.axis == 1:  # up and down
-                    if event.value > 0:
-                        self.menu.cursor.up()
-                    elif event.value < 0:
-                        self.menu.cursor.down()
+                    if event.value > 0 and not self.joyUp:
+                        self.joyUp = True
+                    elif event.value < 0 and not self.joyDown:
+                        self.joyDown = True
+                    else:
+                        #reset joys up and down
+                        self.joyUp = False
+                        self.joyDown = False
                 elif event.axis == 0:  # left and right
-                    if event.value > 0:
-                        self.menu.cursor.right()
-                    elif event.value < 0:
-                        self.menu.cursor.left()
+                    if event.value > 0 and not self.joyRight:
+                        self.joyLeft = True
+                    elif event.value < 0 and not self.joyLeft:
+                        self.joyRight = True
         logger.info("ended... out-side events...")
 
     def update(self):

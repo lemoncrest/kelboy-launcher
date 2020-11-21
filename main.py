@@ -192,12 +192,16 @@ class Main():
                         #reset joys up and down
                         self.joyUp = False
                         self.joyDown = False
+                        self.upPushed = False
+                        self.downPushed = False
                 elif event.axis == 0:  # left and right
                     if event.value > 0.2 and not self.joyRight:
                         self.joyRight = True
                     elif event.value < -0.2 and not self.joyLeft:
                         self.joyLeft = True
                     else:
+                        self.rightPushed = False
+                        self.leftPushed = False
                         self.joyLeft = False
                         self.joyRight = False
         logger.info("ended... out-side events...")

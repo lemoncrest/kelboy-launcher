@@ -67,8 +67,15 @@ class Main():
         #movements and keys init
         self.downPushed = False
         self.upPushed = False
+        self.leftPushed = False
+        self.rightPushed = False
+        self.joyUp = False
+        self.joyDown = False
+        self.joyLeft = False
+        self.joyRight = False
         self.zPressed = False
         self.tPressed = False
+        self.screensaver = False
 
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -84,11 +91,11 @@ class Main():
         logger.info("in-side async moves...")
         while self.running:
             await asyncio.sleep(KEY_SLEEP)  # wait until release time
-            if self.downPushed:
+            if self.downPushed or self.joyDown:
                 logger.debug("down...")
                 self.menu.cursor.down()
                 await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
-            if self.upPushed:
+            if self.upPushed or self.joyUp:
                 logger.debug("up...")
                 self.menu.cursor.up()
                 await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
@@ -100,6 +107,14 @@ class Main():
                 for i in range(0,MAX_MENU_ITEMS):
                     self.menu.cursor.down()
                 self.tPressed = False
+            if self.leftPushed or self.joyLeft:
+                logger.debug("left...")
+                self.menu.cursor.left()
+                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+            if self.rightPushed or self.joyRight:
+                logger.debug("right...")
+                self.menu.cursor.right()
+                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
 
     async def events(self,event_queue):
         logger.info("in-side events...")
@@ -123,14 +138,18 @@ class Main():
                 elif event.key == pygame.K_ESCAPE:
                     self.menu.cursor.back(self.screen)
                 elif event.key == pygame.K_LEFT:
-                    self.menu.cursor.left()
+                    self.leftPushed = True
                 elif event.key == pygame.K_RIGHT:
-                    self.menu.cursor.right()
+                    self.rightPushed = True
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
                     self.downPushed = False
                 elif event.key == pygame.K_UP:
                     self.upPushed = False
+                elif event.key == pygame.K_LEFT:
+                    self.leftPushed = False
+                elif event.key == pygame.K_RIGHT:
+                    self.rightPushed = False
             elif event.type == pygame.JOYBUTTONUP:
                 if event.button == 11:  # up
                     self.upPushed = False
@@ -157,23 +176,34 @@ class Main():
                 elif event.button == 10:  # down
                     self.downPushed = True
                 elif event.button == 9:  # left
-                    self.menu.cursor.left()
+                    self.leftPushed = True
                 elif event.button == 8:  # right
-                    self.menu.cursor.right()
+                    self.rightPushed = True
             elif event.type == pygame.JOYAXISMOTION:
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
                 if event.axis == 1:  # up and down
-                    if event.value > 0:
-                        self.menu.cursor.up()
-                    elif event.value < 0:
-                        self.menu.cursor.down()
+                    if event.value > 0.2 and not self.joyUp:
+                        self.joyUp = True
+                    elif event.value < -0.2 and not self.joyDown:
+                        self.joyDown = True
+                    else:
+                        #reset joys up and down
+                        self.joyUp = False
+                        self.joyDown = False
+                        self.upPushed = False
+                        self.downPushed = False
                 elif event.axis == 0:  # left and right
-                    if event.value > 0:
-                        self.menu.cursor.right()
-                    elif event.value < 0:
-                        self.menu.cursor.left()
+                    if event.value > 0.2 and not self.joyRight:
+                        self.joyRight = True
+                    elif event.value < -0.2 and not self.joyLeft:
+                        self.joyLeft = True
+                    else:
+                        self.rightPushed = False
+                        self.leftPushed = False
+                        self.joyLeft = False
+                        self.joyRight = False
         logger.info("ended... out-side events...")
 
     def update(self):

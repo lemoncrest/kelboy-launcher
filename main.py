@@ -110,18 +110,19 @@ class Main():
         while self.running:
             #logger.debug("while (events)...")
             event = await event_queue.get()
-            #logger.debug("events!!!")
+            #logger.debug("events!!! %s" % str(event))
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
                 #reset screensaver time to 0
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
+                #logger.debug("key down: %s" % str(event.key))
                 if event.key == pygame.K_DOWN:
                     self.downPushed = True
                 elif event.key == pygame.K_UP:
                     self.upPushed = True
-                elif event.key == pygame.K_RETURN:
+                elif event.key == pygame.K_RETURN or event.key == 0: #fix for wii motes, all buttons in python are 0 key
                     self.menu.cursor.select(self.screen)
                 elif event.key == pygame.K_ESCAPE:
                     self.menu.cursor.back(self.screen)

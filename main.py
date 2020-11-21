@@ -75,6 +75,7 @@ class Main():
         self.joyRight = False
         self.zPressed = False
         self.tPressed = False
+        self.screensaver = False
 
     def loadAssets(self):
         self.all_sprites = pygame.sprite.LayeredUpdates()
@@ -183,18 +184,18 @@ class Main():
                 self.last = int(round(time.time())*1000)
                 self.screensaver = False
                 if event.axis == 1:  # up and down
-                    if event.value > 0 and not self.joyUp:
+                    if event.value > 0.2 and not self.joyUp:
                         self.joyUp = True
-                    elif event.value < 0 and not self.joyDown:
+                    elif event.value < 0.2 and not self.joyDown:
                         self.joyDown = True
                     else:
                         #reset joys up and down
                         self.joyUp = False
                         self.joyDown = False
                 elif event.axis == 0:  # left and right
-                    if event.value > 0 and not self.joyRight:
+                    if event.value > 0.2 and not self.joyRight:
                         self.joyRight = True
-                    elif event.value < 0 and not self.joyLeft:
+                    elif event.value < 0.2 and not self.joyLeft:
                         self.joyLeft = True
                     else:
                         self.joyLeft = False

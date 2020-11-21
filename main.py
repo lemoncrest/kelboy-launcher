@@ -193,9 +193,9 @@ class Main():
                         self.joyDown = False
                 elif event.axis == 0:  # left and right
                     if event.value > 0 and not self.joyRight:
-                        self.joyLeft = True
-                    elif event.value < 0 and not self.joyLeft:
                         self.joyRight = True
+                    elif event.value < 0 and not self.joyLeft:
+                        self.joyLeft = True
                     else:
                         self.joyLeft = False
                         self.joyRight = False

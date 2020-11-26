@@ -8,6 +8,8 @@ from subprocess import check_output
 from fcntl import ioctl
 from evdev import UInput, AbsInfo, InputDevice, uinput, ecodes as e
 
+import psutil
+
 from core.keys import *
 
 from core.settings import *
@@ -28,6 +30,7 @@ FREQ = 65.5689
 logger.debug('Available devices:')
 
 for fn in os.listdir('/dev/input'):
+    logger.debug("found %s input device" % str(fn))
     if fn.startswith('js'):
         logger.debug(('  /dev/input/%s' % (fn)))
 
@@ -183,19 +186,22 @@ cap = {
 
 def pointer_handler():
     global ui2
+    ui2 = None
     global xFactor
     global yFactor
     xFactor = yFactor = 0
 
     #capture current mouse coordinates. TODO If user uses a real mouse/touchpad input could confuses
-    x = 0
-    y = 0
+    x = 20
+    y = 20
     try:
         ui2 = UInput(cap, name='virtual-mouse', version=0x3)
         #it's unknown but needs 2 times to work :S
         ui2 = UInput(cap, name='virtual-mouse', version=0x3)
     except:
-        logger.warning("no uinput was defined (MOUSE)")
+        logger.warning("no uinput was defined (MOUSE), use pyautogui instead")
+        pass
+
 
 
     #just to avoid init effect of cursor, joystick.py puts the cursor
@@ -204,13 +210,25 @@ def pointer_handler():
     #ui2.syn()
 
     while True:
+        #logger.debug("%s %s" % (xFactor,yFactor))
         if x+xFactor<WIDTH and x+xFactor >=0:
             x=x+xFactor
         if y+yFactor<HEIGHT and y+yFactor >=0:
             y=y+yFactor
-        ui2.write(e.EV_ABS, e.ABS_X, x)
-        ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
-        ui2.syn()
+        if ui2:
+            ui2.write(e.EV_ABS, e.ABS_X, x)
+            ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
+            ui2.syn()
+        else:
+            try:
+                #using alternative one
+                command = "xdotool mousemove %s %s" % (x,HEIGHT-y)
+                process = subprocess.Popen(command.split(" "))
+                #response = process.stdout.strip()
+                #logger.debug("%s %s" % (x,y))
+            except Exception as ex:
+                #logger.error("fail pyautogui %s" % str(ex))
+                pass
         #logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
         time.sleep(0.01)
 
@@ -226,18 +244,40 @@ except Exception as ex:
 
 #thread
 def check_process():
-    global activeProcess
-    activeProcess = {}
+    global activeProcesses
+    activeProcesses = []
     while True:
         for process in KEYS:
             try:
                 #if isset assign in to activeProcess
-                name = process["process"]
-                check_output(["pidof",name])
-                activeProcess[name] = True
-            except:
-                #not exists so flag it to false
-                activeProcess[name] = False
+                processName = process["process"]
+                for proc in psutil.process_iter():
+                    try:
+                        # Check if process name contains the given name string.
+                        if processName.lower() in proc.name().lower():
+                            #found, now check list and flag like active
+                            logger.debug("flag process %s" % processName)
+                            found = False
+                            for activeProcess in activeProcesses:
+                                if processName in activeProcess["name"]:
+                                    activeProcess["active"] = True
+                                    found = True
+                            if not found:
+                                activeProcess = {}
+                                activeProcess["name"] = processName
+                                activeProcess["active"] = True
+                                activeProcesses.append(activeProcess)
+                            logger.debug("found %s running" % processName)
+                    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                        for activeProcess in activeProcesses:
+                            if processName in activeProcess["name"]:
+                                activeProcess["active"] = False
+                        logger.debug("not found %s running" % processName)
+                        pass
+                #check_output(["pidof",name])
+                #activeProcess[name] = True
+            except Exception as ex:
+                logger.error("some fatal ex %s" % str(ex))
                 pass
         logger.debug("sleep 1 second...")
         time.sleep(1)
@@ -357,42 +397,99 @@ while True:
             logger.debug("brightness is %s" % lightLevel)
 
         #starts dynamic emulation keys
-        if ui:
-            #input conversor
-            for process in KEYS:
-                name = process["process"]
-                try:
-                    #if isset continue
-                    if name in activeProcess and activeProcess[name]:
-                        for key in process["keys"]:
-                            type = key["type"] #e.EV_KEY
-                            if key["key"] in button_states and button_states[key["key"]]: #push
-                                #ui.write(e.EV_KEY, e.KEY_UP, 1) getattr(this_prize,choice)
-                                for value in key["callback"]:
-                                    ui.write(getattr(e,type), getattr(e,value), 1)
-                            else: #release
-                                for value in key["callback"]:
-                                    ui.write(getattr(e,type), getattr(e,value), 0)
-                            ui.syn()
-                            #mouse other ui device
-                            if key["key"] == "MOUSE" and ui2:
-                                if axis_states["x"]>0.1:
-                                    xFactor = int(5*axis_states["x"])
-                                elif axis_states["x"]<-0.1:
-                                    xFactor = int(5*axis_states["x"])
-                                else:
-                                    xFactor = 0
-                                if axis_states["y"]>0.1:
-                                    yFactor = int(5*axis_states["y"])
-                                elif axis_states["y"]<-0.1:
-                                    yFactor = int(5*axis_states["y"])
-                                else:
-                                    yFactor = 0
-                                #logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))
 
-                except Exception as ex:
-                    logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
-                    pass
+        #input conversor
+        for process in KEYS:
+            name = process["process"]
+            logger.debug(name)
+            try:
+                #if isset continue
+                found = False
+                for activeProcess in activeProcesses:
+                    if name in activeProcess["name"]:
+                        found = True
+                        logger.debug("found process %s" % name)
+                if found:
+                    logger.debug("active process %s" % (name))
+                    for key in process["keys"]:
+                        type = key["type"] #e.EV_KEY
+                        if key["key"] in button_states and button_states[key["key"]]: #push
+                            #ui.write(e.EV_KEY, e.KEY_UP, 1) getattr(this_prize,choice)
+                            for value in key["callback"]:
+                                if ui:
+                                    ui.write(getattr(e,type), getattr(e,value), 1)
+                                else:
+                                    #build key to push
+                                    logger.debug("pressed: "+value)
+                                    keys = value.split("_")
+                                    command = ""
+                                    if keys[0].upper() == 'BTN': #click
+                                        if keys[1].upper() == 'LEFT':
+                                            command = "xdotool mousedown 1"
+                                        elif keys[1].upper() == 'RIGHT':
+                                            command = "xdotool mousedown 2"
+                                        elif keys[1].upper() == 'MIDDLE':
+                                            command = "xdotool mousedown 3"
+                                    else: #key part -> see https://gitlab.com/cunidev/gestures/-/wikis/xdotool-list-of-key-codes
+                                        key = keys[1]
+                                        if key == 'ESC':
+                                            key = 'Escape'
+                                        elif key == 'ENTER' or key == 'RETURN':
+                                            key = 'Return'
+                                        command = "xdotool keydown %s" % (key)
+                                        logger.debug("key with command '%s'" % command)
+                                    if command is not "":
+                                        subprocess.Popen(command.split(" "))
+                        elif key["key"] in button_states and not button_states[key["key"]]: #release
+                            for value in key["callback"]:
+                                if ui:
+                                    ui.write(getattr(e,type), getattr(e,value), 0)
+                                else:
+                                    #build key to push
+                                    logger.debug("released: "+value)
+                                    keys = value.split("_")
+                                    command = ""
+                                    if keys[0].upper() == 'BTN': #click
+                                        if keys[1].upper() == 'LEFT':
+                                            command = "xdotool mouseup 1"
+                                        elif keys[1].upper() == 'RIGHT':
+                                            command = "xdotool mouseup 2"
+                                        elif keys[1].upper() == 'MIDDLE':
+                                            command = "xdotool mouseup 3"
+                                    else: #key part -> see https://gitlab.com/cunidev/gestures/-/wikis/xdotool-list-of-key-codes
+                                        key = keys[1]
+                                        if key == 'ESC':
+                                            key = 'Escape'
+                                        elif key == 'ENTER' or key == 'RETURN':
+                                            key = 'Return'
+                                        command = "xdotool keyup %s" % (key)
+                                        logger.debug("key with command '%s'" % command)
+                                    if command is not "":
+                                        logger.debug("release command '%s'" % command)
+                                        subprocess.Popen(command.split(" "))
+                                #clean (patch)
+                                button_states.pop(key["key"])
+                        if ui:
+                            ui.syn()
+                        #mouse other ui device
+                        if key["key"] == "MOUSE":
+                            if axis_states["x"]>0.1:
+                                xFactor = int(10*axis_states["x"])
+                            elif axis_states["x"]<-0.1:
+                                xFactor = int(10*axis_states["x"])
+                            else:
+                                xFactor = 0
+                            if axis_states["y"]>0.1:
+                                yFactor = int(10*axis_states["y"])
+                            elif axis_states["y"]<-0.1:
+                                yFactor = int(10*axis_states["y"])
+                            else:
+                                yFactor = 0
+                            #logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))
+
+            except Exception as ex:
+                logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
+                pass
 
 try:
     brightness.ChangeDutyCycle(100)

@@ -186,6 +186,9 @@ cap = {
 
 def pointer_handler():
     global ui2
+    global xsession
+    global factor
+    xsession = False
     ui2 = None
     global xFactor
     global yFactor
@@ -219,7 +222,16 @@ def pointer_handler():
             ui2.write(e.EV_ABS, e.ABS_X, x)
             ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
             ui2.syn()
-        else:
+
+        #check if xsession
+        response = str(subprocess.check_output("echo $TERM", shell=True))
+        if "linux" in response:
+            xsession = False
+            factor = 5
+        else: #TODO change it!
+            xsession = True
+            factor = 10
+        if xsession:
             try:
                 #using alternative one
                 command = "xdotool mousemove %s %s" % (x,HEIGHT-y)
@@ -418,7 +430,7 @@ while True:
                             for value in key["callback"]:
                                 if ui:
                                     ui.write(getattr(e,type), getattr(e,value), 1)
-                                else:
+                                elif xsession:
                                     #build key to push
                                     logger.debug("pressed: "+value)
                                     keys = value.split("_")
@@ -444,7 +456,7 @@ while True:
                             for value in key["callback"]:
                                 if ui:
                                     ui.write(getattr(e,type), getattr(e,value), 0)
-                                else:
+                                elif xsession:
                                     #build key to push
                                     logger.debug("released: "+value)
                                     keys = value.split("_")
@@ -474,15 +486,15 @@ while True:
                         #mouse other ui device
                         if key["key"] == "MOUSE":
                             if axis_states["x"]>0.1:
-                                xFactor = int(10*axis_states["x"])
+                                xFactor = int(factor*axis_states["x"])
                             elif axis_states["x"]<-0.1:
-                                xFactor = int(10*axis_states["x"])
+                                xFactor = int(factor*axis_states["x"])
                             else:
                                 xFactor = 0
                             if axis_states["y"]>0.1:
-                                yFactor = int(10*axis_states["y"])
+                                yFactor = int(factor*axis_states["y"])
                             elif axis_states["y"]<-0.1:
-                                yFactor = int(10*axis_states["y"])
+                                yFactor = int(factor*axis_states["y"])
                             else:
                                 yFactor = 0
                             #logger.debug("xF: %s, yF: %s" % (xFactor,yFactor))

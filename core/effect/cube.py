@@ -1,7 +1,7 @@
 import sys, math, pygame, random
 from pygame.locals import K_UP, K_DOWN, K_RIGHT, K_LEFT
 from operator import itemgetter
-
+import asyncio
 from core.settings import *
 from core.colors import *
 
@@ -201,7 +201,8 @@ class RotatingCube():
             events = pygame.event.get()
             if len(events) > 0:
                 exit = True
-            self.clock.tick(FRAMERATE)
+            #self.clock.tick(FRAMERATE)
+            asyncio.sleep(1000 / FRAMERATE )
 
             self.screen.fill(BLACK)
 

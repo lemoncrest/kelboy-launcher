@@ -16,6 +16,7 @@ from core.menu import Menu
 from core.effect.snow import SnowBall
 from core.effect.matrix import Matrix
 from core.effect.cube import RotatingCube
+from core.effect.lemon import Lemon
 from core.colors import *
 
 import logging
@@ -121,7 +122,8 @@ class Main():
         while self.running:
             #logger.debug("while (events)...")
             event = await event_queue.get()
-            #logger.debug("events!!! %s" % str(event))
+            logger.debug("events!!! %s" % str(event))
+            self.lemon.running = False
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -240,6 +242,10 @@ class Main():
         #moves loop
         moves_task = asyncio.ensure_future(self.moves())
 
+        self.lemon = Lemon()
+
+        #lemon_task = asyncio.ensure_future(self.lemon.async_run(self.screen))
+
         try:
             loop.run_forever()
         except Exception as exc:
@@ -259,10 +265,13 @@ class Main():
         try:
             self.screensaver = False #TODO
             self.last = int(round(time.time())*1000)
+            logger.debug("LAST time is %s" % str( int(round(time.time())*1000) ) )
             while self.running:
                 if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
                     self.screensaver = True
+                    logger.debug("NOW SCREENSAVER time is %s" % str( int(round(time.time())*1000) ) )
                 if self.screensaver:
+                    '''
                     rand = randint(1, 3)
                     if(rand==1):
                         SnowBall().launchSnowBalls()
@@ -270,13 +279,17 @@ class Main():
                         RotatingCube().run()
                     else:
                         Matrix(surface=pygame.display.set_mode((WIDTH,HEIGHT)),clock=pygame.time.Clock()).run()
+
+                    self.lemon.running = True
                     self.last = int(round(time.time())*1000)
+                    logger.debug("NEXT LAST time is %s" % str( int(round(time.time())*1000) ) )
+                    '''
                     self.screensaver = False
 
                 #removed old flip with new tick
                 #self.clock.tick(FRAMERATE)
                 last_time, current_time = current_time, time.time()
-                await asyncio.sleep(1 / FRAMERATE - (current_time - last_time))  # tick
+                await asyncio.sleep(1 / FRAMERATE )  # tick
                 pygame.display.flip()
 
                 #self.events() #removed from this thread

@@ -122,7 +122,7 @@ class Main():
         while self.running:
             #logger.debug("while (events)...")
             event = await event_queue.get()
-            logger.debug("events!!! %s" % str(event))
+            #logger.debug("events!!! %s" % str(event))
             self.lemon.running = False
             if event.type == pygame.QUIT:
                 self.running = False
@@ -182,7 +182,7 @@ class Main():
                 elif event.button == 8:  # right
                     self.rightPushed = True
             elif event.type == pygame.JOYAXISMOTION:
-                if event.value != 0.0:
+                if event.value != 0.0: #discarted joystick dead zone events
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)
                     self.screensaver = False
@@ -268,11 +268,11 @@ class Main():
             self.last = int(round(time.time())*1000)
             logger.debug("LAST time is %s" % str( int(round(time.time())*1000) ) )
             while self.running:
+                '''
                 if self.last+SCREENSAVER_TIME < int(round(time.time())*1000):
                     self.screensaver = True
                     logger.debug("NOW SCREENSAVER time is %s" % str( int(round(time.time())*1000) ) )
                 if self.screensaver:
-                    '''
                     rand = randint(1, 3)
                     if(rand==1):
                         SnowBall().launchSnowBalls()
@@ -284,8 +284,8 @@ class Main():
                     self.lemon.running = True
                     self.last = int(round(time.time())*1000)
                     logger.debug("NEXT LAST time is %s" % str( int(round(time.time())*1000) ) )
-                    '''
                     self.screensaver = False
+                '''
 
                 #removed old flip with new tick
                 #self.clock.tick(FRAMERATE)

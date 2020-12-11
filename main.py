@@ -182,30 +182,31 @@ class Main():
                 elif event.button == 8:  # right
                     self.rightPushed = True
             elif event.type == pygame.JOYAXISMOTION:
-                #reset screensaver time to 0
-                self.last = int(round(time.time())*1000)
-                self.screensaver = False
-                if event.axis == 1:  # up and down
-                    if event.value > 0.2 and not self.joyUp:
-                        self.joyUp = True
-                    elif event.value < -0.2 and not self.joyDown:
-                        self.joyDown = True
-                    else:
-                        #reset joys up and down
-                        self.joyUp = False
-                        self.joyDown = False
-                        self.upPushed = False
-                        self.downPushed = False
-                elif event.axis == 0:  # left and right
-                    if event.value > 0.2 and not self.joyRight:
-                        self.joyRight = True
-                    elif event.value < -0.2 and not self.joyLeft:
-                        self.joyLeft = True
-                    else:
-                        self.rightPushed = False
-                        self.leftPushed = False
-                        self.joyLeft = False
-                        self.joyRight = False
+                if event.value != 0.0:
+                    #reset screensaver time to 0
+                    self.last = int(round(time.time())*1000)
+                    self.screensaver = False
+                    if event.axis == 1:  # up and down
+                        if event.value > 0.2 and not self.joyUp:
+                            self.joyUp = True
+                        elif event.value < -0.2 and not self.joyDown:
+                            self.joyDown = True
+                        else:
+                            #reset joys up and down
+                            self.joyUp = False
+                            self.joyDown = False
+                            self.upPushed = False
+                            self.downPushed = False
+                    elif event.axis == 0:  # left and right
+                        if event.value > 0.2 and not self.joyRight:
+                            self.joyRight = True
+                        elif event.value < -0.2 and not self.joyLeft:
+                            self.joyLeft = True
+                        else:
+                            self.rightPushed = False
+                            self.leftPushed = False
+                            self.joyLeft = False
+                            self.joyRight = False
         logger.info("ended... out-side events...")
 
     def update(self):

@@ -1,4 +1,4 @@
-pygame==1.9.4 #python3-pygame
+pygame #==1.9.4 #python3-pygame
 numpy #python3-numpy
 pybluez #python3-bluez
 pexpect #python3-pexpect

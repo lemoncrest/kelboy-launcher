@@ -181,7 +181,7 @@ class Main():
                     self.leftPushed = True
                 elif event.button == 8:  # right
                     self.rightPushed = True
-            elif event.type == pygame.JOYAXISMOTION:
+            elif False and event.type == pygame.JOYAXISMOTION:
                 if event.value != 0.0: #discarted joystick dead zone events
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)

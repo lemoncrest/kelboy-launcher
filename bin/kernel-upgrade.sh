@@ -51,7 +51,8 @@ if [[ ${#array[@]} -gt 0 ]] ; then
 			#sudo sed "s/^kernel=/#&/" /boot/config.txt > /tmp/config.txt
 			sudo sed "s/^kernel=/kernel=$kernel/" /boot/config.txt > /tmp/config.txt
 			#linenumber=$(sed -n -e '/^kernel=/=' /boot/config.txt)
-
+			sudo cp /home/pi/kelboy-launcher/bin/depmod.sh /etc/profile.d/
+			sudo chmod +x /etc/profile.d/depmod.sh
 			echo "done, rebooting..."
 			sudo reboot
 			break

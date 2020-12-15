@@ -17,14 +17,6 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-try:
-    import RPi.GPIO as GPIO
-except:
-    logger.warning("pending ... pip install RPi.GPIO")
-    pass
-
-#FREQ = 65.5689
-FREQ = 65.5689
 
 # Iterate over the joystick devices.
 logger.debug('Available devices:')
@@ -158,12 +150,11 @@ battery = False
 lightLevel = 100
 brightness = None
 try:
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(40, GPIO.OUT)
-    brightness = GPIO.PWM(40, FREQ)
-    brightness.start(0)
-    brightness.ChangeDutyCycle(100)
+    os.system("sudo raspi-gpio set 40 a0")
+    os.system("echo 0 > /sys/class/pwm/pwmchip0/export")
+    os.system("echo 1 > /sys/class/pwm/pwmchip0/pwm0/enable")
+    os.system("echo 6250000 > /sys/class/pwm/pwmchip0/pwm0/period")
+    os.system("echo 6249999 > /sys/class/pwm/pwmchip0/pwm0/duty_cycle")
 except:
     logger.warning("needs pip library RPi.GPIO")
     pass
@@ -401,11 +392,9 @@ while True:
             logger.debug("bundle2 down detected")
         elif button_states["SELECT"] and button_states["LEFT"]:
             lightLevel = lightLevel - 10 if lightLevel >= 10 else 0
-            brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
         elif button_states["SELECT"] and button_states["RIGHT"]:
             lightLevel = lightLevel + 10 if lightLevel <= 90 else 100
-            brightness.ChangeDutyCycle(lightLevel)
             logger.debug("brightness is %s" % lightLevel)
 
         #starts dynamic emulation keys
@@ -503,7 +492,3 @@ while True:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                 pass
 
-try:
-    brightness.ChangeDutyCycle(100)
-except:
-    pass

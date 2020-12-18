@@ -311,7 +311,7 @@ def notifications():
                     level = "lightning-full"
             elif battery>15:
                 level = "lightning-empty"
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
         else:
             if(battery>50):
                 level = "75"
@@ -324,7 +324,7 @@ def notifications():
             else:
                 level = "0"
             logger.debug("level is %s" % level)
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
         logger.debug("command... %s" % command)
         if showBattery:
             os.system(command)

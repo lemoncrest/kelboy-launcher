@@ -238,22 +238,17 @@ try:
 except Exception as ex:
     logger.error(str(ex))
 
-
-
-
-#for notifications
-
-global lightLevel
-global chargingStatus
-global batteryStatus
-global maxlightlevel
-global showBattery #flag to show battery
-
-showBattery = False
-currentShowTime = int(round(time.time() * 1000))
-
-#thread
+#thread function for notifications
 def notifications():
+    global lightLevel
+    global chargingStatus
+    global batteryStatus
+    global maxlightlevel
+    global showBattery #flag to show battery
+
+    showBattery = False
+    currentShowTime = int(round(time.time() * 1000))
+
     try:
         process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
         response = process.stdout.strip()

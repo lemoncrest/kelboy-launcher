@@ -366,7 +366,7 @@ def notifications():
                 im.save('/tmp/brightness-bar.png')
 
                 #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 3 -x 0 -y 0 -t %s &" % (str(500))
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 3 -x 0 -y 0 -t %s &" % str(500)
                 os.system(command)
 
         #last show OSD menu
@@ -488,10 +488,26 @@ while True:
             showOSDmenu = True
         elif button_states["SELECT"] and button_states["LEFT"]:
             lightLevel = lightLevel - 1 if lightLevel >= 1 else 0
-            logger.debug("brightness is %s" % lightLevel)
+            logger.debug("brightness - is %s" % lightLevel)
+            try:
+                process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
+                response = process.stdout.strip()
+                currentlightlevel = int(response)
+            except Exception as ex:
+                currentlightlevel = lightlevel
+                logger.debug(str(ex))
+                pass
         elif button_states["SELECT"] and button_states["RIGHT"]:
             lightLevel = lightLevel + 1 if lightLevel < maxlightlevel else maxlightlevel
-            logger.debug("brightness is %s" % lightLevel)
+            logger.debug("brightness + is %s" % lightLevel)
+            try:
+                process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
+                response = process.stdout.strip()
+                currentlightlevel = int(response)
+            except Exception as ex:
+                currentlightlevel = lightlevel
+                logger.debug(str(ex))
+                pass
 
         #starts dynamic emulation keys
 

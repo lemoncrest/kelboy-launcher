@@ -110,56 +110,50 @@ button_map = []
 # Open the joystick device.
 fn = '/dev/input/js0'
 logger.debug(('Opening %s...' % fn))
-jsdev = open(fn, 'rb')
-
-# Get the device name.
-#buf = bytearray(63)
-buf = array.array('B', [0] * 64)
-ioctl(jsdev, 0x80006a13 + (0x10000 * len(buf)), buf) # JSIOCGNAME(len)
-js_name = buf.tostring().rstrip(b'\x00').decode('utf-8')
-logger.debug(('Device name: %s' % js_name))
-
-# Get number of axes and buttons.
-buf = array.array('B', [0])
-ioctl(jsdev, 0x80016a11, buf) # JSIOCGAXES
-num_axes = buf[0]
-
-buf = array.array('B', [0])
-ioctl(jsdev, 0x80016a12, buf) # JSIOCGBUTTONS
-num_buttons = buf[0]
-
-# Get the axis map.
-buf = array.array('B', [0] * 0x40)
-ioctl(jsdev, 0x80406a32, buf) # JSIOCGAXMAP
-
-for axis in buf[:num_axes]:
-    axis_name = axis_names.get(axis, 'unknown(0x%02x)' % axis)
-    axis_map.append(axis_name)
-    axis_states[axis_name] = 0.0
-
-# Get the button map.
-buf = array.array('H', [0] * 200)
-ioctl(jsdev, 0x80406a34, buf) # JSIOCGBTNMAP
-
-for btn in buf[:num_buttons]:
-    btn_name = button_names.get(btn, 'unknown(0x%03x)' % btn)
-    button_map.append(btn_name)
-    button_states[btn_name] = 0
-
-logger.debug(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
-logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
-battery = False
-lightLevel = 100
-brightness = None
 try:
-    os.system("sudo raspi-gpio set 40 a0")
-    os.system("echo 0 > /sys/class/pwm/pwmchip0/export")
-    os.system("echo 1 > /sys/class/pwm/pwmchip0/pwm0/enable")
-    os.system("echo 6250000 > /sys/class/pwm/pwmchip0/pwm0/period")
-    os.system("echo 6249999 > /sys/class/pwm/pwmchip0/pwm0/duty_cycle")
-except:
-    logger.warning("needs pip library RPi.GPIO")
+    jsdev = open(fn, 'rb')
+
+    # Get the device name.
+    #buf = bytearray(63)
+    buf = array.array('B', [0] * 64)
+    ioctl(jsdev, 0x80006a13 + (0x10000 * len(buf)), buf) # JSIOCGNAME(len)
+    js_name = buf.tostring().rstrip(b'\x00').decode('utf-8')
+    logger.debug(('Device name: %s' % js_name))
+
+    # Get number of axes and buttons.
+    buf = array.array('B', [0])
+    ioctl(jsdev, 0x80016a11, buf) # JSIOCGAXES
+    num_axes = buf[0]
+
+    buf = array.array('B', [0])
+    ioctl(jsdev, 0x80016a12, buf) # JSIOCGBUTTONS
+    num_buttons = buf[0]
+
+    # Get the axis map.
+    buf = array.array('B', [0] * 0x40)
+    ioctl(jsdev, 0x80406a32, buf) # JSIOCGAXMAP
+
+    for axis in buf[:num_axes]:
+        axis_name = axis_names.get(axis, 'unknown(0x%02x)' % axis)
+        axis_map.append(axis_name)
+        axis_states[axis_name] = 0.0
+
+    # Get the button map.
+    buf = array.array('H', [0] * 200)
+    ioctl(jsdev, 0x80406a34, buf) # JSIOCGBTNMAP
+
+    for btn in buf[:num_buttons]:
+        btn_name = button_names.get(btn, 'unknown(0x%03x)' % btn)
+        button_map.append(btn_name)
+        button_states[btn_name] = 0
+
+    logger.debug(('%d axes found: %s' % (num_axes, ', '.join(axis_map))))
+    logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
+except Exception as ex:
+    logger.error(str(ex))
     pass
+
+battery = 100
 
 ui = None
 try:
@@ -256,7 +250,20 @@ except Exception as ex:
 def notifications():
     global chargingStatus
     global batteryStatus
+    global lightLevel
+    global maxlightlevel
+    global showBattery #flag to show battery
+    showBattery = False
+    currentShowTime = int(round(time.time() * 1000))
+    currentlightlevel = maxlightlevel = lightLevel = 7 #min 0 max 7 TODO read from driver
+    try:
+        process = subprocess.Popen(command.split(" "))
+        response = process.stdout.strip()
+    except:
+        logger.error("Could not obtain current backlight level")
+        pass
     while True:
+        #first battery
         try:
             process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             batteryStatus = int(process.stdout)
@@ -265,10 +272,67 @@ def notifications():
             battery = 0
             level = 0
             pass
-        if batteryStatus < 5:
+        charging = False
+        try:
+            process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            charging = int(process.stdout) > 0
+            logger.debug("charging: %s" % str(battery))
+        except:
+            charging = False
             pass
-        elif batteryStatus < 15:
+        if not charging and batteryStatus < 5:
+            showBattery = True
+        elif not charging and batteryStatus < 15:
+            #check time loop
+            if showBattery:
+                showBattery = False
+                currentShowTime = int(round(time.time() * 1000))
+            elif currentShowTime + 20000 >= int(round(time.time() * 1000)):
+                showBattery = True
+                logger.debug("showing battery...")
+        try:
+            process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            battery = int(process.stdout)
+            logger.debug("battery: %s" % str(battery))
+        except:
+            battery = 0 #"lightning-empty-help"
+            level = 0
             pass
+
+        pwd = os.getcwd()
+        if charging:
+            level = "lightning-empty-help"
+            if(battery>50):
+                level = "lightning-midle"
+                if(battery>=95):
+                    level = "lightning-full"
+            elif battery>15:
+                level = "lightning-empty"
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+        else:
+            if(battery>50):
+                level = "75"
+                if(battery<75):
+                    level = "50"
+                elif(battery>=95):
+                    level = "100"
+            elif battery>15:
+                level = "25"
+            else:
+                level = "0"
+            logger.debug("level is %s" % level)
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t 5000 &" % (pwd,level,WIDTH-30)
+        logger.debug("command... %s" % command)
+        if showBattery:
+            os.system(command)
+            logger.debug("battery command done")
+        #next update lightLevel
+        if currentlightlevel != lightlevel and lightlevel > 0 and lightlevel <= maxlightlevel:
+            try:
+                os.system("echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD) )
+            except:
+                logger.warning("needs pip library RPi.GPIO")
+                pass
         time.sleep(5)
 
 #thread
@@ -370,50 +434,7 @@ while True:
                 logger.debug("command %s" % command)
         if button_states["SELECT"] and button_states["UP"]:
             logger.debug("bundle2 up detected")
-            logger.debug("showing battery...")
-            try:
-                process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                battery = int(process.stdout)
-                logger.debug("%s" % str(battery))
-            except:
-                battery = 0 #"lightning-empty-help"
-                level = 0
-                pass
-            charging = False
-            try:
-                process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                charging = int(process.stdout) > 0
-                logger.debug("%s" % str(battery))
-            except:
-                charging = False
-                pass
-            pwd = os.getcwd()
-            if charging:
-                level = "lightning-empty-help"
-                if(battery>50):
-                    level = "lightning-midle"
-                    if(battery>=95):
-                        level = "lightning-full"
-                elif battery>15:
-                    level = "lightning-empty"
-                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t 5000 &" % (pwd,level,WIDTH-30)
-            else:
-                if(battery>50):
-                    level = "75"
-                    if(battery<75):
-                        level = "50"
-                    elif(battery>=95):
-                        level = "100"
-                elif battery>15:
-                    level = "25"
-                else:
-                    level = "0"
-                logger.debug("level is %s" % level)
-                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t 5000 &" % (pwd,level,WIDTH-30)
-            logger.debug("command... %s" % command)
-            battery = True
-            os.system(command)
-            logger.debug("command done")
+            showBattery = True
         elif button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")
         elif button_states["SELECT"] and button_states["LEFT"]:
@@ -465,7 +486,7 @@ while True:
                                             key = 'Return'
                                         command = "xdotool keydown %s" % (key)
                                         logger.debug("key with command '%s'" % command)
-                                    if command is not "":
+                                    if command != "":
                                         subprocess.Popen(command.split(" "))
                         elif key["key"] in button_states and not button_states[key["key"]]: #release
                             for value in key["callback"]:
@@ -491,7 +512,7 @@ while True:
                                             key = 'Return'
                                         command = "xdotool keyup %s" % (key)
                                         logger.debug("key with command '%s'" % command)
-                                    if command is not "":
+                                    if command != "":
                                         logger.debug("release command '%s'" % command)
                                         subprocess.Popen(command.split(" "))
                                 #clean (patch)

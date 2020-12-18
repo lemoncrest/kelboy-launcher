@@ -336,7 +336,7 @@ def notifications():
             logger.debug("not showing battery")
         #next update lightLevel
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
-
+            logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
             try:
                 os.system("echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD) )
                 currentlightlevel = lightLevel

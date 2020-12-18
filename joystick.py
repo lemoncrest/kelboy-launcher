@@ -245,8 +245,10 @@ def notifications():
     global batteryStatus
     global maxlightlevel
     global showBattery #flag to show battery
+    global showOSDMenu
 
     showBattery = False
+    showOSDMenu = False
     currentShowTime = int(round(time.time() * 1000))
 
     try:
@@ -333,12 +335,40 @@ def notifications():
         else:
             logger.debug("not showing battery")
         #next update lightLevel
-        if currentlightlevel != lightLevel and lightLevel > 0 and lightLevel <= maxlightlevel:
+        if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
             try:
                 os.system("echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD) )
-            except:
-                logger.warning("needs pip library RPi.GPIO")
+            except Exception as ex:
+                logger.error(str(ex))
                 pass
+
+            # Open template and get drawing context
+            im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
+            draw = ImageDraw.Draw(im)
+
+            # Cyan-ish fill colour
+            color=(98,211,245)
+
+            # Draw circle at right end of progress bar
+            x, y, diam = 254, 8, 34
+            draw.ellipse([x,y,x+diam,y+diam], fill=color)
+
+            # Flood-fill from extreme left of progress bar area to behind circle
+            ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
+
+            # Save result
+            im.save('/tmp/result.png')
+
+            #show result
+
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(500))
+            os.system(command)
+
+        #last show OSD menu
+        if showOSDmenu:
+            logger.debug("osd command launched")
+
+
         time.sleep(5)
 
 logger.debug("launching notifications thread")
@@ -450,11 +480,12 @@ while True:
             showBattery = True
         elif button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")
+            showOSDMenu = True
         elif button_states["SELECT"] and button_states["LEFT"]:
-            lightLevel = lightLevel - 10 if lightLevel >= 10 else 0
+            lightLevel = lightLevel - 1 if lightLevel >= 1 else 0
             logger.debug("brightness is %s" % lightLevel)
         elif button_states["SELECT"] and button_states["RIGHT"]:
-            lightLevel = lightLevel + 10 if lightLevel <= 90 else 100
+            lightLevel = lightLevel + 1 if lightLevel <= maxlightlevel else maxlightlevel
             logger.debug("brightness is %s" % lightLevel)
 
         #starts dynamic emulation keys

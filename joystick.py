@@ -246,16 +246,20 @@ try:
 except Exception as ex:
     logger.error(str(ex))
 
+#for notifications
+
+global lightLevel
+global chargingStatus
+global batteryStatus
+global maxlightlevel
+global showBattery #flag to show battery
+
+showBattery = False
+currentShowTime = int(round(time.time() * 1000))
+currentlightlevel = maxlightlevel = lightLevel = 7 #min 0 max 7, TODO read from driver in thread
+
 #thread
 def notifications():
-    global chargingStatus
-    global batteryStatus
-    global lightLevel
-    global maxlightlevel
-    global showBattery #flag to show battery
-    showBattery = False
-    currentShowTime = int(round(time.time() * 1000))
-    currentlightlevel = maxlightlevel = lightLevel = 7 #min 0 max 7 TODO read from driver
     try:
         process = subprocess.Popen(command.split(" "))
         response = process.stdout.strip()

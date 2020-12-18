@@ -352,9 +352,11 @@ def notifications():
             color=(98,211,245)
 
             # Draw circle at right end of progress bar
-            part = (636/maxlightlevel) * lightLevel + diam
 
+            part = (636/maxlightlevel) * lightLevel
             x, y, diam = part, 8, 34
+            x += diam
+
             draw.ellipse([x,y,x+diam,y+diam], fill=color)
 
             # Flood-fill from extreme left of progress bar area to behind circle

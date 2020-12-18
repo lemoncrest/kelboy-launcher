@@ -361,7 +361,7 @@ def notifications():
 
             #show result
 
-            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x %s -y 50 -t %s &" % (pwd,level,30,str(500))
+            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x %s -y 50 -t %s &" % (30,str(500))
             os.system(command)
 
         #last show OSD menu

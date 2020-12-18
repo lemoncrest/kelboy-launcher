@@ -239,12 +239,7 @@ except Exception as ex:
     logger.error(str(ex))
 
 
-logger.debug("launching notifications thread")
-try:
-    thread.start_new_thread(notifications,())
-    logger.debug("NOTIFICATIONS done! launching process loop...")
-except Exception as ex:
-    logger.error(str(ex))
+
 
 #for notifications
 
@@ -256,21 +251,29 @@ global showBattery #flag to show battery
 
 showBattery = False
 currentShowTime = int(round(time.time() * 1000))
-currentlightlevel = maxlightlevel = lightLevel = 7 #min 0 max 7, TODO read from driver in thread
 
 #thread
 def notifications():
     try:
-        process = subprocess.Popen(command.split(" "))
+        process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
         response = process.stdout.strip()
+        currentlightlevel = int(response)
+
+        process = subprocess.Popen(BRIGHTNESS_MAXLEVEL_CMD.split(" "))
+        response = process.stdout.strip()
+        maxlightlevel = int(response)
+
+        lightLevel = 7 #will be setted in the final loop part
+
     except:
         logger.error("Could not obtain current backlight level")
+        currentlightlevel = maxlightlevel = lightLevel = 7
         pass
     while True:
         #first battery
         try:
             process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            batteryStatus = int(process.stdout)
+            batteryStatus = int(process.stdout.strip())
             logger.debug("%s" % str(batteryStatus))
         except:
             battery = 0
@@ -279,13 +282,14 @@ def notifications():
         charging = False
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            charging = int(process.stdout) > 0
+            charging = int(process.stdout.strip()) > 0
             logger.debug("charging: %s" % str(battery))
         except:
             charging = False
             pass
         if not charging and batteryStatus < 5:
             showBattery = True
+            logger.debug("showing battery...")
         elif not charging and batteryStatus < 15:
             #check time loop
             if showBattery:
@@ -325,11 +329,13 @@ def notifications():
             else:
                 level = "0"
             logger.debug("level is %s" % level)
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t 5000 &" % (pwd,level,WIDTH-30)
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 300003 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
         logger.debug("command... %s" % command)
         if showBattery:
             os.system(command)
             logger.debug("battery command done")
+        else:
+            logger.debug("not showing battery")
         #next update lightLevel
         if currentlightlevel != lightLevel and lightLevel > 0 and lightLevel <= maxlightlevel:
             try:
@@ -338,6 +344,13 @@ def notifications():
                 logger.warning("needs pip library RPi.GPIO")
                 pass
         time.sleep(5)
+
+logger.debug("launching notifications thread")
+try:
+    thread.start_new_thread(notifications,())
+    logger.debug("NOTIFICATIONS done! launching process loop...")
+except Exception as ex:
+    logger.error(str(ex))
 
 #thread
 def check_process():

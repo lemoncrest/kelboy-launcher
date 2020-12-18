@@ -83,7 +83,7 @@ class Main():
         with open(os.path.join("resources/menus","main.json")) as jsonMenu:
             menu = json.load(jsonMenu)
             self.menu = Menu(self, menu)
-            self.menu.dialog = Dialog(main=self,title="Test revision",message="not final rev.", dialogWidth=180,dialogHeight=160)
+            self.menu.dialog = Dialog(main=self,title="Launcher",message="Welcome to V1.0", dialogWidth=180,dialogHeight=160)
             self.menu.keyboard = None
             self.menu.lastMenu = "main"
 

@@ -338,8 +338,10 @@ def notifications():
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
             logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
             try:
-                os.system("echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD) )
+                command = "echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD)
+                os.system(command)
                 currentlightlevel = lightLevel
+                logger.debug("command was %s" % command)
             except Exception as ex:
                 logger.error(str(ex))
                 pass
@@ -364,7 +366,7 @@ def notifications():
                 im.save('/tmp/brightness-bar.png')
 
                 #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 3 -x 0 -y 10 -t %s &" % (str(1500))
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 3 -x 0 -y 0 -t %s &" % (str(500))
                 os.system(command)
 
         #last show OSD menu

@@ -352,18 +352,19 @@ def notifications():
             color=(98,211,245)
 
             # Draw circle at right end of progress bar
-            x, y, diam = 254, 8, 34
+            part = (640/maxlightlevel) * lightLevel
+
+            x, y, diam = part, 8, 34
             draw.ellipse([x,y,x+diam,y+diam], fill=color)
 
             # Flood-fill from extreme left of progress bar area to behind circle
             ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
 
             # Save result
-            im.save('/tmp/bar.png')
+            im.save('/tmp/brightness-bar.png')
 
             #show result
-
-            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x 0 -y 10 -t %s &" % (str(1500))
+            command="bin/pngview /tmp/brightness-bar.png -b 0 -l 3 -x 0 -y 10 -t %s &" % (str(1500))
             os.system(command)
 
         #last show OSD menu

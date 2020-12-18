@@ -19,6 +19,14 @@ import logging
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+try:
+    #just for old people who don't want to upgrade to a newer kernel
+    import RPi.GPIO as GPIO
+except:
+    logger.warning("pending ... pip install RPi.GPIO")
+    pass
+
+FREQ = 65.5689
 
 # Iterate over the joystick devices.
 logger.debug('Available devices:')
@@ -189,10 +197,8 @@ def pointer_handler():
         #it's unknown but needs 2 times to work :S
         ui2 = UInput(cap, name='virtual-mouse', version=0x3)
     except:
-        logger.warning("no uinput was defined (MOUSE), use pyautogui instead")
+        logger.warning("no uinput was defined (for MOUSE virtual device)")
         pass
-
-
 
     #just to avoid init effect of cursor, joystick.py puts the cursor
     #ui2.write(e.EV_ABS, e.ABS_X, 0)
@@ -247,8 +253,10 @@ def notifications():
     global showBattery #flag to show battery
     global showOSDmenu
 
+    oldAlgorithm = False
     showBattery = False
     showOSDmenu = False
+    batteryStatus = False
     currentShowTime = int(round(time.time() * 1000))
 
     try:
@@ -262,24 +270,37 @@ def notifications():
 
         lightLevel = 7 #will be setted in the final loop part
 
-    except:
-        logger.error("Could not obtain current backlight level")
+    except Exception as ex:
+        oldAlgorithm = True
+        logger.error("Could not obtain current backlight level, using old algorithm")
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(False)
+            GPIO.setup(40, GPIO.OUT)
+            brightness = GPIO.PWM(40, FREQ)
+            brightness.start(0)
+            brightness.ChangeDutyCycle(100)
+            logger.debug("init done! using old algorithm to control backlight")
+        except:
+            logger.warning("needs pip library RPi.GPIO")
+            pass
+
         currentlightlevel = maxlightlevel = lightLevel = 7
         pass
     while True:
         #first battery
         try:
             process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            batteryStatus = int(process.stdout.strip())
+            batteryStatus = int(process.stdout)
             logger.debug("%s" % str(batteryStatus))
         except:
-            battery = 0
+            batteryStatus = 0
             level = 0
             pass
         charging = False
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            charging = int(process.stdout.strip()) > 0
+            charging = int(process.stdout) > 0
             logger.debug("charging: %s" % str(battery))
         except:
             charging = False
@@ -334,44 +355,49 @@ def notifications():
             showBattery = False
         else:
             logger.debug("not showing battery")
+
         #next update lightLevel
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
             logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
-            try:
-                command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)
-                os.system(command)
-                currentlightlevel = lightLevel
-                logger.debug("command was %s" % command)
-            except Exception as ex:
-                logger.error(str(ex))
-                pass
-            if lightLevel > 0:
-                # Open template and get drawing context
-                im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
-                draw = ImageDraw.Draw(im)
+            if oldAlgorithm:
+                brightness.ChangeDutyCycle(lightLevel*100/7)
+            else:
+                try:
+                    command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)
+                    os.system(command)
+                    currentlightlevel = lightLevel
+                    logger.debug("command was %s" % command)
+                except Exception as ex:
+                    logger.error(str(ex))
+                    pass
+                if lightLevel > 0:
+                    # Open template and get drawing context
+                    im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
+                    draw = ImageDraw.Draw(im)
 
-                # Cyan-ish fill colour
-                color=(98,211,245)
+                    # Cyan-ish fill colour
+                    color=(20,200,255)
 
-                # Draw circle at right end of progress bar
-                part = (634/maxlightlevel) * lightLevel
+                    # Draw circle at right end of progress bar
+                    part = (634/maxlightlevel) * lightLevel
 
-                x, y, diam = part, 8, 34
-                draw.ellipse([x,y,x+diam,y+diam], fill=color)
+                    x, y, diam = part, 8, 34
+                    draw.ellipse([x,y,x+diam,y+diam], fill=color)
 
-                # Flood-fill from extreme left of progress bar area to behind circle
-                ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
+                    # Flood-fill from extreme left of progress bar area to behind circle
+                    ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
 
-                # Save result
-                im.save('/tmp/brightness-bar.png')
+                    # Save result
+                    im.save('/tmp/brightness-bar.png')
 
-                #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
-                os.system(command)
+                    #show result
+                    command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
+                    os.system(command)
 
         #last show OSD menu
         if showOSDmenu:
             logger.debug("osd command launched")
+            showOSDmenu = False
 
 
         time.sleep(0.1)

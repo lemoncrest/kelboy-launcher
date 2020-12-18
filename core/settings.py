@@ -93,6 +93,9 @@ BARSIZE = getValue("BARSIZE",25,'up barsize (widgets) height in pixels')
 
 BATTERY_PERCENTAGE_CMD = getValue("BATTERY_PERCENTAGE_CMD",'cat /sys/class/power_supply/max1726x_battery/capacity','command for battery value, must not be changed')
 FUELGAUGE_CURRENT_CMD = getValue("FUELGAUGE_CURRENT_CMD",'cat /sys/class/power_supply/max1726x_battery/current_now','command for fuelgague status, should not be changed')
+BRIGHTNESS_CURRENT_CMD = getValue("BRIGHTNESS_CURRENT_CMD",'cat /sys/class/backlight/kelboy_pwm_backlight/actual_brightness','command for brightness level, must not be changed')
+BRIGHTNESS_MAXLEVEL_CMD = getValue("BRIGHTNESS_MAXLEVEL_CMD",'cat /sys/class/backlight/kelboy_pwm_backlight/max_brightness','command for max brightness level, must not be changed')
+BRIGHTNESS_SETUP_CMD = getValue("BRIGHTNESS_SETUP_CMD",'/sys/class/backlight/kelboy_pwm_backlight/brightness','command for change brightness level, should not be changed')
 
 AUDIO_CONTROL_CMD = getValue("AUDIO_CONTROL_CMD","amixer | grep control | head -n 1 | awk -F' ' '{ print $4 }'",'command for audio control with amixer')
 

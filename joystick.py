@@ -494,7 +494,7 @@ while True:
                 response = process.stdout.strip()
                 currentlightlevel = int(response)
             except Exception as ex:
-                currentlightlevel = lightlevel
+                currentlightlevel = lightLevel
                 logger.debug(str(ex))
                 pass
         elif button_states["SELECT"] and button_states["RIGHT"]:
@@ -505,7 +505,7 @@ while True:
                 response = process.stdout.strip()
                 currentlightlevel = int(response)
             except Exception as ex:
-                currentlightlevel = lightlevel
+                currentlightlevel = lightLevel
                 logger.debug(str(ex))
                 pass
 

@@ -357,11 +357,11 @@ def notifications():
             ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
 
             # Save result
-            im.save('/tmp/result.png')
+            im.save('/tmp/bar.png')
 
             #show result
 
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(500))
+            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x %s -y 50 -t %s &" % (pwd,level,30,str(500))
             os.system(command)
 
         #last show OSD menu
@@ -485,7 +485,7 @@ while True:
             lightLevel = lightLevel - 1 if lightLevel >= 1 else 0
             logger.debug("brightness is %s" % lightLevel)
         elif button_states["SELECT"] and button_states["RIGHT"]:
-            lightLevel = lightLevel + 1 if lightLevel <= maxlightlevel else maxlightlevel
+            lightLevel = lightLevel + 1 if lightLevel < maxlightlevel else maxlightlevel
             logger.debug("brightness is %s" % lightLevel)
 
         #starts dynamic emulation keys

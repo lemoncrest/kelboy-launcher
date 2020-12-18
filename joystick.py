@@ -329,6 +329,7 @@ def notifications():
         if showBattery:
             os.system(command)
             logger.debug("battery command done")
+            showBattery = False
         else:
             logger.debug("not showing battery")
         #next update lightLevel

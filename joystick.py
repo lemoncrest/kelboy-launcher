@@ -253,11 +253,11 @@ def notifications():
 
     try:
         process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
-        response = process.stdout.strip()
+        response = process.stdout
         currentlightlevel = int(response)
 
         process = subprocess.Popen(BRIGHTNESS_MAXLEVEL_CMD.split(" "))
-        response = process.stdout.strip()
+        response = process.stdout
         maxlightlevel = int(response)
 
         lightLevel = 7 #will be setted in the final loop part
@@ -491,7 +491,7 @@ while True:
             logger.debug("brightness - is %s" % lightLevel)
             try:
                 process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
-                response = process.stdout.strip()
+                response = process.stdout
                 currentlightlevel = int(response)
             except Exception as ex:
                 currentlightlevel = lightLevel
@@ -502,7 +502,7 @@ while True:
             logger.debug("brightness + is %s" % lightLevel)
             try:
                 process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
-                response = process.stdout.strip()
+                response = process.stdout
                 currentlightlevel = int(response)
             except Exception as ex:
                 currentlightlevel = lightLevel

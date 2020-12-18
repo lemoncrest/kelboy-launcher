@@ -245,10 +245,10 @@ def notifications():
     global batteryStatus
     global maxlightlevel
     global showBattery #flag to show battery
-    global showOSDMenu
+    global showOSDmenu
 
     showBattery = False
-    showOSDMenu = False
+    showOSDmenu = False
     currentShowTime = int(round(time.time() * 1000))
 
     try:
@@ -480,7 +480,7 @@ while True:
             showBattery = True
         elif button_states["SELECT"] and button_states["DOWN"]:
             logger.debug("bundle2 down detected")
-            showOSDMenu = True
+            showOSDmenu = True
         elif button_states["SELECT"] and button_states["LEFT"]:
             lightLevel = lightLevel - 1 if lightLevel >= 1 else 0
             logger.debug("brightness is %s" % lightLevel)

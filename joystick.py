@@ -327,7 +327,7 @@ def notifications():
             os.system(command)
             logger.debug("battery command done")
         #next update lightLevel
-        if currentlightlevel != lightlevel and lightlevel > 0 and lightlevel <= maxlightlevel:
+        if currentlightlevel != lightLevel and lightLevel > 0 and lightLevel <= maxlightlevel:
             try:
                 os.system("echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD) )
             except:

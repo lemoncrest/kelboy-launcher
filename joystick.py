@@ -363,7 +363,7 @@ def notifications():
 
             #show result
 
-            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x 0 -y 10 -t %s &" % (str(500))
+            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x 0 -y 10 -t %s &" % (str(1500))
             os.system(command)
 
         #last show OSD menu
@@ -371,7 +371,7 @@ def notifications():
             logger.debug("osd command launched")
 
 
-        time.sleep(5)
+        time.sleep(0.1)
 
 logger.debug("launching notifications thread")
 try:

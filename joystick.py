@@ -8,6 +8,8 @@ from subprocess import check_output
 from fcntl import ioctl
 from evdev import UInput, AbsInfo, InputDevice, uinput, ecodes as e
 
+from PIL import Image, ImageDraw
+
 import psutil
 
 from core.keys import *
@@ -243,7 +245,31 @@ except Exception as ex:
     logger.error(str(ex))
 
 
+logger.debug("launching notifications thread")
+try:
+    thread.start_new_thread(notifications,())
+    logger.debug("NOTIFICATIONS done! launching process loop...")
+except Exception as ex:
+    logger.error(str(ex))
 
+#thread
+def notifications():
+    global chargingStatus
+    global batteryStatus
+    while True:
+        try:
+            process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+            batteryStatus = int(process.stdout)
+            logger.debug("%s" % str(batteryStatus))
+        except:
+            battery = 0
+            level = 0
+            pass
+        if batteryStatus < 5:
+            pass
+        elif batteryStatus < 15:
+            pass
+        time.sleep(5)
 
 #thread
 def check_process():
@@ -282,14 +308,14 @@ def check_process():
             except Exception as ex:
                 logger.error("some fatal ex %s" % str(ex))
                 pass
-        logger.debug("sleep 1 second...")
+        #logger.debug("sleep 1 second...")
         time.sleep(1)
 
 
-logger.debug("launching thread")
+logger.debug("launching MAIN joystick.py thread")
 try:
     thread.start_new_thread(check_process,())
-    logger.debug("done! launching main loop...")
+    logger.debug("MAIN running! continue with main loop...")
 except Exception as ex:
     logger.error(str(ex))
 
@@ -491,4 +517,3 @@ while True:
             except Exception as ex:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                 pass
-

@@ -336,8 +336,10 @@ def notifications():
             logger.debug("not showing battery")
         #next update lightLevel
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
+
             try:
                 os.system("echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD) )
+                currentlightlevel = lightLevel
             except Exception as ex:
                 logger.error(str(ex))
                 pass
@@ -361,7 +363,7 @@ def notifications():
 
             #show result
 
-            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x %s -y 50 -t %s &" % (30,str(500))
+            command="bin/pngview /tmp/bar.png -b 0 -l 3 -x 0 -y 10 -t %s &" % (str(500))
             os.system(command)
 
         #last show OSD menu

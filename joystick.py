@@ -352,7 +352,7 @@ def notifications():
             color=(98,211,245)
 
             # Draw circle at right end of progress bar
-            part = (640/maxlightlevel) * lightLevel
+            part = (636/maxlightlevel) * lightLevel + diam
 
             x, y, diam = part, 8, 34
             draw.ellipse([x,y,x+diam,y+diam], fill=color)

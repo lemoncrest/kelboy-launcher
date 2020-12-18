@@ -338,7 +338,7 @@ def notifications():
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
             logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
             try:
-                command = "echo %s > %s", (str(lightLevel),BRIGHTNESS_SETUP_CMD)
+                command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)
                 os.system(command)
                 currentlightlevel = lightLevel
                 logger.debug("command was %s" % command)
@@ -354,7 +354,7 @@ def notifications():
                 color=(98,211,245)
 
                 # Draw circle at right end of progress bar
-                part = (640/maxlightlevel) * lightLevel
+                part = (634/maxlightlevel) * lightLevel
 
                 x, y, diam = part, 8, 34
                 draw.ellipse([x,y,x+diam,y+diam], fill=color)
@@ -366,7 +366,7 @@ def notifications():
                 im.save('/tmp/brightness-bar.png')
 
                 #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 3 -x 0 -y 0 -t %s &" % str(500)
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
                 os.system(command)
 
         #last show OSD menu

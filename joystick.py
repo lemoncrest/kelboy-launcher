@@ -430,7 +430,7 @@ def display_osd():
             showOSDmenu = False
 
 
-        time.sleep(1)
+        time.sleep(0.01)
 
 logger.debug("launching display_osd thread")
 try:

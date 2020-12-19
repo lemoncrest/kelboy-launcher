@@ -251,11 +251,9 @@ def notifications():
     global batteryStatus
     global maxlightlevel
     global showBattery #flag to show battery
-    global showOSDmenu
 
     oldAlgorithm = False
     showBattery = False
-    showOSDmenu = False
 
     charging = False
     batteryStatus = False
@@ -341,6 +339,9 @@ except Exception as ex:
 def display_osd():
 
     global lightLevel
+    global showOSDmenu
+
+    showOSDmenu = False
 
     try:
         process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))

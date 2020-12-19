@@ -235,7 +235,7 @@ def pointer_handler():
                 #logger.error("fail pyautogui %s" % str(ex))
                 pass
         #logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
-        time.sleep(0.01)
+        time.sleep(0.07)
 
 logger.debug("launching mouse thread")
 try:
@@ -285,7 +285,7 @@ def notifications():
             logger.warning("needs pip library RPi.GPIO")
             pass
 
-        currentlightlevel = maxlightlevel = lightLevel = 7
+        currentlightlevel = maxlightlevel = lightLevel = 5
         pass
     while True:
         #first battery
@@ -408,6 +408,8 @@ def notifications():
         #last show OSD menu
         if showOSDmenu:
             logger.debug("osd command launched")
+            command="bin/pngview %s/resources/graphics/logo.png -b 0 -l 5 -x 0 -y 0 -t %s &" % (os.getcwd() , str(1500))
+            os.system(command)
             showOSDmenu = False
 
 

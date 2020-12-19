@@ -360,7 +360,18 @@ def notifications():
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
             logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
             if oldAlgorithm:
-                brightness.ChangeDutyCycle(lightLevel*100/7)
+                if lightLevel == 0:
+                    brightness.ChangeDutyCycle(lightLevel)
+                elif lightLevel == 1:
+                    brightness.ChangeDutyCycle(20)
+                elif lightLevel == 2:
+                    brightness.ChangeDutyCycle(40)
+                elif lightLevel == 3:
+                    brightness.ChangeDutyCycle(60)
+                elif lightLevel == 4:
+                    brightness.ChangeDutyCycle(80)
+                else:
+                    brightness.ChangeDutyCycle(100)
             else:
                 try:
                     command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)

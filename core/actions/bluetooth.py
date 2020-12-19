@@ -2,7 +2,7 @@ import os
 import json
 import logging
 from core.settings import *
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 from core.bluetooth import Bluetooth

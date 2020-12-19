@@ -16,7 +16,7 @@ import gzip
 from core.settings import LOG_PATH
 
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 def sec_to_hms(seconds):

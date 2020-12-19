@@ -6,7 +6,7 @@ from core.settings import *
 
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 
 class Lemon():
 

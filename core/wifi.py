@@ -4,7 +4,7 @@ import os
 import time
 from core.settings import *
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 """

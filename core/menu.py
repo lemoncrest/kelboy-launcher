@@ -497,7 +497,10 @@ class MenuStatus(pygame.sprite.Sprite):
     def draw(self):
         if pygame.time.get_ticks() - self.time > WIDGET_FRAMETIME:
             self.time = pygame.time.get_ticks()
-            self.drawWidgets()
+            try:
+                self.drawWidgets()
+            except:
+                pass
 
     def drawWidgets(self):
         self.padding = 1
@@ -509,15 +512,17 @@ class MenuStatus(pygame.sprite.Sprite):
         try:
             process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             battery = int(process.stdout)
-        except:
+        except Exception as ex:
             battery = 0 #"lightning-empty-help"
             level = 0
+            logging.error("not obtained battery widget value")
             pass
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             charging = int(process.stdout) > 0
-        except:
+        except Exception as ex:
             charging = False
+            logging.error("not obtained fuelgauge widget value")
             pass
         if charging:
             level = "lightning-empty-help"

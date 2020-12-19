@@ -515,14 +515,12 @@ class MenuStatus(pygame.sprite.Sprite):
         except Exception as ex:
             battery = 0 #"lightning-empty-help"
             level = 0
-            logging.error("not obtained battery widget value")
             pass
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             charging = int(process.stdout) > 0
         except Exception as ex:
             charging = False
-            logging.error("not obtained fuelgauge widget value")
             pass
         if charging:
             level = "lightning-empty-help"

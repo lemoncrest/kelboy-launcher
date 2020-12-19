@@ -356,6 +356,17 @@ def notifications():
         else:
             logger.debug("not showing battery")
 
+        time.sleep(30)
+
+logger.debug("launching notifications thread")
+try:
+    thread.start_new_thread(notifications,())
+    logger.debug("NOTIFICATIONS done! launching next loop...")
+except Exception as ex:
+    logger.error(str(ex))
+
+def display_osd():
+    while True:
         #next update lightLevel
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
             logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
@@ -413,12 +424,12 @@ def notifications():
             showOSDmenu = False
 
 
-        time.sleep(0.1)
+        time.sleep(1)
 
-logger.debug("launching notifications thread")
+logger.debug("launching display_osd thread")
 try:
-    thread.start_new_thread(notifications,())
-    logger.debug("NOTIFICATIONS done! launching process loop...")
+    thread.start_new_thread(display_osd,())
+    logger.debug("display_osd done! launching process loop...")
 except Exception as ex:
     logger.error(str(ex))
 
@@ -642,3 +653,4 @@ while True:
             except Exception as ex:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                 pass
+    time.sleep(0.05)

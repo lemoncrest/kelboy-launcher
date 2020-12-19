@@ -8,7 +8,7 @@ LOG_FILE = "log.txt"
 
 #functions for settings
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 SETTINGS_PATH = '/home/pi/.kelboy-launcher/'
@@ -63,7 +63,7 @@ HEIGHT = getValue("HEIGHT",240,'screen height resolution')
 FRAMERATE = getValue("FRAMERATE",60,'framerate')
 margin = getValue("margin",10,'general margin in pixels')
 
-LOGGING_LEVEL = getValue('LOGGING_LEVEL',logging.DEBUG,'for development purpouse use logging.DEBUG or logging.INFO, if not use logging.ERROR')
+LOGGING_LEVEL = getValue('LOGGING_LEVEL',logging.ERROR,'for development purpouse use logging.DEBUG or logging.INFO, if not use logging.ERROR')
 
 SCREENSAVER_TIME = getValue("SCREENSAVER_TIME",60000,'trigger for screensaver in milliseconds')
 KEY_SLEEP = getValue("KEY_SLEEP",0.02,'time between key is pushed and launcher reacts') #repeat time

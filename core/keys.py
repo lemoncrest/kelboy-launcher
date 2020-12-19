@@ -7,6 +7,7 @@ LOG_FILE = "log.txt"
 
 #functions for settings
 import logging
+from core.settings import LOGGING_LEVEL
 logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 

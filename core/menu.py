@@ -11,7 +11,7 @@ from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
 from core.component.dialog import Dialog
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 from core.effect.pixelate import pixelate

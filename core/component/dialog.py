@@ -5,7 +5,7 @@ from core.colors import *
 from core.settings import *
 
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, "log.txt"),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 class Dialog(pygame.sprite.Sprite):

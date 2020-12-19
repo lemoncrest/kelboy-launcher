@@ -246,7 +246,7 @@ except Exception as ex:
 
 #thread function for notifications
 def notifications():
-    global lightLevel
+
     global chargingStatus
     global batteryStatus
     global maxlightlevel
@@ -256,37 +256,11 @@ def notifications():
     oldAlgorithm = False
     showBattery = False
     showOSDmenu = False
+
+    charging = False
     batteryStatus = False
     currentShowTime = int(round(time.time() * 1000))
 
-    try:
-        process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
-        response = process.stdout
-        currentlightlevel = int(response)
-
-        process = subprocess.Popen(BRIGHTNESS_MAXLEVEL_CMD.split(" "))
-        response = process.stdout
-        maxlightlevel = int(response)
-
-        lightLevel = 7 #will be setted in the final loop part
-
-    except Exception as ex:
-        oldAlgorithm = True
-        logger.error("Could not obtain current backlight level, using old algorithm")
-        try:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setwarnings(False)
-            GPIO.setup(40, GPIO.OUT)
-            brightness = GPIO.PWM(40, FREQ)
-            brightness.start(0)
-            brightness.ChangeDutyCycle(100)
-            logger.debug("init done! using old algorithm to control backlight")
-        except:
-            logger.warning("needs pip library RPi.GPIO")
-            pass
-
-        currentlightlevel = maxlightlevel = lightLevel = 5
-        pass
     while True:
         #first battery
         try:
@@ -297,7 +271,6 @@ def notifications():
             batteryStatus = 0
             level = 0
             pass
-        charging = False
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             charging = int(process.stdout) > 0
@@ -366,6 +339,38 @@ except Exception as ex:
     logger.error(str(ex))
 
 def display_osd():
+
+    global lightLevel
+
+    try:
+        process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
+        response = process.stdout
+        currentlightlevel = int(response)
+
+        process = subprocess.Popen(BRIGHTNESS_MAXLEVEL_CMD.split(" "))
+        response = process.stdout
+        maxlightlevel = int(response)
+
+        lightLevel = 7 #will be setted in the final loop part
+
+    except Exception as ex:
+        oldAlgorithm = True
+        logger.error("Could not obtain current backlight level, using old algorithm")
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(False)
+            GPIO.setup(40, GPIO.OUT)
+            brightness = GPIO.PWM(40, FREQ)
+            brightness.start(0)
+            brightness.ChangeDutyCycle(100)
+            logger.debug("init done! using old algorithm to control backlight")
+        except:
+            logger.warning("needs pip library RPi.GPIO")
+            pass
+
+        currentlightlevel = maxlightlevel = lightLevel = 5
+        pass
+
     while True:
         #next update lightLevel
         if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:

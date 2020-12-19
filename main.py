@@ -1,6 +1,8 @@
 import os
 import json
 import time
+import sys
+import traceback
 
 import asyncio
 
@@ -250,7 +252,10 @@ class Main():
         try:
             loop.run_forever()
         except Exception as exc:
-            logger.error(str(exc))
+            logger.error("1: "+str(exc))
+            exc_info = sys.exc_info()
+            logger.error(exc_info)
+            traceback.print_exception(*exc_info)
         finally:
             self.running = False
             pygame_task.cancel()
@@ -298,7 +303,10 @@ class Main():
                 self.draw()
 
         except Exception as ex:
-            logger.error(str(ex))
+            logger.error("2: "+str(ex))
+            exc_info = sys.exc_info()
+            logger.error(exc_info)
+            traceback.print_exception(*exc_info)
 
 
 main = Main()

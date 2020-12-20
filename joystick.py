@@ -239,6 +239,8 @@ except Exception as ex:
     logger.error(str(ex))
 
 battery = 100
+global showBattery #flag to show battery
+showBattery = False
 
 '''
 thread function for automatic notifications like
@@ -248,10 +250,9 @@ def notifications():
 
     global chargingStatus
     global batteryStatus
-    global showBattery #flag to show battery
+
 
     oldAlgorithm = False
-    showBattery = False
 
     charging = False
     batteryStatus = False

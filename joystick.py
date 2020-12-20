@@ -1,7 +1,7 @@
 # Based on information from:
 # https://www.kernel.org/doc/Documentation/input/joystick-api.txt
 
-import os, sys, struct, array, subprocess
+import os, sys, struct, array, subprocess, traceback
 import _thread as thread
 import time
 from subprocess import check_output
@@ -357,6 +357,10 @@ def display_osd():
     except Exception as ex:
         oldAlgorithm = True
         logger.error("Could not obtain current backlight level, using old algorithm")
+        logger.error("2: "+str(ex))
+        exc_info = sys.exc_info()
+        logger.error(exc_info)
+        traceback.print_exception(*exc_info)
         try:
             GPIO.setmode(GPIO.BCM)
             GPIO.setwarnings(False)

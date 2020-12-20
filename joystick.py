@@ -239,8 +239,6 @@ except Exception as ex:
     logger.error(str(ex))
 
 battery = 100
-global showBattery #flag to show battery
-showBattery = False
 
 '''
 thread function for automatic notifications like
@@ -249,13 +247,12 @@ low battery and others
 def notifications():
 
     global chargingStatus
-    global batteryStatus
 
-
+    showBattery = False
     oldAlgorithm = False
 
     charging = False
-    batteryStatus = False
+
     currentShowTime = int(round(time.time() * 1000))
 
     while True:
@@ -265,7 +262,7 @@ def notifications():
             battery = int(process.stdout)
             logger.debug("%s" % str(battery))
         except:
-            batteryStatus = 0
+            battery = 0
             level = 0
             pass
         try:
@@ -275,10 +272,10 @@ def notifications():
         except:
             charging = False
             pass
-        if not charging and batteryStatus < 5:
+        if not charging and battery < 5:
             showBattery = True
             logger.debug("showing battery...")
-        elif not charging and batteryStatus < 15:
+        elif not charging and battery < 15:
             #check time loop
             if showBattery:
                 showBattery = False
@@ -335,10 +332,11 @@ def display_osd():
 
     global lightLevel
     global maxlightlevel
-
+    global showBattery #flag to show battery
     global showOSDmenu
 
     showOSDmenu = False
+    showBattery = False
 
     try:
         process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
@@ -424,10 +422,10 @@ def display_osd():
         if showBattery:
             try:
                 process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                batteryStatus = int(process.stdout)
-                logger.debug("%s" % str(batteryStatus))
+                battery = int(process.stdout)
+                logger.debug("%s" % str(battery))
             except:
-                batteryStatus = 0
+                battery = 0
                 level = 0
                 pass
             try:

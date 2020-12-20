@@ -26,7 +26,7 @@ except:
     logger.warning("pending ... pip install RPi.GPIO")
     pass
 
-FREQ = 65.5689
+FREQ = 65.5689 #old algorithm
 
 # Iterate over the joystick devices.
 logger.debug('Available devices:')
@@ -161,24 +161,9 @@ except Exception as ex:
     logger.error(str(ex))
     pass
 
-battery = 100
-
-ui = None
-try:
-    ui = uinput.UInput()
-except:
-    logger.warning("no uinput was defined")
-
-
-cap = {
-    e.EV_KEY : [e.BTN_LEFT, e.BTN_RIGHT, e.BTN_MIDDLE],
-    e.EV_ABS : [
-        (e.ABS_X, AbsInfo(value=0, min=0, max=255,fuzz=0, flat=0, resolution=0)) ,
-        (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)) ,
-        (e.ABS_MT_POSITION_X, (0, 128, 255, 0))
-    ]
-}
-
+'''
+this function is for mouse emulation movements
+'''
 def pointer_handler():
     global ui2
     global xsession
@@ -188,6 +173,15 @@ def pointer_handler():
     global xFactor
     global yFactor
     xFactor = yFactor = 0
+
+    cap = {
+        e.EV_KEY : [e.BTN_LEFT, e.BTN_RIGHT, e.BTN_MIDDLE],
+        e.EV_ABS : [
+            (e.ABS_X, AbsInfo(value=0, min=0, max=255,fuzz=0, flat=0, resolution=0)) ,
+            (e.ABS_Y, AbsInfo(0, 0, 255, 0, 0, 0)) ,
+            (e.ABS_MT_POSITION_X, (0, 128, 255, 0))
+        ]
+    }
 
     #capture current mouse coordinates. TODO If user uses a real mouse/touchpad input could confuses
     x = 20
@@ -235,7 +229,7 @@ def pointer_handler():
                 #logger.error("fail pyautogui %s" % str(ex))
                 pass
         #logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
-        time.sleep(0.07)
+        time.sleep(0.1)
 
 logger.debug("launching mouse thread")
 try:
@@ -244,7 +238,12 @@ try:
 except Exception as ex:
     logger.error(str(ex))
 
-#thread function for notifications
+battery = 100
+
+'''
+thread function for automatic notifications like
+low battery and others
+'''
 def notifications():
 
     global chargingStatus
@@ -336,6 +335,10 @@ try:
 except Exception as ex:
     logger.error(str(ex))
 
+'''
+This function is used to control brightness and show an osd
+with the current value
+'''
 def display_osd():
 
     global lightLevel
@@ -439,7 +442,12 @@ try:
 except Exception as ex:
     logger.error(str(ex))
 
-#thread
+'''
+This function refresh list process available at this moment.
+If it works fine will define the refresh time of main loop;
+which has the emulator keys interpreter
+'''
+#should be a indepent thread
 def check_process():
     global activeProcesses
     activeProcesses = []
@@ -477,7 +485,7 @@ def check_process():
                 logger.error("some fatal ex %s" % str(ex))
                 pass
         #logger.debug("sleep 1 second...")
-        time.sleep(1)
+        time.sleep(7)
 
 
 logger.debug("launching MAIN joystick.py thread")
@@ -488,6 +496,13 @@ except Exception as ex:
     logger.error(str(ex))
 
 # Main event loop
+
+ui = None
+try:
+    ui = uinput.UInput()
+except:
+    logger.warning("no uinput was defined")
+
 while True:
     evbuf = jsdev.read(8)
     if evbuf:
@@ -659,4 +674,4 @@ while True:
             except Exception as ex:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                 pass
-    time.sleep(0.05)
+    time.sleep(0.1)

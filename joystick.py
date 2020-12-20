@@ -335,18 +335,22 @@ def display_osd():
     global showBattery #flag to show battery
     global showOSDmenu
 
+    oldAlgorithm = False
+
     showOSDmenu = False
     showBattery = False
     pwd = os.getcwd()
 
     try:
-        process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))
-        response = process.stdout
-        currentlightlevel = int(response)
+        process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        currentlightlevel = int(out)
+        logger.debug("current level is %s " % out)
 
-        process = subprocess.Popen(BRIGHTNESS_MAXLEVEL_CMD.split(" "))
-        response = process.stdout
-        maxlightlevel = int(response)
+        process = subprocess.Popen(BRIGHTNESS_MAXLEVEL_CMD, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        maxlightlevel = int(out)
+        logger.debug("max level is %s " % out)
 
         lightLevel = 7 #will be setted in the final loop part
 
@@ -394,7 +398,10 @@ def display_osd():
             else:
                 try:
                     command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)
-                    os.system(command)
+                    #os.system(command)
+                    #process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    out, err = process.communicate()
                     currentlightlevel = lightLevel
                     logger.debug("command was %s" % command)
                 except Exception as ex:

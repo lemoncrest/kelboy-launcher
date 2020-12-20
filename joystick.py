@@ -504,7 +504,8 @@ except:
     logger.warning("no uinput was defined")
 
 while True:
-    evbuf = jsdev.read(8)
+    evbuf = jsdev.read(8) #wait until event happens
+    logger.debug("event js: %s" % str(evbuf) )
     if evbuf:
         t, value, type, number = struct.unpack('IhBB', evbuf)
 
@@ -674,4 +675,3 @@ while True:
             except Exception as ex:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
                 pass
-    time.sleep(0.1)

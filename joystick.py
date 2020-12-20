@@ -261,8 +261,8 @@ def notifications():
         #first battery
         try:
             process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            batteryStatus = int(process.stdout)
-            logger.debug("%s" % str(batteryStatus))
+            battery = int(process.stdout)
+            logger.debug("%s" % str(battery))
         except:
             batteryStatus = 0
             level = 0
@@ -285,14 +285,6 @@ def notifications():
             elif currentShowTime + 20000 >= int(round(time.time() * 1000)):
                 showBattery = True
                 logger.debug("showing battery...")
-        try:
-            process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-            battery = int(process.stdout)
-            logger.debug("battery: %s" % str(battery))
-        except:
-            battery = 0 #"lightning-empty-help"
-            level = 0
-            pass
 
         pwd = os.getcwd()
         if charging:
@@ -426,6 +418,53 @@ def display_osd():
                 #show result
                 command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
                 os.system(command)
+
+        #next battery
+        if showBattery:
+            try:
+                process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                batteryStatus = int(process.stdout)
+                logger.debug("%s" % str(batteryStatus))
+            except:
+                batteryStatus = 0
+                level = 0
+                pass
+            try:
+                process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
+                charging = int(process.stdout) > 0
+                logger.debug("charging: %s" % str(battery))
+            except:
+                charging = False
+                pass
+
+            pwd = os.getcwd()
+            if charging:
+                level = "lightning-empty-help"
+                if(battery>50):
+                    level = "lightning-midle"
+                    if(battery>=95):
+                        level = "lightning-full"
+                elif battery>15:
+                    level = "lightning-empty"
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+            else:
+                if(battery>50):
+                    level = "75"
+                    if(battery<75):
+                        level = "50"
+                    elif(battery>=95):
+                        level = "100"
+                elif battery>15:
+                    level = "25"
+                else:
+                    level = "0"
+                logger.debug("level is %s" % level)
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+
+            logger.debug("command... %s" % command)
+            os.system(command)
+            logger.debug("battery command done")
+            showBattery = False
 
         #last show OSD menu
         if showOSDmenu:

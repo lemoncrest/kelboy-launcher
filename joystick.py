@@ -370,7 +370,7 @@ def display_osd():
 
     while True:
         #next update lightLevel
-        if currentlightlevel != lightLevel and lightLevel >= 0 and lightLevel <= maxlightlevel:
+        if currentlightlevel != lightLevel:
             logger.debug("changing level from %s to %s " % ( str(currentlightlevel), str(lightLevel) ))
             if oldAlgorithm:
                 if lightLevel == 0:
@@ -386,7 +386,11 @@ def display_osd():
                 elif lightLevel == 5:
                     brightness.ChangeDutyCycle(70)
                 elif lightLevel == 6:
+                    brightness.ChangeDutyCycle(85)
+                else:
                     brightness.ChangeDutyCycle(100)
+
+                currentlightlevel = lightLevel
             else:
                 try:
                     command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)
@@ -397,30 +401,29 @@ def display_osd():
                     logger.error(str(ex))
                     pass
 
-            if lightLevel > 0:
 
-                # Open template and get drawing context
-                im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
-                draw = ImageDraw.Draw(im)
+            # Open template and get drawing context
+            im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
+            draw = ImageDraw.Draw(im)
 
-                # Cyan-ish fill colour
-                color=(20,200,255)
+            # Cyan-ish fill colour
+            color=(20,200,255)
 
-                # Draw circle at right end of progress bar
-                part = (640/maxlightlevel) * (lightLevel +1 )
+            # Draw circle at right end of progress bar
+            part = (640/maxlightlevel) * (lightLevel)
 
-                x, y, diam = part, 8, 16
-                draw.ellipse([x,y,x+diam,y+diam], fill=color)
+            x, y, diam = part, 8, 34
+            draw.ellipse([x,y,x+(diam),y+diam], fill=color)
 
-                # Flood-fill from extreme left of progress bar area to behind circle
-                ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
+            # Flood-fill from extreme left of progress bar area to behind circle
+            ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
 
-                # Save result
-                im.save('/tmp/brightness-bar.png')
+            # Save result
+            im.save('/tmp/brightness-bar.png')
 
-                #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(500)
-                os.system(command)
+            #show result
+            command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s " % str(400)
+            os.system(command)
 
         #next battery
         if showBattery:
@@ -435,7 +438,7 @@ def display_osd():
             try:
                 process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 charging = int(process.stdout) > 0
-                logger.debug("charging: %s" % str(charging))
+                logger.debug("charging: %s" % str(battery))
             except:
                 charging = False
                 pass
@@ -476,6 +479,7 @@ def display_osd():
             logger.debug(command)
             os.system(command)
             showOSDmenu = False
+
 
         time.sleep(0.01)
 

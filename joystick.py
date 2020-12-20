@@ -402,10 +402,12 @@ def display_osd():
             else:
                 try:
                     command = "echo %s > %s" % (str(lightLevel),BRIGHTNESS_SETUP_CMD)
+                    response = str(subprocess.check_output(command, shell=True))
+                    logger.debug("response was %s " % str(response) )
                     #os.system(command)
                     #process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
-                    process = subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    out, err = process.communicate()
+                    #process = subprocess.Popen(command.split(" "), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    #out, err = process.communicate()
                     currentlightlevel = lightLevel
                     logger.debug("command was %s" % command)
                 except Exception as ex:

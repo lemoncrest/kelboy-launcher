@@ -407,9 +407,9 @@ def display_osd():
                 color=(20,200,255)
 
                 # Draw circle at right end of progress bar
-                part = (634/maxlightlevel) * (lightLevel +1 )
+                part = (640/maxlightlevel) * (lightLevel +1 )
 
-                x, y, diam = part, 8, 34
+                x, y, diam = part, 8, 16
                 draw.ellipse([x,y,x+diam,y+diam], fill=color)
 
                 # Flood-fill from extreme left of progress bar area to behind circle
@@ -419,7 +419,7 @@ def display_osd():
                 im.save('/tmp/brightness-bar.png')
 
                 #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(500)
                 os.system(command)
 
         #next battery

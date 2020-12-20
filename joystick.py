@@ -365,7 +365,7 @@ def display_osd():
             logger.warning("needs pip library RPi.GPIO")
             pass
 
-        currentlightlevel = maxlightlevel = lightLevel = 5
+        currentlightlevel = maxlightlevel = lightLevel = 7
         pass
 
     while True:
@@ -376,13 +376,17 @@ def display_osd():
                 if lightLevel == 0:
                     brightness.ChangeDutyCycle(lightLevel)
                 elif lightLevel == 1:
-                    brightness.ChangeDutyCycle(20)
+                    brightness.ChangeDutyCycle(15)
                 elif lightLevel == 2:
-                    brightness.ChangeDutyCycle(40)
+                    brightness.ChangeDutyCycle(30)
                 elif lightLevel == 3:
-                    brightness.ChangeDutyCycle(60)
+                    brightness.ChangeDutyCycle(45)
                 elif lightLevel == 4:
-                    brightness.ChangeDutyCycle(80)
+                    brightness.ChangeDutyCycle(50)
+                elif lightLevel == 5:
+                    brightness.ChangeDutyCycle(70)
+                elif lightLevel == 6:
+                    brightness.ChangeDutyCycle(85)
                 else:
                     brightness.ChangeDutyCycle(100)
             else:
@@ -396,6 +400,7 @@ def display_osd():
                     pass
 
             if lightLevel > 0:
+
                 # Open template and get drawing context
                 im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
                 draw = ImageDraw.Draw(im)

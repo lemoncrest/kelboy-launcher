@@ -409,10 +409,10 @@ def display_osd():
                 color=(20,200,255)
 
                 # Draw circle at right end of progress bar
-                part = (634/maxlightlevel) * lightLevel
+                part = (634/maxlightlevel) * (lightLevel +1 )
 
                 x, y, diam = part, 8, 34
-                draw.ellipse([x,y,x+(diam*2),y+diam], fill=color)
+                draw.ellipse([x,y,x+diam,y+diam], fill=color)
 
                 # Flood-fill from extreme left of progress bar area to behind circle
                 ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
@@ -478,7 +478,6 @@ def display_osd():
             logger.debug(command)
             os.system(command)
             showOSDmenu = False
-
 
         time.sleep(0.01)
 

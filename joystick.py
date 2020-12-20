@@ -386,8 +386,6 @@ def display_osd():
                 elif lightLevel == 5:
                     brightness.ChangeDutyCycle(70)
                 elif lightLevel == 6:
-                    brightness.ChangeDutyCycle(85)
-                else:
                     brightness.ChangeDutyCycle(100)
             else:
                 try:
@@ -437,7 +435,7 @@ def display_osd():
             try:
                 process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
                 charging = int(process.stdout) > 0
-                logger.debug("charging: %s" % str(battery))
+                logger.debug("charging: %s" % str(charging))
             except:
                 charging = False
                 pass

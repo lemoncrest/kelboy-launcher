@@ -97,11 +97,9 @@ class Main():
             if self.downPushed or self.joyDown:
                 logger.debug("down...")
                 self.menu.cursor.down()
-                #await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
             if self.upPushed or self.joyUp:
                 logger.debug("up...")
                 self.menu.cursor.up()
-                #await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
             if self.zPressed:
                 for i in range(0,MAX_MENU_ITEMS):
                     self.menu.cursor.up()
@@ -113,11 +111,9 @@ class Main():
             if self.leftPushed or self.joyLeft:
                 logger.debug("left...")
                 self.menu.cursor.left()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
             if self.rightPushed or self.joyRight:
                 logger.debug("right...")
                 self.menu.cursor.right()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
 
     async def events(self,event_queue):
         logger.info("in-side events...")

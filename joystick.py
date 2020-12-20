@@ -248,7 +248,6 @@ def notifications():
 
     global chargingStatus
     global batteryStatus
-    global maxlightlevel
     global showBattery #flag to show battery
 
     oldAlgorithm = False
@@ -342,6 +341,8 @@ with the current value
 def display_osd():
 
     global lightLevel
+    global maxlightlevel
+
     global showOSDmenu
 
     showOSDmenu = False

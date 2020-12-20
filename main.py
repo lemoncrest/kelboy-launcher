@@ -97,11 +97,11 @@ class Main():
             if self.downPushed or self.joyDown:
                 logger.debug("down...")
                 self.menu.cursor.down()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+                #await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
             if self.upPushed or self.joyUp:
                 logger.debug("up...")
                 self.menu.cursor.up()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+                #await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
             if self.zPressed:
                 for i in range(0,MAX_MENU_ITEMS):
                     self.menu.cursor.up()

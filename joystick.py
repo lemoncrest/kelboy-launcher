@@ -337,6 +337,7 @@ def display_osd():
 
     showOSDmenu = False
     showBattery = False
+    pwd = os.getcwd()
 
     try:
         process = subprocess.Popen(BRIGHTNESS_CURRENT_CMD.split(" "))

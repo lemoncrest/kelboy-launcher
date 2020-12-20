@@ -76,8 +76,8 @@ class MenuCursor(pygame.sprite.Sprite):
         self.selectedItemY = 0
         self.menu.keyboard = None
 
-    def down(self):
-        if self.lastDown + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+    def down(self, force=False):
+        if (self.lastDown + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
             self.lastDown = pygame.time.get_ticks()
             if self.menu.keyboard == None and self.menu.dialog == None:
                 if self.selectedItem < len(self.menu.items.items) - 1:
@@ -96,8 +96,8 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.menu.keyboard.draw()
 
 
-    def up(self):
-        if self.lastUp + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+    def up(self, force=False):
+        if (self.lastUp + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
             self.lastUp = pygame.time.get_ticks()
             if self.menu.keyboard == None and self.menu.dialog == None:
                 if self.selectedItem != 0:
@@ -118,8 +118,8 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.menu.keyboard.positionY -= 1
                 self.menu.keyboard.draw()
 
-    def left(self):
-        if self.lastLeft + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+    def left(self, force=False):
+        if (self.lastLeft + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
             self.lastLeft = pygame.time.get_ticks()
             if self.menu.keyboard == None:
                 self.rect.x -= 0
@@ -129,8 +129,8 @@ class MenuCursor(pygame.sprite.Sprite):
                 self.menu.keyboard.draw()
 
 
-    def right(self):
-        if self.lastRight + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+    def right(self, force=False):
+        if (self.lastRight + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
             self.lastRight = pygame.time.get_ticks()
             if self.menu.keyboard == None:
                 self.rect.y -= 0

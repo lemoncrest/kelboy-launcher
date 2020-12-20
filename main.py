@@ -102,11 +102,11 @@ class Main():
                 self.menu.cursor.up()
             if self.zPressed:
                 for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.up()
+                    self.menu.cursor.up(force=True)
                 self.zPressed = False
             if self.tPressed:
                 for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.down()
+                    self.menu.cursor.down(force=True)
                 self.tPressed = False
             if self.leftPushed or self.joyLeft:
                 logger.debug("left...")
@@ -179,7 +179,7 @@ class Main():
                     self.leftPushed = True
                 elif event.button == 8:  # right
                     self.rightPushed = True
-            elif False and event.type == pygame.JOYAXISMOTION:
+            elif event.type == pygame.JOYAXISMOTION:
                 if event.value != 0.0: #discarted joystick dead zone events
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)

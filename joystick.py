@@ -402,34 +402,36 @@ def display_osd():
                 except Exception as ex:
                     logger.error(str(ex))
                     pass
-                if lightLevel > 0:
-                    # Open template and get drawing context
-                    im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
-                    draw = ImageDraw.Draw(im)
 
-                    # Cyan-ish fill colour
-                    color=(20,200,255)
+            if lightLevel > 0:
+                # Open template and get drawing context
+                im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
+                draw = ImageDraw.Draw(im)
 
-                    # Draw circle at right end of progress bar
-                    part = (634/maxlightlevel) * lightLevel
+                # Cyan-ish fill colour
+                color=(20,200,255)
 
-                    x, y, diam = part, 8, 34
-                    draw.ellipse([x,y,x+diam,y+diam], fill=color)
+                # Draw circle at right end of progress bar
+                part = (634/maxlightlevel) * lightLevel
 
-                    # Flood-fill from extreme left of progress bar area to behind circle
-                    ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
+                x, y, diam = part, 8, 34
+                draw.ellipse([x,y,x+diam,y+diam], fill=color)
 
-                    # Save result
-                    im.save('/tmp/brightness-bar.png')
+                # Flood-fill from extreme left of progress bar area to behind circle
+                ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
 
-                    #show result
-                    command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
-                    os.system(command)
+                # Save result
+                im.save('/tmp/brightness-bar.png')
+
+                #show result
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s &" % str(1500)
+                os.system(command)
 
         #last show OSD menu
         if showOSDmenu:
-            logger.debug("osd command launched")
+            logger.debug("SHOW osd command")
             command="bin/pngview %s/resources/graphics/logo.png -b 0 -l 5 -x 0 -y 0 -t %s &" % (os.getcwd() , str(1500))
+            logger.debug(command)
             os.system(command)
             showOSDmenu = False
 

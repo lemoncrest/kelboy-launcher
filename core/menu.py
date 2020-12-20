@@ -50,6 +50,11 @@ class MenuCursor(pygame.sprite.Sprite):
         self.last = pygame.time.get_ticks()
         self.menu.prevMenu = "main" #intanced back to the first
 
+        self.lastUp = pygame.time.get_ticks()
+        self.lastDown = pygame.time.get_ticks()
+        self.lastLeft = pygame.time.get_ticks()
+        self.lastRight = pygame.time.get_ticks()
+
     def loadBackground(self):
         logger.debug("loading CURSOR background...")
         self.groups = self.main.all_sprites
@@ -72,59 +77,67 @@ class MenuCursor(pygame.sprite.Sprite):
         self.menu.keyboard = None
 
     def down(self):
-        if self.menu.keyboard == None and self.menu.dialog == None:
-            if self.selectedItem < len(self.menu.items.items) - 1:
-                if self.selectedItem<MAX_MENU_ITEMS-2:
-                    self.rect.y += self.rect.height
-                self.selectedItem += 1
-            else:
-                logger.debug("limit down")
-                self.selectedItem = 0
-                if len(self.menu.items.items)>MAX_MENU_ITEMS-1:
-                    self.rect.y -= (self.rect.height*8)
+        if self.lastDown + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+            self.lastDown = pygame.time.get_ticks()
+            if self.menu.keyboard == None and self.menu.dialog == None:
+                if self.selectedItem < len(self.menu.items.items) - 1:
+                    if self.selectedItem<MAX_MENU_ITEMS-2:
+                        self.rect.y += self.rect.height
+                    self.selectedItem += 1
                 else:
-                    self.rect.y -= (self.rect.height*(len(self.menu.items.items)-1))
-        elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
-            self.menu.keyboard.positionY += 1
-            self.menu.keyboard.draw()
+                    logger.debug("limit down")
+                    self.selectedItem = 0
+                    if len(self.menu.items.items)>MAX_MENU_ITEMS-1:
+                        self.rect.y -= (self.rect.height*8)
+                    else:
+                        self.rect.y -= (self.rect.height*(len(self.menu.items.items)-1))
+            elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
+                self.menu.keyboard.positionY += 1
+                self.menu.keyboard.draw()
 
 
     def up(self):
-        if self.menu.keyboard == None and self.menu.dialog == None:
-            if self.selectedItem != 0:
-                if self.selectedItem<MAX_MENU_ITEMS-1:
-                    self.rect.y -= self.rect.height
-                self.selectedItem -= 1
-            else:
-                logger.debug("limit up")
-                self.selectedItem = len(self.menu.items.items) - 1
-                #the last item is first + number of displayed items
-                self.selectedItem = len(self.menu.items.items)-1
-                if len(self.menu.items.items)>8:
-                    self.rect.y += (self.rect.height*8)
-                    self.selectedItem = len(self.menu.items.items)-1
+        if self.lasUp + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+            self.lastUp = pygame.time.get_ticks()
+            if self.menu.keyboard == None and self.menu.dialog == None:
+                if self.selectedItem != 0:
+                    if self.selectedItem<MAX_MENU_ITEMS-1:
+                        self.rect.y -= self.rect.height
+                    self.selectedItem -= 1
                 else:
-                    self.rect.y += (self.rect.height*(len(self.menu.items.items)-1))
-        elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
-            self.menu.keyboard.positionY -= 1
-            self.menu.keyboard.draw()
+                    logger.debug("limit up")
+                    self.selectedItem = len(self.menu.items.items) - 1
+                    #the last item is first + number of displayed items
+                    self.selectedItem = len(self.menu.items.items)-1
+                    if len(self.menu.items.items)>8:
+                        self.rect.y += (self.rect.height*8)
+                        self.selectedItem = len(self.menu.items.items)-1
+                    else:
+                        self.rect.y += (self.rect.height*(len(self.menu.items.items)-1))
+            elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
+                self.menu.keyboard.positionY -= 1
+                self.menu.keyboard.draw()
 
     def left(self):
-        if self.menu.keyboard == None:
-            self.rect.x -= 0
-            self.selectedItemX -= 0
-        elif self.menu.keyboard.positionX > 0:
-            self.menu.keyboard.positionX -= 1
-            self.menu.keyboard.draw()
+        if self.lastLeft + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+            self.lastLeft = pygame.time.get_ticks()
+            if self.menu.keyboard == None:
+                self.rect.x -= 0
+                self.selectedItemX -= 0
+            elif self.menu.keyboard.positionX > 0:
+                self.menu.keyboard.positionX -= 1
+                self.menu.keyboard.draw()
 
 
     def right(self):
-        if self.menu.keyboard == None:
-            self.rect.y -= 0
-            self.selectedItemX -= 0
-        elif self.menu.keyboard.positionX < 9:
-            self.menu.keyboard.positionX += 1
-            self.menu.keyboard.draw()
+        if self.lastRight + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+            self.lastRight = pygame.time.get_ticks()
+            if self.menu.keyboard == None:
+                self.rect.y -= 0
+                self.selectedItemX -= 0
+            elif self.menu.keyboard.positionX < 9:
+                self.menu.keyboard.positionX += 1
+                self.menu.keyboard.draw()
 
     def back(self,surface):
         if (pygame.time.get_ticks() - self.last > EVENT_DELAY_TIME) and not (self.menu.dialog or self.menu.keyboard):

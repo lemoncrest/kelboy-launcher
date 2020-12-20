@@ -67,7 +67,7 @@ LOGGING_LEVEL = getValue('LOGGING_LEVEL',logging.ERROR,'for development purpouse
 
 SCREENSAVER_TIME = getValue("SCREENSAVER_TIME",60000,'trigger for screensaver in milliseconds')
 KEY_SLEEP = getValue("KEY_SLEEP",0.02,'time between key is pushed and launcher reacts') #repeat time
-KEY_WHILE_SLEEP = getValue("KEY_WHILE_SLEEP",0.1,'time before reacts while key is pressed for repeat action - like up or down')
+KEY_WHILE_SLEEP = getValue("KEY_WHILE_SLEEP",0.3,'time before reacts while key is pressed for repeat action - like up or down')
 
 WIDGET_FRAMETIME = getValue("WIDGET_FRAMETIME",200,'refresh time for widgets')
 

@@ -97,7 +97,7 @@ class MenuCursor(pygame.sprite.Sprite):
 
 
     def up(self):
-        if self.lasUp + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
+        if self.lastUp + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks():
             self.lastUp = pygame.time.get_ticks()
             if self.menu.keyboard == None and self.menu.dialog == None:
                 if self.selectedItem != 0:

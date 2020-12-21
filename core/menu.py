@@ -6,6 +6,7 @@ import threading
 import pygame
 import math
 import re
+import time
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
@@ -457,7 +458,7 @@ class MenuItems(pygame.sprite.Sprite):
                 index = self.menu.cursor.selectedItem
 
                 movement = 0
-                
+
                 if TEXT_MOVEMENT_EFFECT:
 
                     if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
@@ -492,6 +493,7 @@ class MenuItems(pygame.sprite.Sprite):
 #                            logger.debug("discarting %s" % str(counter))
 
                 counter += 1
+                time.sleep(0.05)
 
 
 class MenuStatus(pygame.sprite.Sprite):

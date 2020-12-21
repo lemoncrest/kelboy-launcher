@@ -493,7 +493,7 @@ class MenuItems(pygame.sprite.Sprite):
 #                            logger.debug("discarting %s" % str(counter))
 
                 counter += 1
-                time.sleep(0.05)
+                time.sleep(0.005)
 
 
 class MenuStatus(pygame.sprite.Sprite):

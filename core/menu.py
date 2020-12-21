@@ -455,23 +455,27 @@ class MenuItems(pygame.sprite.Sprite):
 
                 #this movement is used to launch horizontal pixel movement effect in menu
                 index = self.menu.cursor.selectedItem
-                if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
-                    self.lastSelected = index
-                    self.timer = pygame.time.get_ticks()
-                    self.movement = 0
-                    logger.debug("updated timer '%s'!" % self.items[index]["title"])
-
-                if int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) > self.waitTime:
-                    self.movement = int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) - self.waitTime
-                    logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
-
-
-                else:
-                    self.movement = 0
 
                 movement = 0
-                if index == counter:
-                    movement = self.movement
+                
+                if TEXT_MOVEMENT_EFFECT:
+
+                    if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
+                        self.lastSelected = index
+                        self.timer = pygame.time.get_ticks()
+                        self.movement = 0
+                        logger.debug("updated timer '%s'!" % self.items[index]["title"])
+
+                    if int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) > self.waitTime:
+                        self.movement = int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) - self.waitTime
+                        logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
+
+
+                    else:
+                        self.movement = 0
+
+                    if index == counter:
+                        movement = self.movement
 
                 if len(self.items)<MAX_MENU_ITEMS:
 

@@ -66,10 +66,10 @@ margin = getValue("margin",10,'general margin in pixels')
 LOGGING_LEVEL = getValue('LOGGING_LEVEL',logging.ERROR,'for development purpouse use logging.DEBUG or logging.INFO, if not use logging.ERROR')
 
 SCREENSAVER_TIME = getValue("SCREENSAVER_TIME",60000,'trigger for screensaver in milliseconds')
-KEY_SLEEP = getValue("KEY_SLEEP",0.02,'time between key is pushed and launcher reacts') #repeat time
+KEY_SLEEP = getValue("KEY_SLEEP",0.04,'time between key is pushed and launcher reacts') #repeat time
 KEY_WHILE_SLEEP = getValue("KEY_WHILE_SLEEP",0.3,'time before reacts while key is pressed for repeat action - like up or down')
 
-WIDGET_FRAMETIME = getValue("WIDGET_FRAMETIME",200,'refresh time for widgets')
+WIDGET_FRAMETIME = getValue("WIDGET_FRAMETIME",1000,'refresh time for widgets')
 
 FONT_SIZE = getValue("FONT_SIZE",18,'default font size')
 FONT_COLOR_ITEM = getValue("FONT_COLOR_ITEM",WHITE,'default font color')

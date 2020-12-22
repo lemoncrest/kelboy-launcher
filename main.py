@@ -303,6 +303,7 @@ class Main():
             exc_info = sys.exc_info()
             logger.error(exc_info)
             traceback.print_exception(*exc_info)
+            logger.error(str(exc_info.__traceback__))
 
 
 main = Main()

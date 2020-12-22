@@ -16,7 +16,7 @@ from core.keys import *
 
 from core.settings import *
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 try:
@@ -546,7 +546,7 @@ def check_process():
                 logger.error("some fatal ex %s" % str(ex))
                 pass
         #logger.debug("sleep 1 second...")
-        time.sleep(7)
+        time.sleep(1)
 
 
 logger.debug("launching MAIN joystick.py thread")

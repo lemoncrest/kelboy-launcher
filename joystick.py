@@ -170,6 +170,7 @@ def pointer_handler():
     global factor
     xsession = False
     ui2 = None
+    factor = 5
     global xFactor
     global yFactor
     xFactor = yFactor = 0

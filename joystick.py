@@ -210,17 +210,8 @@ def pointer_handler():
             ui2.write(e.EV_ABS, e.ABS_Y, HEIGHT-y)
             ui2.syn()
 
-        #check if xsession
-        response = str(subprocess.check_output("echo $TERM", shell=True))
-        if "linux" in response:
-            xsession = False
-            factor = 5
-        else: #TODO change it!
-            xsession = True
-            factor = 10
-
-        #logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
-        time.sleep(0.01)
+        logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
+        time.sleep(0.05)
 
 logger.debug("launching mouse thread")
 try:

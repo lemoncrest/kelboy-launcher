@@ -8,7 +8,7 @@ LOG_FILE = "log.txt"
 
 #functions for settings
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 SETTINGS_PATH = '/home/pi/.kelboy-launcher/'

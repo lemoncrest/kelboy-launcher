@@ -714,8 +714,8 @@ while True:
                                         logger.debug("release command '%s'" % command)
                                         subprocess.Popen(command.split(" "))
                             #clean (patch)
-                            if key["key"] in button_states:
-                                button_states.pop(key["key"])
+                            #if key["key"] in button_states:
+                            #    button_states.pop(key["key"])
                         if ui:
                             ui.syn()
                         #mouse other ui device

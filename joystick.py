@@ -212,7 +212,7 @@ def pointer_handler():
             ui2.syn()
 
         logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
-        time.sleep(0.05)
+        time.sleep(0.01)
 
 logger.debug("launching mouse thread")
 try:

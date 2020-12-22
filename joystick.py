@@ -16,7 +16,7 @@ from core.keys import *
 
 from core.settings import *
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 try:
@@ -218,18 +218,9 @@ def pointer_handler():
         else: #TODO change it!
             xsession = True
             factor = 10
-        if xsession:
-            try:
-                #using alternative one
-                command = "xdotool mousemove %s %s" % (x,HEIGHT-y)
-                process = subprocess.Popen(command.split(" "))
-                #response = process.stdout.strip()
-                #logger.debug("%s %s" % (x,y))
-            except Exception as ex:
-                #logger.error("fail pyautogui %s" % str(ex))
-                pass
+
         #logger.debug("x: %s y: %s, xF: %s yF: %s" % (x,y,xFactor,yFactor))
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 logger.debug("launching mouse thread")
 try:
@@ -546,7 +537,7 @@ def check_process():
                 logger.error("some fatal ex %s" % str(ex))
                 pass
         #logger.debug("sleep 1 second...")
-        time.sleep(1)
+        time.sleep(7)
 
 
 logger.debug("launching MAIN joystick.py thread")
@@ -664,58 +655,12 @@ while True:
                             for value in key["callback"]:
                                 if ui:
                                     ui.write(getattr(e,type), getattr(e,value), 1)
-                                elif xsession:
-                                    #build key to push
-                                    logger.debug("pressed: "+value)
-                                    keys = value.split("_")
-                                    command = ""
-                                    if keys[0].upper() == 'BTN': #click
-                                        if keys[1].upper() == 'LEFT':
-                                            command = "xdotool mousedown 1"
-                                        elif keys[1].upper() == 'RIGHT':
-                                            command = "xdotool mousedown 2"
-                                        elif keys[1].upper() == 'MIDDLE':
-                                            command = "xdotool mousedown 3"
-                                    else: #key part -> see https://gitlab.com/cunidev/gestures/-/wikis/xdotool-list-of-key-codes
-                                        key = keys[1]
-                                        if key == 'ESC':
-                                            key = 'Escape'
-                                        elif key == 'ENTER' or key == 'RETURN':
-                                            key = 'Return'
-                                        command = "xdotool keydown %s" % (key)
-                                        logger.debug("key with command '%s'" % command)
-                                    if command != "":
-                                        subprocess.Popen(command.split(" "))
+
                         elif key["key"] in button_states and not button_states[key["key"]]: #release
                             for value in key["callback"]:
                                 if ui:
                                     ui.write(getattr(e,type), getattr(e,value), 0)
-                                elif xsession:
-                                    #build key to push
-                                    logger.debug("released: "+value)
-                                    keys = value.split("_")
-                                    command = ""
-                                    if keys[0].upper() == 'BTN': #click
-                                        if keys[1].upper() == 'LEFT':
-                                            command = "xdotool mouseup 1"
-                                        elif keys[1].upper() == 'RIGHT':
-                                            command = "xdotool mouseup 2"
-                                        elif keys[1].upper() == 'MIDDLE':
-                                            command = "xdotool mouseup 3"
-                                    else: #key part -> see https://gitlab.com/cunidev/gestures/-/wikis/xdotool-list-of-key-codes
-                                        key = keys[1]
-                                        if key == 'ESC':
-                                            key = 'Escape'
-                                        elif key == 'ENTER' or key == 'RETURN':
-                                            key = 'Return'
-                                        command = "xdotool keyup %s" % (key)
-                                        logger.debug("key with command '%s'" % command)
-                                    if command != "":
-                                        logger.debug("release command '%s'" % command)
-                                        subprocess.Popen(command.split(" "))
-                            #clean (patch)
-                            #if key["key"] in button_states:
-                            #    button_states.pop(key["key"])
+
                         if ui:
                             ui.syn()
                         #mouse other ui device
@@ -736,7 +681,4 @@ while True:
 
             except Exception as ex:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
-                exc_info = sys.exc_info()
-                logger.error(exc_info)
-                traceback.print_exception(*exc_info)
                 pass

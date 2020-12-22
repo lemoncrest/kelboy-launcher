@@ -735,4 +735,7 @@ while True:
 
             except Exception as ex:
                 logger.debug("EXC: %s - %s " % (sys.exc_info(),str(ex)))
+                exc_info = sys.exc_info()
+                logger.error(exc_info)
+                traceback.print_exception(*exc_info)
                 pass

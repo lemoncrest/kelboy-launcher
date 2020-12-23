@@ -459,7 +459,7 @@ class MenuItems(pygame.sprite.Sprite):
 
                 movement = 0
 
-                if TEXT_MOVEMENT_EFFECT and len(self.items[index]["title"])[0])>20:
+                if TEXT_MOVEMENT_EFFECT and len(self.items[index]["title"])>20:
 
                     if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
                         self.lastSelected = index

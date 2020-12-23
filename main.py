@@ -94,10 +94,10 @@ class Main():
         logger.info("in-side async moves...")
         while self.running:
             await asyncio.sleep(KEY_SLEEP)  # wait until release time
-            if self.downPushed or self.joyDown:
+            if self.downPushed:
                 logger.debug("down...")
                 self.menu.cursor.down()
-            if self.upPushed or self.joyUp:
+            if self.upPushed:
                 logger.debug("up...")
                 self.menu.cursor.up()
             if self.zPressed:
@@ -108,12 +108,25 @@ class Main():
                 for i in range(0,MAX_MENU_ITEMS):
                     self.menu.cursor.down(force=True)
                 self.tPressed = False
-            if self.leftPushed or self.joyLeft:
+            if self.leftPushed:
                 logger.debug("left...")
                 self.menu.cursor.left()
-            if self.rightPushed or self.joyRight:
+            if self.rightPushed:
                 logger.debug("right...")
                 self.menu.cursor.right()
+
+            if self.joyUp:
+                self.menu.cursor.up()
+                self.joyUp = False
+            if self.joyDown:
+                self.menu.cursor.down()
+                self.joyDown = False
+            if self.joyLeft:
+                self.menu.cursor.left()
+                self.joyLeft = False
+            if self.joyRight:
+                self.menu.cursor.right()
+                self.joyRight = False
 
     async def events(self,event_queue):
         logger.info("in-side events...")

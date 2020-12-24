@@ -192,7 +192,7 @@ class Main():
                     self.leftPushed = True
                 elif event.button == 8:  # right
                     self.rightPushed = True
-            elif event.type == pygame.JOYAXISMOTION:
+            elif JOYSTICK_ENABLE and event.type == pygame.JOYAXISMOTION:
                 if event.value != 0.0 and (self.menu.keyboard==None or not self.menu.keyboard.show): #discarted joystick with keyboard and dead zone events
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)

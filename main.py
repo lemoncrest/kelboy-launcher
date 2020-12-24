@@ -193,7 +193,7 @@ class Main():
                 elif event.button == 8:  # right
                     self.rightPushed = True
             elif event.type == pygame.JOYAXISMOTION:
-                if event.value != 0.0: #discarted joystick dead zone events
+                if event.value != 0.0 and (self.menu.keyboard==None or not self.menu.keyboard.show): #discarted joystick with keyboard and dead zone events
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)
                     self.screensaver = False
@@ -218,6 +218,11 @@ class Main():
                             self.leftPushed = False
                             self.joyLeft = False
                             self.joyRight = False
+                else:
+                    self.joyUp = False
+                    self.joyDown = False
+                    self.joyLeft = False
+                    self.joyRight = False
         logger.info("ended... out-side events...")
 
     def update(self):

@@ -197,6 +197,7 @@ class Main():
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)
                     self.screensaver = False
+                    logger.debug("joy: %s value: %s, (%s,%s,%s,%s)" % ( str(event.axis),str(event.value),str(self.joyUp),str(self.joyDown),str(self.joyLeft),str(self.joyRight) ) )
                     if event.axis == 1:  # up and down
                         if event.value > 0.2 and not self.joyUp:
                             self.joyUp = True

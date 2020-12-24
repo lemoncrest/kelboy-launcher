@@ -16,14 +16,6 @@
     "action": "command-exit",
     "external": "i2cset -y 1 0x0a 0x22\ncat /dev/ttyACM0 & sleep 20s"
   },{
-    "title": "Invert joystick Y axes (BIOS)",
-    "action": "command-exit",
-    "external": "i2cset -y 1 0x0a 0x25"
-  },{
-    "title": "Invert joystick X axes (BIOS)",
-    "action": "command-exit",
-    "external": "i2cset -y 1 0x0a 0x24"
-  },{
     "title": "Back",
     "action": "menu",
     "external": "main"

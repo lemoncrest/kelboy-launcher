@@ -96,39 +96,39 @@ class Main():
             await asyncio.sleep(KEY_SLEEP)  # wait until release time
             if self.downPushed:
                 logger.debug("down...")
-                self.menu.cursor.down()
+                #self.menu.cursor.down()
             if self.upPushed:
                 logger.debug("up...")
-                self.menu.cursor.up()
+                #self.menu.cursor.up()
             if self.zPressed:
                 for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.up(force=True)
+                    #self.menu.cursor.up(force=True)
                 self.zPressed = False
             if self.tPressed:
                 for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.down(force=True)
+                    #self.menu.cursor.down(force=True)
                 self.tPressed = False
             if self.leftPushed:
                 logger.debug("left...")
-                self.menu.cursor.left()
+                #self.menu.cursor.left()
                 self.leftPushed = False
             if self.rightPushed:
                 logger.debug("right...")
-                self.menu.cursor.right()
+                #self.menu.cursor.right()
                 self.rightPushed = False
 
             if JOYSTICK_ENABLE:
                 if self.joyUp:
-                    self.menu.cursor.up()
+                    #self.menu.cursor.up()
                     self.joyUp = False
                 if self.joyDown:
-                    self.menu.cursor.down()
+                    #self.menu.cursor.down()
                     self.joyDown = False
                 if self.joyLeft:
-                    self.menu.cursor.left()
+                    #self.menu.cursor.left()
                     self.joyLeft = False
                 if self.joyRight:
-                    self.menu.cursor.right()
+                    #self.menu.cursor.right()
                     self.joyRight = False
             else:
                 self.joyUp = False
@@ -152,16 +152,20 @@ class Main():
                 #logger.debug("key down: %s" % str(event.key))
                 if event.key == pygame.K_DOWN:
                     self.downPushed = True
+                    self.menu.cursor.down()
                 elif event.key == pygame.K_UP:
                     self.upPushed = True
+                    self.menu.cursor.up()
                 elif event.key == pygame.K_RETURN or event.key == 0: #fix for wii motes, all buttons in python are 0 key
                     self.menu.cursor.select(self.screen)
                 elif event.key == pygame.K_ESCAPE:
                     self.menu.cursor.back(self.screen)
                 elif event.key == pygame.K_LEFT:
                     self.leftPushed = True
+                    self.menu.cursor.left()
                 elif event.key == pygame.K_RIGHT:
                     self.rightPushed = True
+                    self.menu.cursor.right()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
                     self.downPushed = False
@@ -194,12 +198,16 @@ class Main():
                     pass #TODO
                 elif event.button == 11:  # up
                     self.upPushed = True
+                    self.menu.cursor.up()
                 elif event.button == 10:  # down
                     self.downPushed = True
+                    self.menu.cursor.down()
                 elif event.button == 9:  # left
                     self.leftPushed = True
+                    self.menu.cursor.left()
                 elif event.button == 8:  # right
                     self.rightPushed = True
+                    self.menu.cursor.right()
             elif JOYSTICK_ENABLE and event.type == pygame.JOYAXISMOTION:
                 if event.value != 0.0 and (self.menu.keyboard==None or not self.menu.keyboard.show): #discarted joystick with keyboard and dead zone events
                     #reset screensaver time to 0

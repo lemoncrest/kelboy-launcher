@@ -159,7 +159,9 @@ try:
     logger.debug(('%d buttons found: %s' % (num_buttons, ', '.join(button_map))))
 except Exception as ex:
     logger.error(str(ex))
-    pass
+    if "No such file or directory: '/dev/input/js0'" in str(ex):
+        os.system("sudo reboot")
+
 
 '''
 this function is for mouse emulation movements

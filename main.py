@@ -111,9 +111,11 @@ class Main():
             if self.leftPushed:
                 logger.debug("left...")
                 self.menu.cursor.left()
+                self.leftPushed = False
             if self.rightPushed:
                 logger.debug("right...")
                 self.menu.cursor.right()
+                self.rightPushed = False
 
             if JOYSTICK_ENABLE:
                 if self.joyUp:

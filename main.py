@@ -102,11 +102,11 @@ class Main():
                 #self.menu.cursor.up()
             if self.zPressed:
                 for i in range(0,MAX_MENU_ITEMS):
-                    #self.menu.cursor.up(force=True)
+                    self.menu.cursor.up(force=True)
                 self.zPressed = False
             if self.tPressed:
                 for i in range(0,MAX_MENU_ITEMS):
-                    #self.menu.cursor.down(force=True)
+                    self.menu.cursor.down(force=True)
                 self.tPressed = False
             if self.leftPushed:
                 logger.debug("left...")

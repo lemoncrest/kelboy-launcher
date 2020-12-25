@@ -82,7 +82,7 @@ UPLOAD_SITE = getValue("UPLOAD_SITE",'https://github.com/lemoncrest/kelboy-launc
 MAX_MENU_ITEMS = getValue("MAX_MENU_ITEMS",10,'max number of items in the menus')
 MENU_ITEM_REFRESH_TIME = getValue("MENU_ITEM_REFRESH_TIME",0.002,"Menu item refresh time, higher better performance")
 TEXT_MOVEMENT_EFFECT = getValue("TEXT_MOVEMENT_EFFECT",False,"Movement effect in menu for long texts")
-BACKGROUND_ENABLE = getValue("BACKGROUND_ENABLE",False,"Background enable in launcher menu")
+BACKGROUND_ENABLE = getValue("BACKGROUND_ENABLE",True,"Background enable in launcher menu")
 BACKGROUND_PICTURE = getValue("BACKGROUND_PICTURE","background-br.png",'this value configures the background image and must be stored in resources/graphics/')
 JOYSTICK_ENABLE = getValue("JOYSTICK_ENABLE",False,"Joystick enable in launcher menu")
 

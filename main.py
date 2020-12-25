@@ -101,12 +101,12 @@ class Main():
                 logger.debug("up...")
                 #self.menu.cursor.up()
             if self.zPressed:
-                for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.up(force=True)
+                #for i in range(0,MAX_MENU_ITEMS):
+                #    self.menu.cursor.up(force=True)
                 self.zPressed = False
             if self.tPressed:
-                for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.down(force=True)
+                #for i in range(0,MAX_MENU_ITEMS):
+                #    self.menu.cursor.down(force=True)
                 self.tPressed = False
             if self.leftPushed:
                 logger.debug("left...")
@@ -190,8 +190,12 @@ class Main():
                     self.menu.cursor.back(self.screen)
                 elif event.button == 3:  # Z
                     self.zPressed = True
+                    for i in range(0,MAX_MENU_ITEMS):
+                        self.menu.cursor.up(force=True)
                 elif event.button == 2:  # T
                     self.tPressed = True
+                    for i in range(0,MAX_MENU_ITEMS):
+                        self.menu.cursor.down(force=True)
                 elif event.button == 7:  # start
                     pass #TODO
                 elif event.button == 6:  # select
@@ -274,7 +278,7 @@ class Main():
         #draw loop
         draw_task = asyncio.ensure_future(self.async_run())
         #moves loop
-        moves_task = asyncio.ensure_future(self.moves())
+        #moves_task = asyncio.ensure_future(self.moves())
 
         self.lemon = Lemon()
 
@@ -292,7 +296,7 @@ class Main():
             pygame_task.cancel()
             draw_task.cancel()
             event_task.cancel()
-            moves_task.cancel()
+            #moves_task.cancel()
 
         pygame.quit()
 

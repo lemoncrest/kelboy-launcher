@@ -115,17 +115,23 @@ class Main():
                 logger.debug("right...")
                 self.menu.cursor.right()
 
-            if self.joyUp:
-                self.menu.cursor.up()
+            if JOYSTICK_ENABLE:
+                if self.joyUp:
+                    self.menu.cursor.up()
+                    self.joyUp = False
+                if self.joyDown:
+                    self.menu.cursor.down()
+                    self.joyDown = False
+                if self.joyLeft:
+                    self.menu.cursor.left()
+                    self.joyLeft = False
+                if self.joyRight:
+                    self.menu.cursor.right()
+                    self.joyRight = False
+            else:
                 self.joyUp = False
-            if self.joyDown:
-                self.menu.cursor.down()
                 self.joyDown = False
-            if self.joyLeft:
-                self.menu.cursor.left()
                 self.joyLeft = False
-            if self.joyRight:
-                self.menu.cursor.right()
                 self.joyRight = False
 
     async def events(self,event_queue):

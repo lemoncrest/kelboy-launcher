@@ -6,12 +6,13 @@ import threading
 import pygame
 import math
 import re
+import time
 from core.settings import *
 from core.colors import *
 from core.component.keyboard import Keyboard, KeyboardScreen
 from core.component.dialog import Dialog
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 from core.effect.pixelate import pixelate
@@ -33,10 +34,11 @@ class MenuBoard(pygame.sprite.Sprite):
         self.rect.centery = HEIGHT / 2
         self.rect.centerx = WIDTH / 2
         logger.debug("loading background...")
-        filename = os.path.join("resources/graphics", BACKGROUND_PICTURE)
-        picture = pygame.image.load(filename)
-        picture = pygame.transform.scale(picture, (WIDTH,HEIGHT))
-        self.image.blit(picture, (0, 0))
+        if BACKGROUND_ENABLE:
+            filename = os.path.join("resources/graphics", BACKGROUND_PICTURE)
+            picture = pygame.image.load(filename)
+            picture = pygame.transform.scale(picture, (WIDTH,HEIGHT))
+            self.image.blit(picture, (0, 0))
 
 class MenuCursor(pygame.sprite.Sprite):
 
@@ -49,6 +51,11 @@ class MenuCursor(pygame.sprite.Sprite):
         self.loadBackground()
         self.last = pygame.time.get_ticks()
         self.menu.prevMenu = "main" #intanced back to the first
+
+        self.lastUp = pygame.time.get_ticks()
+        self.lastDown = pygame.time.get_ticks()
+        self.lastLeft = pygame.time.get_ticks()
+        self.lastRight = pygame.time.get_ticks()
 
     def loadBackground(self):
         logger.debug("loading CURSOR background...")
@@ -71,60 +78,68 @@ class MenuCursor(pygame.sprite.Sprite):
         self.selectedItemY = 0
         self.menu.keyboard = None
 
-    def down(self):
-        if self.menu.keyboard == None and self.menu.dialog == None:
-            if self.selectedItem < len(self.menu.items.items) - 1:
-                if self.selectedItem<MAX_MENU_ITEMS-2:
-                    self.rect.y += self.rect.height
-                self.selectedItem += 1
-            else:
-                logger.debug("limit down")
-                self.selectedItem = 0
-                if len(self.menu.items.items)>MAX_MENU_ITEMS-1:
-                    self.rect.y -= (self.rect.height*8)
+    def down(self, force=False):
+        if (self.lastDown + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
+            self.lastDown = pygame.time.get_ticks()
+            if self.menu.keyboard == None and self.menu.dialog == None:
+                if self.selectedItem < len(self.menu.items.items) - 1:
+                    if self.selectedItem<MAX_MENU_ITEMS-2:
+                        self.rect.y += self.rect.height
+                    self.selectedItem += 1
                 else:
-                    self.rect.y -= (self.rect.height*(len(self.menu.items.items)-1))
-        elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
-            self.menu.keyboard.positionY += 1
-            self.menu.keyboard.draw()
+                    logger.debug("limit down")
+                    self.selectedItem = 0
+                    if len(self.menu.items.items)>MAX_MENU_ITEMS-1:
+                        self.rect.y -= (self.rect.height*8)
+                    else:
+                        self.rect.y -= (self.rect.height*(len(self.menu.items.items)-1))
+            elif self.menu.keyboard != None and self.menu.keyboard.positionY < 3:
+                self.menu.keyboard.positionY += 1
+                self.menu.keyboard.draw()
 
 
-    def up(self):
-        if self.menu.keyboard == None and self.menu.dialog == None:
-            if self.selectedItem != 0:
-                if self.selectedItem<MAX_MENU_ITEMS-1:
-                    self.rect.y -= self.rect.height
-                self.selectedItem -= 1
-            else:
-                logger.debug("limit up")
-                self.selectedItem = len(self.menu.items.items) - 1
-                #the last item is first + number of displayed items
-                self.selectedItem = len(self.menu.items.items)-1
-                if len(self.menu.items.items)>8:
-                    self.rect.y += (self.rect.height*8)
+    def up(self, force=False):
+        if (self.lastUp + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
+            self.lastUp = pygame.time.get_ticks()
+            if self.menu.keyboard == None and self.menu.dialog == None:
+                if self.selectedItem != 0:
+                    if self.selectedItem<MAX_MENU_ITEMS-1:
+                        self.rect.y -= self.rect.height
+                    self.selectedItem -= 1
+                else:
+                    logger.debug("limit up")
+                    self.selectedItem = len(self.menu.items.items) - 1
+                    #the last item is first + number of displayed items
                     self.selectedItem = len(self.menu.items.items)-1
-                else:
-                    self.rect.y += (self.rect.height*(len(self.menu.items.items)-1))
-        elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
-            self.menu.keyboard.positionY -= 1
-            self.menu.keyboard.draw()
+                    if len(self.menu.items.items)>8:
+                        self.rect.y += (self.rect.height*8)
+                        self.selectedItem = len(self.menu.items.items)-1
+                    else:
+                        self.rect.y += (self.rect.height*(len(self.menu.items.items)-1))
+            elif self.menu.keyboard != None and self.menu.keyboard.positionY > 0:
+                self.menu.keyboard.positionY -= 1
+                self.menu.keyboard.draw()
 
-    def left(self):
-        if self.menu.keyboard == None:
-            self.rect.x -= 0
-            self.selectedItemX -= 0
-        elif self.menu.keyboard.positionX > 0:
-            self.menu.keyboard.positionX -= 1
-            self.menu.keyboard.draw()
+    def left(self, force=False):
+        if (self.lastLeft + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
+            self.lastLeft = pygame.time.get_ticks()
+            if self.menu.keyboard == None:
+                self.rect.x -= 0
+                self.selectedItemX -= 0
+            elif self.menu.keyboard.positionX > 0:
+                self.menu.keyboard.positionX -= 1
+                self.menu.keyboard.draw()
 
 
-    def right(self):
-        if self.menu.keyboard == None:
-            self.rect.y -= 0
-            self.selectedItemX -= 0
-        elif self.menu.keyboard.positionX < 9:
-            self.menu.keyboard.positionX += 1
-            self.menu.keyboard.draw()
+    def right(self, force=False):
+        if (self.lastRight + KEY_WHILE_SLEEP*1000 < pygame.time.get_ticks()) or force:
+            self.lastRight = pygame.time.get_ticks()
+            if self.menu.keyboard == None:
+                self.rect.y -= 0
+                self.selectedItemX -= 0
+            elif self.menu.keyboard.positionX < 9:
+                self.menu.keyboard.positionX += 1
+                self.menu.keyboard.draw()
 
     def back(self,surface):
         if (pygame.time.get_ticks() - self.last > EVENT_DELAY_TIME) and not (self.menu.dialog or self.menu.keyboard):
@@ -441,23 +456,27 @@ class MenuItems(pygame.sprite.Sprite):
 
                 #this movement is used to launch horizontal pixel movement effect in menu
                 index = self.menu.cursor.selectedItem
-                if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
-                    self.lastSelected = index
-                    self.timer = pygame.time.get_ticks()
-                    self.movement = 0
-                    #logger.debug("updated timer '%s'!" % self.items[index]["title"])
-
-                if int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) > self.waitTime:
-                    self.movement = int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) - self.waitTime
-                    #logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
-
-
-                else:
-                    self.movement = 0
 
                 movement = 0
-                if index == counter:
-                    movement = self.movement
+
+                if TEXT_MOVEMENT_EFFECT and len(self.items[index]["title"])>20:
+
+                    if self.lastSelected != index or (self.font.size(self.items[index]["title"])[0] + margin - self.movement) < 0:
+                        self.lastSelected = index
+                        self.timer = pygame.time.get_ticks()
+                        self.movement = 0
+                        logger.debug("updated timer '%s'!" % self.items[index]["title"])
+
+                    if int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) > self.waitTime:
+                        self.movement = int(pygame.time.get_ticks() / self.refreshTime) - int(self.timer / self.refreshTime) - self.waitTime
+                        logger.debug("%s %s" % (self.movement-self.waitTime,(margin + self.font.size(title)[0])))
+
+
+                    else:
+                        self.movement = 0
+
+                    if index == counter:
+                        movement = self.movement
 
                 if len(self.items)<MAX_MENU_ITEMS:
 
@@ -474,6 +493,7 @@ class MenuItems(pygame.sprite.Sprite):
 #                            logger.debug("discarting %s" % str(counter))
 
                 counter += 1
+                time.sleep(MENU_ITEM_REFRESH_TIME)
 
 
 class MenuStatus(pygame.sprite.Sprite):
@@ -497,7 +517,10 @@ class MenuStatus(pygame.sprite.Sprite):
     def draw(self):
         if pygame.time.get_ticks() - self.time > WIDGET_FRAMETIME:
             self.time = pygame.time.get_ticks()
-            self.drawWidgets()
+            try:
+                self.drawWidgets()
+            except:
+                pass
 
     def drawWidgets(self):
         self.padding = 1
@@ -509,14 +532,14 @@ class MenuStatus(pygame.sprite.Sprite):
         try:
             process = subprocess.run(BATTERY_PERCENTAGE_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             battery = int(process.stdout)
-        except:
+        except Exception as ex:
             battery = 0 #"lightning-empty-help"
             level = 0
             pass
         try:
             process = subprocess.run(FUELGAUGE_CURRENT_CMD, shell=True, check=True, stdout=subprocess.PIPE, universal_newlines=True)
             charging = int(process.stdout) > 0
-        except:
+        except Exception as ex:
             charging = False
             pass
         if charging:

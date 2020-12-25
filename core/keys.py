@@ -7,7 +7,8 @@ LOG_FILE = "log.txt"
 
 #functions for settings
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+from core.settings import LOGGING_LEVEL
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 SETTINGS_PATH = '/home/pi/.kelboy-launcher/'
@@ -113,19 +114,6 @@ addKey("scummvm","X",["BTN_MIDDLE"],"EV_KEY")
 addKey("scummvm","Z",["KEY_ESC"],"EV_KEY")
 addKey("scummvm","START",["KEY_ENTER"],"EV_KEY")
 addKey("scummvm","SELECT",["KEY_LEFTCTRL","KEY_F5"],"EV_KEY")
-
-addProcess("shell") #steamlink
-addKey("shell","MOUSE",[],"EV_ABS")
-addKey("shell","A",["BTN_LEFT"],"EV_KEY")
-addKey("shell","B",["BTN_RIGHT"],"EV_KEY")
-addKey("shell","X",["BTN_MIDDLE"],"EV_KEY")
-
-addProcess("xinit") #steamlink
-addKey("xinit","MOUSE",[],"EV_ABS")
-addKey("xinit","A",["BTN_LEFT"],"EV_KEY")
-addKey("xinit","B",["BTN_RIGHT"],"EV_KEY")
-addKey("xinit","X",["BTN_MIDDLE"],"EV_KEY")
-
 
 #load configurations from configuration file to KEYS
 KEYS = getKeys();

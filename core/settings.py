@@ -8,7 +8,7 @@ LOG_FILE = "log.txt"
 
 #functions for settings
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.ERROR)
 logger = logging.getLogger(__name__)
 
 SETTINGS_PATH = '/home/pi/.kelboy-launcher/'
@@ -63,11 +63,13 @@ HEIGHT = getValue("HEIGHT",240,'screen height resolution')
 FRAMERATE = getValue("FRAMERATE",60,'framerate')
 margin = getValue("margin",10,'general margin in pixels')
 
+LOGGING_LEVEL = getValue('LOGGING_LEVEL',logging.ERROR,'for development purpouse use logging.DEBUG or logging.INFO, if not use logging.ERROR')
+
 SCREENSAVER_TIME = getValue("SCREENSAVER_TIME",60000,'trigger for screensaver in milliseconds')
 KEY_SLEEP = getValue("KEY_SLEEP",0.02,'time between key is pushed and launcher reacts') #repeat time
-KEY_WHILE_SLEEP = getValue("KEY_WHILE_SLEEP",0.1,'time before reacts while key is pressed for repeat action - like up or down')
+KEY_WHILE_SLEEP = getValue("KEY_WHILE_SLEEP",0.3,'time before reacts while key is pressed for repeat action - like up or down')
 
-WIDGET_FRAMETIME = getValue("WIDGET_FRAMETIME",200,'refresh time for widgets')
+WIDGET_FRAMETIME = getValue("WIDGET_FRAMETIME",1000,'refresh time for widgets')
 
 FONT_SIZE = getValue("FONT_SIZE",18,'default font size')
 FONT_COLOR_ITEM = getValue("FONT_COLOR_ITEM",WHITE,'default font color')
@@ -78,7 +80,11 @@ FONT_TYPE_KEYBOARDBAR = getValue("FONT_TYPE_KEYBOARDBAR",'resources/fonts/DejaVu
 WPA_SUPPLICANT = getValue("WPA_SUPPLICANT",'/etc/wpa_supplicant/wpa_supplicant.conf','where is the wpa-supplicant in the system, must not be changed')
 UPLOAD_SITE = getValue("UPLOAD_SITE",'https://github.com/lemoncrest/kelboy-launcher/archive/master.zip','default github download repository like zip')
 MAX_MENU_ITEMS = getValue("MAX_MENU_ITEMS",10,'max number of items in the menus')
+MENU_ITEM_REFRESH_TIME = getValue("MENU_ITEM_REFRESH_TIME",0.002,"Menu item refresh time, higher better performance")
+TEXT_MOVEMENT_EFFECT = getValue("TEXT_MOVEMENT_EFFECT",False,"Movement effect in menu for long texts")
+BACKGROUND_ENABLE = getValue("BACKGROUND_ENABLE",True,"Background enable in launcher menu")
 BACKGROUND_PICTURE = getValue("BACKGROUND_PICTURE","background-br.png",'this value configures the background image and must be stored in resources/graphics/')
+JOYSTICK_ENABLE = getValue("JOYSTICK_ENABLE",False,"Joystick enable in launcher menu")
 
 ROMS_PATH = getValue("ROMS_PATH",'/home/pi/RetroPie/roms','default roms path')
 
@@ -93,6 +99,9 @@ BARSIZE = getValue("BARSIZE",25,'up barsize (widgets) height in pixels')
 
 BATTERY_PERCENTAGE_CMD = getValue("BATTERY_PERCENTAGE_CMD",'cat /sys/class/power_supply/max1726x_battery/capacity','command for battery value, must not be changed')
 FUELGAUGE_CURRENT_CMD = getValue("FUELGAUGE_CURRENT_CMD",'cat /sys/class/power_supply/max1726x_battery/current_now','command for fuelgague status, should not be changed')
+BRIGHTNESS_CURRENT_CMD = getValue("BRIGHTNESS_CURRENT_CMD",'cat /sys/class/backlight/kelboy_pwm_backlight/actual_brightness','command for brightness level, must not be changed')
+BRIGHTNESS_MAXLEVEL_CMD = getValue("BRIGHTNESS_MAXLEVEL_CMD",'cat /sys/class/backlight/kelboy_pwm_backlight/max_brightness','command for max brightness level, must not be changed')
+BRIGHTNESS_SETUP_CMD = getValue("BRIGHTNESS_SETUP_CMD",'/sys/class/backlight/kelboy_pwm_backlight/brightness','command for change brightness level, should not be changed')
 
 AUDIO_CONTROL_CMD = getValue("AUDIO_CONTROL_CMD","amixer | grep control | head -n 1 | awk -F' ' '{ print $4 }'",'command for audio control with amixer')
 

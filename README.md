@@ -8,7 +8,7 @@ This software is designed to be working without the need to start any graphical 
 
 It is made up of a series of menus through the user can interact and run scripts.
 
-Everything is designed so any user can easily edit menus and include new features to their needes. 
+Everything is designed so any user can easily edit menus and include new features to their needes.
 
 Mostly menus are in .json files inside resources path.
 
@@ -40,11 +40,11 @@ if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     echo "welcome to kelboy throw ssh session"
 else
     cd kelboy-launcher
-    ./launcher.sh
+    ./launcher.sh >/dev/null 2>&1 
 fi
 ```
 # License
-It's licensed with GPLv3, so feel free to learn and use it not only in his target hardware (Kelboy 2 DIY consoles). 
+It's licensed with GPLv3, so feel free to learn and use it not only in his target hardware (Kelboy 2 DIY consoles).
 
 We look forward to the community contributing and developing new features
 
@@ -52,7 +52,7 @@ We look forward to the community contributing and developing new features
 
 There are no secrets, we're opensource.
 
-Developed by Lemoncrest for Kelboy 2.x boards. 
+Developed by Lemoncrest for Kelboy 2.x boards.
 
 More information at:
 
@@ -65,4 +65,3 @@ If you have some suggestion feel free to contact us in our channels:
 (English) -> https://t.me/LemoncrestEN
 
 Enjoy
-

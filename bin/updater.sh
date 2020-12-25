@@ -43,21 +43,9 @@ if [ $(dpkg-query -W -f='${Status}' bluez-tools 2>/dev/null | grep -c "ok instal
 then
     sudo apt-get install bluetooth python-dbus python-gobject bluez-tools -y
 fi
-if [ $(dpkg-query -W -f='${Status}' xinit 2>/dev/null | grep -c "ok installed") -eq 0 ];
+if [ $(dpkg-query -W -f='${Status}' steamlink 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
-    sudo apt-get install xinit chromium-browser steamlink cec-utils libcec4 libp8-platform2 -y
-fi
-if [ $(dpkg-query -W -f='${Status}' youtube-dl 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-    sudo pip3 install youtube-dl -U
-fi
-if [ $(dpkg-query -W -f='${Status}' mplayer 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-    sudo apt install mplayer -y
-fi
-if [ $(dpkg-query -W -f='${Status}' mpv 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-    sudo apt-get install mpv -y
+    sudo apt-get install steamlink -y
 fi
 if [ ! -f /usr/lib/libwiringPi.so ]; then
     sudo apt install wiringpi xdotool -y
@@ -73,6 +61,10 @@ fi
 if [ $(dpkg-query -W -f='${Status}' unrar-free 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
     sudo apt install unrar-free -y
+fi
+if [ $(dpkg-query -W -f='${Status}' python3-willow 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    sudo apt-get install -y python3-willow
 fi
 
 git reset --hard HEAD #temp fix to remove local changes to force update

@@ -1,6 +1,8 @@
 import os
 import json
 import time
+import sys
+import traceback
 
 import asyncio
 
@@ -20,7 +22,7 @@ from core.effect.lemon import Lemon
 from core.colors import *
 
 import logging
-logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=logging.DEBUG)
+logging.basicConfig(filename=os.path.join(LOG_PATH, LOG_FILE),level=LOGGING_LEVEL)
 logger = logging.getLogger(__name__)
 
 from core.utils import Utils
@@ -83,7 +85,7 @@ class Main():
         with open(os.path.join("resources/menus","main.json")) as jsonMenu:
             menu = json.load(jsonMenu)
             self.menu = Menu(self, menu)
-            self.menu.dialog = Dialog(main=self,title="Test revision",message="not final rev.", dialogWidth=180,dialogHeight=160)
+            self.menu.dialog = Dialog(main=self,title="Launcher",message="Welcome to V1.0", dialogWidth=180,dialogHeight=160)
             self.menu.keyboard = None
             self.menu.lastMenu = "main"
 
@@ -92,30 +94,47 @@ class Main():
         logger.info("in-side async moves...")
         while self.running:
             await asyncio.sleep(KEY_SLEEP)  # wait until release time
-            if self.downPushed or self.joyDown:
+            if self.downPushed:
                 logger.debug("down...")
-                self.menu.cursor.down()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
-            if self.upPushed or self.joyUp:
+                #self.menu.cursor.down()
+            if self.upPushed:
                 logger.debug("up...")
-                self.menu.cursor.up()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+                #self.menu.cursor.up()
             if self.zPressed:
-                for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.up()
+                #for i in range(0,MAX_MENU_ITEMS):
+                #    self.menu.cursor.up(force=True)
                 self.zPressed = False
             if self.tPressed:
-                for i in range(0,MAX_MENU_ITEMS):
-                    self.menu.cursor.down()
+                #for i in range(0,MAX_MENU_ITEMS):
+                #    self.menu.cursor.down(force=True)
                 self.tPressed = False
-            if self.leftPushed or self.joyLeft:
+            if self.leftPushed:
                 logger.debug("left...")
-                self.menu.cursor.left()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
-            if self.rightPushed or self.joyRight:
+                #self.menu.cursor.left()
+                self.leftPushed = False
+            if self.rightPushed:
                 logger.debug("right...")
-                self.menu.cursor.right()
-                await asyncio.sleep(KEY_WHILE_SLEEP)  # wait until release time
+                #self.menu.cursor.right()
+                self.rightPushed = False
+
+            if JOYSTICK_ENABLE:
+                if self.joyUp:
+                    #self.menu.cursor.up()
+                    self.joyUp = False
+                if self.joyDown:
+                    #self.menu.cursor.down()
+                    self.joyDown = False
+                if self.joyLeft:
+                    #self.menu.cursor.left()
+                    self.joyLeft = False
+                if self.joyRight:
+                    #self.menu.cursor.right()
+                    self.joyRight = False
+            else:
+                self.joyUp = False
+                self.joyDown = False
+                self.joyLeft = False
+                self.joyRight = False
 
     async def events(self,event_queue):
         logger.info("in-side events...")
@@ -133,16 +152,20 @@ class Main():
                 #logger.debug("key down: %s" % str(event.key))
                 if event.key == pygame.K_DOWN:
                     self.downPushed = True
+                    self.menu.cursor.down()
                 elif event.key == pygame.K_UP:
                     self.upPushed = True
+                    self.menu.cursor.up()
                 elif event.key == pygame.K_RETURN or event.key == 0: #fix for wii motes, all buttons in python are 0 key
                     self.menu.cursor.select(self.screen)
                 elif event.key == pygame.K_ESCAPE:
                     self.menu.cursor.back(self.screen)
                 elif event.key == pygame.K_LEFT:
                     self.leftPushed = True
+                    self.menu.cursor.left()
                 elif event.key == pygame.K_RIGHT:
                     self.rightPushed = True
+                    self.menu.cursor.right()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
                     self.downPushed = False
@@ -167,25 +190,34 @@ class Main():
                     self.menu.cursor.back(self.screen)
                 elif event.button == 3:  # Z
                     self.zPressed = True
+                    for i in range(0,MAX_MENU_ITEMS):
+                        self.menu.cursor.up(force=True)
                 elif event.button == 2:  # T
                     self.tPressed = True
+                    for i in range(0,MAX_MENU_ITEMS):
+                        self.menu.cursor.down(force=True)
                 elif event.button == 7:  # start
                     pass #TODO
                 elif event.button == 6:  # select
                     pass #TODO
                 elif event.button == 11:  # up
                     self.upPushed = True
+                    self.menu.cursor.up()
                 elif event.button == 10:  # down
                     self.downPushed = True
+                    self.menu.cursor.down()
                 elif event.button == 9:  # left
                     self.leftPushed = True
+                    self.menu.cursor.left()
                 elif event.button == 8:  # right
                     self.rightPushed = True
-            elif False and event.type == pygame.JOYAXISMOTION:
-                if event.value != 0.0: #discarted joystick dead zone events
+                    self.menu.cursor.right()
+            elif JOYSTICK_ENABLE and event.type == pygame.JOYAXISMOTION:
+                if event.value != 0.0 and (self.menu.keyboard==None or not self.menu.keyboard.show): #discarted joystick with keyboard and dead zone events
                     #reset screensaver time to 0
                     self.last = int(round(time.time())*1000)
                     self.screensaver = False
+                    logger.debug("joy: %s value: %s, (%s,%s,%s,%s)" % ( str(event.axis),str(event.value),str(self.joyUp),str(self.joyDown),str(self.joyLeft),str(self.joyRight) ) )
                     if event.axis == 1:  # up and down
                         if event.value > 0.2 and not self.joyUp:
                             self.joyUp = True
@@ -207,6 +239,11 @@ class Main():
                             self.leftPushed = False
                             self.joyLeft = False
                             self.joyRight = False
+                else:
+                    self.joyUp = False
+                    self.joyDown = False
+                    self.joyLeft = False
+                    self.joyRight = False
         logger.info("ended... out-side events...")
 
     def update(self):
@@ -241,7 +278,7 @@ class Main():
         #draw loop
         draw_task = asyncio.ensure_future(self.async_run())
         #moves loop
-        moves_task = asyncio.ensure_future(self.moves())
+        #moves_task = asyncio.ensure_future(self.moves())
 
         self.lemon = Lemon()
 
@@ -250,13 +287,16 @@ class Main():
         try:
             loop.run_forever()
         except Exception as exc:
-            logger.error(str(exc))
+            logger.error("1: "+str(exc))
+            exc_info = sys.exc_info()
+            logger.error(exc_info)
+            traceback.print_exception(*exc_info)
         finally:
             self.running = False
             pygame_task.cancel()
             draw_task.cancel()
             event_task.cancel()
-            moves_task.cancel()
+            #moves_task.cancel()
 
         pygame.quit()
 
@@ -298,7 +338,11 @@ class Main():
                 self.draw()
 
         except Exception as ex:
-            logger.error(str(ex))
+            logger.error("2: "+str(ex))
+            exc_info = sys.exc_info()
+            logger.error(exc_info)
+            traceback.print_exception(*exc_info)
+            logger.error(str(exc_info.__traceback__))
 
 
 main = Main()

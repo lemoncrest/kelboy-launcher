@@ -473,7 +473,7 @@ def display_osd():
         #last show OSD menu
         if showOSDmenu:
             logger.debug("SHOW osd command")
-            command="bin/pngview %s/resources/graphics/logo.png -b 0 -l 5 -x 0 -y 0 -t %s &" % (os.getcwd() , str(1500))
+            command="bin/pngview %s/resources/graphics/logo.png -b 0 -l 5 -x 0 -y 0 -t %s &" % (os.getcwd() , str(3000))
             logger.debug(command)
             os.system(command)
             showOSDmenu = False
@@ -598,13 +598,13 @@ while True:
                 command = 'amixer set %s 50%%' % device
                 os.system(command)
                 logger.debug("command %s" % command)
-        if button_states["SELECT"] and button_states["UP"]:
+        if button_states["SELECT"] and button_states["Y"]:
             logger.debug("bundle2 up detected")
             showBattery = True
-        elif button_states["SELECT"] and button_states["DOWN"]:
+        elif button_states["SELECT"] and button_states["A"]:
             logger.debug("bundle2 down detected")
             showOSDmenu = True
-        elif button_states["SELECT"] and button_states["LEFT"]:
+        elif button_states["SELECT"] and button_states["DOWN"]:
             lightLevel = lightLevel - 1 if lightLevel >= 1 else 0
             logger.debug("brightness - is %s" % lightLevel)
             try:
@@ -615,7 +615,7 @@ while True:
                 currentlightlevel = lightLevel
                 logger.debug(str(ex))
                 pass
-        elif button_states["SELECT"] and button_states["RIGHT"]:
+        elif button_states["SELECT"] and button_states["UP"]:
             lightLevel = lightLevel + 1 if lightLevel < maxlightlevel else maxlightlevel
             logger.debug("brightness + is %s" % lightLevel)
             try:

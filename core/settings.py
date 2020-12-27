@@ -91,7 +91,7 @@ ROMS_PATH = getValue("ROMS_PATH",'/home/pi/RetroPie/roms','default roms path')
 FRAMES_IN = getValue("FRAMES_IN",16,'number of frames for pixelate effect (out)')
 FRAMES_OUT = getValue("FRAMES_OUT",16,'number of frames for pixelate effect (out)')
 
-EVENT_DELAY_TIME = getValue("EVENT_DELAY_TIME",1000,'default delay time')
+EVENT_DELAY_TIME = getValue("EVENT_DELAY_TIME",1500,'default delay time')
 HORIZONTAL_MOVEMENT_REFRESH_FACTOR = getValue("HORIZONTAL_MOVEMENT_REFRESH_FACTOR",50,'horizontal text movement effect in selected choice in menus, less is faster')
 HORIZONTAL_MOVEMENT_WAIT_TIME = getValue("HORIZONTAL_MOVEMENT_WAIT_TIME",5,'wait time for horizontal effect in seconds')
 

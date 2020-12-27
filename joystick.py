@@ -262,11 +262,9 @@ def notifications():
             logger.debug("showing battery...")
         elif not charging and battery < 15:
             #check time loop
-            if showBattery:
-                showBattery = False
-                currentShowTime = int(round(time.time() * 1000))
-            elif currentShowTime + 20000 >= int(round(time.time() * 1000)):
+            if currentShowTime + 30000 <= int(round(time.time() * 1000)):
                 showBattery = True
+                currentShowTime = int(round(time.time() * 1000))
                 logger.debug("showing battery...")
 
         pwd = os.getcwd()
@@ -299,8 +297,7 @@ def notifications():
             showBattery = False
         else:
             logger.debug("not showing battery")
-
-        time.sleep(30)
+        time.sleep(10)
 
 logger.debug("launching notifications thread")
 try:

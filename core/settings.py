@@ -106,6 +106,7 @@ BRIGHTNESS_SETUP_CMD = getValue("BRIGHTNESS_SETUP_CMD",'/sys/class/backlight/kel
 AUDIO_CONTROL_CMD = getValue("AUDIO_CONTROL_CMD","amixer | grep control | head -n 1 | awk -F' ' '{ print $4 }'",'command for audio control with amixer')
 
 PICO8_BIN = getValue("PICO8_BIN",'/home/pi/pico-8/pico8','pico8 bin path')
+TIC80_BIN = getValue("TIC80_BIN",'/home/pi/TIC-80/build/bin/tic80','tic80 bin path')
 
 RETROARCH_BIN = getValue("RETROARCH_BIN",'/opt/retropie/emulators/retroarch/bin/retroarch','retroarch bin path')
 

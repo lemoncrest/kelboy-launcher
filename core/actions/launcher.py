@@ -104,6 +104,15 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                 element["action"] = "command"
                 element["external"] = '%s -run "%s/%s"' % (PICO8_BIN,picoPath,directory)
                 menu.append(element)
+        elif folder == 'tic80':
+            logger.debug("selected tic80")
+            ticPath = os.path.join(ROMS_PATH,"tic80")
+            for directory in sorted(os.listdir(ticPath)):
+                element = {}
+                element["title"] = "%s" % directory[:directory.rfind(".")]
+                element["action"] = "command"
+                element["external"] = '%s "%s/%s"' % (TIC80_BIN,ticPath,directory)
+                menu.append(element)
         element = {}
         element["title"] = "Back"
         element["action"] = "function"

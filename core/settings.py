@@ -119,7 +119,8 @@ LIB_GBA = getValue("LIB_GBA",'/opt/retropie/libretrocores/lr-mgba/mgba_libretro.
 CONFIG_MD = getValue("CONFIG_MD",'/opt/retropie/configs/megadrive/retroarch.cfg','megadrive configuration')
 LIB_MD = getValue("LIB_MD",'/opt/retropie/libretrocores/lr-genesis-plus-gx/genesis_plus_gx_libretro.so','lib megadrive')
 
-LIB_N64 = getValue("LIB_N64",'/opt/retropie/libretrocores/lr-mupen64plus-next/mupen64plus_next_libretro.so','nintendo 64 configuration')
+LIB_N64_PLUS = getValue("LIB_N64",'/opt/retropie/libretrocores/lr-mupen64plus-next/mupen64plus_next_libretro.so','nintendo 64 configuration')
+LIB_N64 = getValue("LIB_N64",'/opt/retropie/libretrocores/lr-mupen64plus/mupen64plus_libretro.so','nintendo 64 configuration normal')
 CONFIG_N64 = getValue("CONFIG_N64",'/opt/retropie/configs/n64/retroarch.cfg','lib nintendo 64')
 
 CONFIG_AMSTRAD = getValue("CONFIG_AMSTRAD",'/opt/retropie/configs/amstradcpc/retroarch.cfg','amstrad configuration')

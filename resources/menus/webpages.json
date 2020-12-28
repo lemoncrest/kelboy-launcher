@@ -13,6 +13,10 @@
       "action": "function",
       "external": "getCatalogMenu"
     },{
+      "title": "tic80.com",
+      "action": "function",
+      "external": "getCatalogTic80Menu"
+    },{
         "action": "menu",
         "external": "program",
         "title": "Back"

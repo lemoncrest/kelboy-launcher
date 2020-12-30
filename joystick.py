@@ -396,29 +396,29 @@ def display_osd():
                     logger.error(str(ex))
                     pass
 
+            if WIDTH >= 640:
+                # Open template and get drawing context
+                im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
+                draw = ImageDraw.Draw(im)
 
-            # Open template and get drawing context
-            im = Image.open('%s/resources/graphics/progress.png' % pwd ).convert('RGB')
-            draw = ImageDraw.Draw(im)
+                # Cyan-ish fill colour
+                color=(20,200,255)
 
-            # Cyan-ish fill colour
-            color=(20,200,255)
+                # Draw circle at right end of progress bar
+                part = (640/maxlightlevel) * (lightLevel)
 
-            # Draw circle at right end of progress bar
-            part = (640/maxlightlevel) * (lightLevel)
+                x, y, diam = part, 8, 34
+                draw.ellipse([x,y,x+(diam),y+diam], fill=color)
 
-            x, y, diam = part, 8, 34
-            draw.ellipse([x,y,x+(diam),y+diam], fill=color)
+                # Flood-fill from extreme left of progress bar area to behind circle
+                ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
 
-            # Flood-fill from extreme left of progress bar area to behind circle
-            ImageDraw.floodfill(im, xy=(14,24), value=color, thresh=40)
+                # Save result
+                im.save('/tmp/brightness-bar.png')
 
-            # Save result
-            im.save('/tmp/brightness-bar.png')
-
-            #show result
-            command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s " % str(400)
-            os.system(command)
+                #show result
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s " % str(400)
+                os.system(command)
 
         #next battery
         if showBattery:

@@ -149,12 +149,6 @@ def loadZippedRom(params=[]):
             command = 'unrar x "%s" /home/pi/game' % path
         logger.debug(command)
         os.system(command)
-        #put states
-        command = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(path) )
-        os.system(command)
-
-        logger.debug(command)
-        os.system(command)
 
         #last get gamePath
         gamePath = None
@@ -164,8 +158,14 @@ def loadZippedRom(params=[]):
                 logger.debug("found!")
                 gamePath = os.path.join("/home/pi/game",file)
                 logger.debug("get unzipped file: %s" % gamePath)
-        logger.debug("launching %s" % gamePath)
+
+        #put states
+        command = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(path) )
+        os.system(command)
+        logger.debug(command)
+        
         #next launch command
+        logger.debug("launching %s" % gamePath)
         command = '%s -L %s --config %s "%s"' % (RETROARCH_BIN,lib,config,gamePath)
         logger.debug(command)
         os.system(command)

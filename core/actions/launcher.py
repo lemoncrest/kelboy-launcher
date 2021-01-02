@@ -160,6 +160,12 @@ def loadCommandRom(params=[]):
         logger.debug("copied game to folder")
 
         launch = command[:command.find('"')] + ' "/home/pi/game/' + game[ game.rfind("/")+1: ] + '"'
+
+        #store command in command file (game folder)
+        text_file = open("/home/pi/game/command", "w")
+        text_file.write(launch)
+        text_file.close()
+
         logger.debug(launch)
         os.system(launch)
 
@@ -217,6 +223,12 @@ def loadZippedRom(params=[]):
         #next launch command
         logger.debug("launching %s" % gamePath)
         command = '%s -L %s --config %s "%s"' % (RETROARCH_BIN,lib,config,gamePath)
+
+        #store command in command file (game folder)
+        text_file = open("/home/pi/game/command", "w")
+        text_file.write(command)
+        text_file.close()
+
         logger.debug(command)
         os.system(command)
         logger.debug("get saved file (if exists...)")

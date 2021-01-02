@@ -138,15 +138,16 @@ def loadCommandRom(params=[]):
             if "game" in element:
                 game = element["game"]
     if command and type and game:
+        logger.debug("removing old game temp folder...")
         os.system("sudo rm -Rf /home/pi/game")
         #do temp folder
         os.system("mkdir /home/pi/game/")
-
+        logger.debug("created folder")
         #put states
         command2 = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(game) )
         os.system(command2)
         logger.debug(command2)
-
+        logger.debug("copied to folder")
         launch = command[:command.find('"')] + " /home/pi/game/" + directory
         logger.debug(launch)
         os.system(launch)

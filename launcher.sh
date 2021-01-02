@@ -12,6 +12,7 @@ python3 joystick.py &
 FILE="/home/pi/game/command"
 if [[ -f "$FILE" ]]; then
   sh $FILE #restore last command
+  rm $FILE
 fi
 #exitCode=$(python3 main.py)
 exitCode=$(python3 main.py 2>&1 )

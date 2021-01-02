@@ -159,7 +159,7 @@ def loadCommandRom(params=[]):
         logger.debug(command3)
         logger.debug("copied game to folder")
 
-        launch = command[:command.find('"')] + " /home/pi/game/" + game[ game.rfind("/")+1: ]
+        launch = command[:command.find('"')] + ' "/home/pi/game/' + game[ game.rfind("/")+1: ] + '"'
         logger.debug(launch)
         os.system(launch)
 

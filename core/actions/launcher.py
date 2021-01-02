@@ -150,7 +150,7 @@ def loadZippedRom(params=[]):
         logger.debug(command)
         os.system(command)
         #put states
-        command = "cp '%s/*.state*' /home/pi/game/" % ( os.path.dirname(path) )
+        command = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(path) )
         os.system(command)
 
         logger.debug(command)

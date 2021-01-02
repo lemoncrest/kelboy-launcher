@@ -124,19 +124,23 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
     return menu
 
 def loadCommandRom(params=[]):
+
     type = None
     command = None
     game = None
-    if type(params) is list:
-        logger.debug("list")
-        for element in params:
-            logger.debug("ele %s" % str(element))
-            if "command" in element:
-                command = element["command"]
-            if "type" in element:
-                type = element["type"]
-            if "game" in element:
-                game = element["game"]
+    try:
+        if type(params) is list:
+            logger.debug("list")
+            for element in params:
+                logger.debug("ele %s" % str(element))
+                if "command" in element:
+                    command = element["command"]
+                if "type" in element:
+                    type = element["type"]
+                if "game" in element:
+                    game = element["game"]
+    except Exception as ex:
+        logger.error("Exc: "+str(ex))
     if command and type and game:
         logger.debug("removing old game temp folder...")
         os.system("sudo rm -Rf /home/pi/game")

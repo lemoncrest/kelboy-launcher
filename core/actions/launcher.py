@@ -139,23 +139,30 @@ def loadZippedRom(params=[]):
     #launch logic
     if path and lib:
         #remove old folder if exists
-        os.system("sudo rm -Rf /tmp/game")
+        os.system("sudo rm -Rf /home/pi/game")
         #do temp folder
-        os.system("mkdir /tmp/game/")
+        os.system("mkdir /home/pi/game/")
         if path.lower().endswith('.zip'):
             #now unzip
-            command = 'unzip "%s" -d /tmp/game' % path
+            command = 'unzip "%s" -d /home/pi/game' % path
         elif path.lower().endswith('.rar'):
-            command = 'unrar x "%s" /tmp/game/' % path
+            command = 'unrar x "%s" /home/pi/game' % path
         logger.debug(command)
         os.system(command)
+        #put states
+        command = "cp '%s/*.state*' /home/pi/game/" % ( os.path.dirname(path) )
+        os.system(command)
+        
+        logger.debug(command)
+        os.system(command)
+
         #last get gamePath
         gamePath = None
-        for file in os.listdir("/tmp/game/"):
+        for file in os.listdir("/home/pi/game"):
             logger.debug(str(file))
-            if os.path.isfile(os.path.join("/tmp/game",file)):
+            if os.path.isfile(os.path.join("/home/pi/game",file)):
                 logger.debug("found!")
-                gamePath = os.path.join("/tmp/game",file)
+                gamePath = os.path.join("/home/pi/game",file)
                 logger.debug("get unzipped file: %s" % gamePath)
         logger.debug("launching %s" % gamePath)
         #next launch command
@@ -163,18 +170,21 @@ def loadZippedRom(params=[]):
         logger.debug(command)
         os.system(command)
         logger.debug("get saved file (if exists...)")
-        files = os.listdir("/tmp/game")
+        files = os.listdir("/home/pi/game")
         for file in files:
-            if os.path.join("/tmp/game",file) != gamePath:
+            if os.path.join("/home/pi/game",file) != gamePath:
                 logger.debug(gamePath)
-                logger.debug(os.path.join("/tmp/game",file))
+                logger.debug(os.path.join("/home/pi/game",file))
                 savedFile = file
                 logger.debug("saved file: %s" % savedFile)
-                command = "cp '/tmp/game/%s' '%s'" % (savedFile,os.path.dirname(path))
+                command = "cp '/home/pi/game/%s' '%s'" % (savedFile,os.path.dirname(path))
+                logger.debug(command)
+                os.system(command)
+                command = "cp '/home/pi/game/*.state*' '%s'" % ( os.path.dirname(path) )
                 logger.debug(command)
                 os.system(command)
         #last remove old one
-        os.system("sudo rm -Rf /tmp/game")
+        os.system("sudo rm -Rf /home/pi/game")
 
 
 def internetBrowser(params=[]):

@@ -129,6 +129,7 @@ def loadCommandRom(params=[]):
     command = None
     game = None
     try:
+        logger.debug(str(params))
         if type(params) is list:
             logger.debug("list")
             for element in params:

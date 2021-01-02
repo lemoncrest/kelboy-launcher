@@ -89,10 +89,13 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                     logger.debug("Not empty directory %s, appending to list" % directory)
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
-                    element["action"] = "command"
-                    element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,lib,config,newPath,directory)
+                    element["action"] = "function"
+                    element["external"] = "loadCommandRom"
+                    command = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,lib,config,newPath,directory)
                     element["params"] = [{
-                        'type' : directory
+                        'type' : directory,
+                        'command' : command,
+                        'game' : "%s/%s" % (newPath,directory)
                     }]
                     menu.append(element)
         elif folder == 'pico8':
@@ -119,6 +122,41 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
         element["external"] = "loadRoms"
         menu.append(element)
     return menu
+
+def loadCommandRom(params=[]):
+    type = None
+    command = None
+    game = None
+    if type(params) is list:
+        logger.debug("list")
+        for element in params:
+            logger.debug("ele %s" % str(element))
+            if "command" in element:
+                command = element["command"]
+            if "type" in element:
+                type = element["type"]
+            if "game" in element:
+                game = element["game"]
+    if command and type and game:
+        os.system("sudo rm -Rf /home/pi/game")
+        #do temp folder
+        os.system("mkdir /home/pi/game/")
+
+        #put states
+        command2 = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(game) )
+        os.system(command2)
+        logger.debug(command2)
+
+        launch = command[:command.find('"')] + " /home/pi/game/" + directory
+        logger.debug(launch)
+        os.system(launch)
+
+        command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(path) )
+        logger.debug(command)
+        os.system(command)
+        #last remove old one
+        os.system("sudo rm -Rf /home/pi/game")
+
 
 def loadZippedRom(params=[]):
     menu = []
@@ -163,14 +201,13 @@ def loadZippedRom(params=[]):
         command = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(path) )
         os.system(command)
         logger.debug(command)
-        
+
         #next launch command
         logger.debug("launching %s" % gamePath)
         command = '%s -L %s --config %s "%s"' % (RETROARCH_BIN,lib,config,gamePath)
         logger.debug(command)
         os.system(command)
         logger.debug("get saved file (if exists...)")
-        files = os.listdir("/home/pi/game")
         #save files if exists in previews path
         command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(path) )
         logger.debug(command)

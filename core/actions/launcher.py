@@ -152,7 +152,7 @@ def loadZippedRom(params=[]):
         #put states
         command = "cp '%s/*.state*' /home/pi/game/" % ( os.path.dirname(path) )
         os.system(command)
-        
+
         logger.debug(command)
         os.system(command)
 
@@ -171,18 +171,10 @@ def loadZippedRom(params=[]):
         os.system(command)
         logger.debug("get saved file (if exists...)")
         files = os.listdir("/home/pi/game")
-        for file in files:
-            if os.path.join("/home/pi/game",file) != gamePath:
-                logger.debug(gamePath)
-                logger.debug(os.path.join("/home/pi/game",file))
-                savedFile = file
-                logger.debug("saved file: %s" % savedFile)
-                command = "cp '/home/pi/game/%s' '%s'" % (savedFile,os.path.dirname(path))
-                logger.debug(command)
-                os.system(command)
-                command = "cp '/home/pi/game/*.state*' '%s'" % ( os.path.dirname(path) )
-                logger.debug(command)
-                os.system(command)
+        #save files if exists in previews path
+        command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(path) )
+        logger.debug(command)
+        os.system(command)
         #last remove old one
         os.system("sudo rm -Rf /home/pi/game")
 

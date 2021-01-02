@@ -163,7 +163,7 @@ def loadCommandRom(params=[]):
         logger.debug(launch)
         os.system(launch)
 
-        command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(path) )
+        command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(game) )
         logger.debug(command)
         os.system(command)
         #last remove old one

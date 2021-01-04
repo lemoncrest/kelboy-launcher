@@ -12,6 +12,11 @@ python3 joystick.py &
 FILE="/home/pi/game/command"
 if [[ -f "$FILE" ]]; then
   sh $FILE #restore last command
+  FILE2="/home/pi/game/save"
+  if [[ -f "$FILE2" ]]; then
+    sh $FILE2 #restore data
+    rm $FILE2
+  fi
   rm $FILE
 fi
 #exitCode=$(python3 main.py)

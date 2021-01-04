@@ -229,6 +229,12 @@ def loadZippedRom(params=[]):
         text_file.write(command)
         text_file.close()
 
+        #return states to right folder, user could exits and lost .state* if don't
+        command2 = "cp *.state* %s" % os.path.dirname(path)
+        text_file = open("/home/pi/game/save", "w")
+        text_file.write(command2)
+        text_file.close()
+
         logger.debug(command)
         os.system(command)
         logger.debug("get saved file (if exists...)")

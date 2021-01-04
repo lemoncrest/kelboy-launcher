@@ -9,6 +9,16 @@ echo "welcome to kelboy-launcher"
 #cd ..
 killall python3
 python3 joystick.py &
+FILE="/home/pi/game/command"
+if [[ -f "$FILE" ]]; then
+  sh $FILE #restore last command
+  FILE2="/home/pi/game/save"
+  if [[ -f "$FILE2" ]]; then
+    sh $FILE2 #restore data
+    rm $FILE2
+  fi
+  rm $FILE
+fi
 #exitCode=$(python3 main.py)
 exitCode=$(python3 main.py 2>&1 )
 status=$?

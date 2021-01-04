@@ -89,10 +89,13 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
                     logger.debug("Not empty directory %s, appending to list" % directory)
                     element = {}
                     element["title"] = "%s" % directory[:directory.rfind(".")]
-                    element["action"] = "command"
-                    element["external"] = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,lib,config,newPath,directory)
+                    element["action"] = "function"
+                    element["external"] = "loadCommandRom"
+                    command = '%s -L %s --config %s "%s/%s"' % (RETROARCH_BIN,lib,config,newPath,directory)
                     element["params"] = [{
-                        'type' : directory
+                        'type' : directory,
+                        'command' : command,
+                        'game' : "%s/%s" % (newPath,directory)
                     }]
                     menu.append(element)
         elif folder == 'pico8':
@@ -120,6 +123,59 @@ def loadRoms(params=[]): #TODO launch emulationstation configurations by path
         menu.append(element)
     return menu
 
+def loadCommandRom(params=[]):
+
+    type = None
+    command = None
+    game = None
+    try:
+        logger.debug(str(params))
+        logger.debug("list")
+        for element in params:
+            logger.debug("ele %s" % str(element))
+            if "command" in element:
+                command = element["command"]
+            if "type" in element:
+                type = element["type"]
+            if "game" in element:
+                game = element["game"]
+    except Exception as ex:
+        logger.error("Exc: "+str(ex))
+        pass
+    if command and type and game:
+        logger.debug("removing old game temp folder...")
+        os.system("sudo rm -Rf /home/pi/game")
+        #do temp folder
+        os.system("mkdir /home/pi/game/")
+        logger.debug("created folder")
+        #put states
+        command2 = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(game) )
+        os.system(command2)
+        logger.debug(command2)
+        logger.debug("copied to folder")
+
+        command3 = 'cp "%s" /home/pi/game/' % (game)
+        os.system(command3)
+        logger.debug(command3)
+        logger.debug("copied game to folder")
+
+        launch = command[:command.find('"')] + ' "/home/pi/game/' + game[ game.rfind("/")+1: ] + '"'
+
+        #store command in command file (game folder)
+        text_file = open("/home/pi/game/command", "w")
+        text_file.write(launch)
+        text_file.close()
+
+        logger.debug(launch)
+        os.system(launch)
+
+        command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(game) )
+        logger.debug(command)
+        os.system(command)
+        #last remove old one
+        os.system("sudo rm -Rf /home/pi/game")
+
+
 def loadZippedRom(params=[]):
     menu = []
     path = None
@@ -139,42 +195,55 @@ def loadZippedRom(params=[]):
     #launch logic
     if path and lib:
         #remove old folder if exists
-        os.system("sudo rm -Rf /tmp/game")
+        os.system("sudo rm -Rf /home/pi/game")
         #do temp folder
-        os.system("mkdir /tmp/game/")
+        os.system("mkdir /home/pi/game/")
         if path.lower().endswith('.zip'):
             #now unzip
-            command = 'unzip "%s" -d /tmp/game' % path
+            command = 'unzip "%s" -d /home/pi/game' % path
         elif path.lower().endswith('.rar'):
-            command = 'unrar x "%s" /tmp/game/' % path
+            command = 'unrar x "%s" /home/pi/game' % path
         logger.debug(command)
         os.system(command)
+
         #last get gamePath
         gamePath = None
-        for file in os.listdir("/tmp/game/"):
+        for file in os.listdir("/home/pi/game"):
             logger.debug(str(file))
-            if os.path.isfile(os.path.join("/tmp/game",file)):
+            if os.path.isfile(os.path.join("/home/pi/game",file)):
                 logger.debug("found!")
-                gamePath = os.path.join("/tmp/game",file)
+                gamePath = os.path.join("/home/pi/game",file)
                 logger.debug("get unzipped file: %s" % gamePath)
-        logger.debug("launching %s" % gamePath)
+
+        #put states
+        command = "cp %s/*.state* /home/pi/game/" % ( os.path.dirname(path) )
+        os.system(command)
+        logger.debug(command)
+
         #next launch command
+        logger.debug("launching %s" % gamePath)
         command = '%s -L %s --config %s "%s"' % (RETROARCH_BIN,lib,config,gamePath)
+
+        #store command in command file (game folder)
+        text_file = open("/home/pi/game/command", "w")
+        text_file.write(command)
+        text_file.close()
+
+        #return states to right folder, user could exits and lost .state* if don't
+        command2 = "cp *.state* %s" % os.path.dirname(path)
+        text_file = open("/home/pi/game/save", "w")
+        text_file.write(command2)
+        text_file.close()
+
         logger.debug(command)
         os.system(command)
         logger.debug("get saved file (if exists...)")
-        files = os.listdir("/tmp/game")
-        for file in files:
-            if os.path.join("/tmp/game",file) != gamePath:
-                logger.debug(gamePath)
-                logger.debug(os.path.join("/tmp/game",file))
-                savedFile = file
-                logger.debug("saved file: %s" % savedFile)
-                command = "cp '/tmp/game/%s' '%s'" % (savedFile,os.path.dirname(path))
-                logger.debug(command)
-                os.system(command)
+        #save files if exists in previews path
+        command = "cp /home/pi/game/*.state* '%s'" % ( os.path.dirname(path) )
+        logger.debug(command)
+        os.system(command)
         #last remove old one
-        os.system("sudo rm -Rf /tmp/game")
+        os.system("sudo rm -Rf /home/pi/game")
 
 
 def internetBrowser(params=[]):

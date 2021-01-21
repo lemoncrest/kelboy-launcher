@@ -108,7 +108,7 @@ addKey("tic80","B",["KEY_Z"])
 addKey("tic80","X",["KEY_S"])
 addKey("tic80","Y",["KEY_A"])
 addKey("tic80","Z",["KEY_F11"])
-addKey("tic80","SELECT",["KEY_LEFTCTRL","KEY_S"])
+addKey("tic80","SELECT",["KEY_LEFTCTRL","KEY_Q"])
 
 addProcess("mpv")
 addKey("mpv","UP",["KEY_UP"])

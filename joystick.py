@@ -276,7 +276,7 @@ def notifications():
                     level = "lightning-full"
             elif battery>15:
                 level = "lightning-empty"
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 10000 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
         else:
             if(battery>50):
                 level = "75"
@@ -289,7 +289,7 @@ def notifications():
             else:
                 level = "0"
             logger.debug("level is %s" % level)
-            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+            command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 10000 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
         if showBattery:
             logger.debug("command... %s" % command)
             os.system(command)
@@ -417,7 +417,7 @@ def display_osd():
                 im.save('/tmp/brightness-bar.png')
 
                 #show result
-                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 2 -x 0 -y 0 -t %s " % str(400)
+                command="bin/pngview /tmp/brightness-bar.png -b 0 -l 10000 -x 0 -y 0 -t %s " % str(400)
                 os.system(command)
 
         #next battery
@@ -447,7 +447,7 @@ def display_osd():
                         level = "lightning-full"
                 elif battery>15:
                     level = "lightning-empty"
-                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 10000 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
             else:
                 if(battery>50):
                     level = "75"
@@ -460,7 +460,7 @@ def display_osd():
                 else:
                     level = "0"
                 logger.debug("level is %s" % level)
-                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 3 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
+                command="bin/pngview %s/resources/graphics/battery-%s.png -b 0 -l 10000 -x %s -y 7 -t %s &" % (pwd,level,WIDTH-30,str(5000))
 
             logger.debug("command... %s" % command)
             os.system(command)
@@ -470,7 +470,7 @@ def display_osd():
         #last show OSD menu
         if showOSDmenu:
             logger.debug("SHOW osd command")
-            command="bin/pngview %s/resources/graphics/logo.png -b 0 -l 5 -x 0 -y 0 -t %s &" % (os.getcwd() , str(3000))
+            command="bin/pngview %s/resources/graphics/logo.png -b 0 -l 10000 -x 0 -y 0 -t %s &" % (os.getcwd() , str(3000))
             logger.debug(command)
             os.system(command)
             showOSDmenu = False
